@@ -1,0 +1,1416 @@
+"""Conservative scope-aware, evidence-rich Python call graph resolver.
+
+May-call edges are generated for finite class candidates from a for-loop.
+No cross-file name-only guessing: external/unknown calls remain unresolved.
+"""
+from __future__ import annotations
+import ast
+from bisect import bisect_right
+from collections import Counter, defaultdict
+from import_resolution import canonical_import, ImportOrigins
+from external_bases import ExternalClassIndex, builtin_class, PYTHON_VERSION
+import sys
+from typing import Any
+
+# sys.platform values of supported CPython builds (docs: sys.platform).
+KNOWN_PLATFORMS = ('aix', 'android', 'cygwin', 'darwin', 'emscripten', 'freebsd', 'ios',
+                   'linux', 'netbsd', 'openbsd', 'sunos', 'wasi', 'win32')
+
+
+def build_graph(data: dict[str, Any], *, profile=None, call_policy=None) -> dict[str, Any]:
+    from analysis_defaults import DEFAULT_PROFILE, DEFAULT_CALL_POLICY
+    profile = DEFAULT_PROFILE if profile is None else profile
+    call_policy = DEFAULT_CALL_POLICY if call_policy is None else call_policy
+    if profile not in ('baseline', 'integrated') or call_policy not in ('primary', 'augmented', 'supported'):
+        raise ValueError('Unknown analysis profile or call graph policy')
+    resolver = Resolver(data)
+    resolver.enhanced = profile == 'integrated'
+    graph = resolver.build()
+    if profile == 'integrated':
+        from unified_graph import finish_graph
+        return finish_graph(graph, data, resolver, call_policy=call_policy)
+    graph['analysis_profile'] = 'baseline'
+    graph['call_graph_policy'] = 'primary'
+    return graph
+
+
+class Resolver:
+    def __init__(self, data: dict[str, Any]):
+        self.data = data
+        self.symbols = data.get('symbols', [])
+        self.calls = data.get('calls', [])
+        self.origins = ImportOrigins(data)
+        self.by_canonical = defaultdict(list)
+        self.by_id = {}
+        self.classes = {}
+        self.assignments = defaultdict(list)
+        self.imports = defaultdict(list)
+        self._mro_cache = {}
+        self._decorator_method_cache = {}
+        self._generic_check_active = set()
+        self._generic_getitem_cache = {}
+        self._imports_cache = {}
+        # Builtin/stdlib bases whose attribute names are statically known:
+        # canonical name -> frozenset of names. They sit in the MRO as opaque
+        # nodes and stop a method lookup only when they define the name.
+        self.external_index = ExternalClassIndex()
+        self.external_bases = {}
+        self._external_write_cache = None
+        self.conditional_external_bases = set()  # modeled, but patched on some path
+        for s in self.symbols:
+            self.by_canonical[s['canonical_name']].append(s)
+            self.by_id[s['id']] = s
+            if s['kind'] == 'CLASS':
+                self.classes[s['canonical_name']] = s
+        for ass in data.get('assignments', []):
+            self.assignments[(ass['file'], ass['scope'])].append(ass)
+        for key in self.assignments:
+            self.assignments[key].sort(key=lambda a: (a.get('line') or 0, a.get('column') or 0))
+        for imp in data.get('imports', []):
+            self.imports[imp['file']].append(imp)
+        self.mutated_methods = set()
+        self.mutated_class_attributes = set()
+        self.conditionally_mutated_methods = set()
+        self._source_nodes = {}
+        self._source_parents = {}
+        self.syntax_trees = {}
+        for file, source in data.get('analysis_sources', {}).items():
+            tree = getattr(data, 'syntax_trees', {}).get(file)
+            if tree is None:
+                tree = ast.parse(source)
+            self.syntax_trees[file] = tree
+            self._source_nodes[file] = {(n.lineno, n.col_offset): n for n in ast.walk(tree)
+                                        if isinstance(n, (ast.Call, ast.Assign, ast.AnnAssign,
+                                                          ast.AugAssign, ast.Delete))}
+            self._source_parents[file] = {child: parent for parent in ast.walk(tree)
+                                          for child in ast.iter_child_nodes(parent)}
+        self._collect_class_mutations()
+
+    def lexical_scopes(self, scope, module):
+        """Function closures are visible; enclosing class namespaces aren't.
+
+        A class body's own namespace remains visible while evaluating that
+        body/defaults, but methods and nested classes skip enclosing classes.
+        """
+        parts = (scope or '').split('.')
+        original = '.'.join(parts)
+        while parts and parts != ['<module>']:
+            current = '.'.join(parts)
+            if current == original or module + '.' + current not in self.classes:
+                yield current
+            parts.pop()
+
+    def _mutation_optional(self, write):
+        """None: unreachable constant branch; bool: possible/straight write."""
+        node = self._source_nodes.get(write['file'], {}).get((write['line'], write.get('column', 0)))
+        if node is None:
+            return bool(write.get('control_depth'))
+        parents = self._source_parents[write['file']]
+        optional = False
+        while node in parents:
+            parent = parents[node]
+            if isinstance(parent, (ast.If, ast.IfExp)):
+                branch = parent.body if isinstance(parent, ast.If) else [parent.body]
+                other = parent.orelse if isinstance(parent, ast.If) else [parent.orelse]
+                truth = self._static_condition(parent.test, write)
+                if truth is not None:
+                    if (node in branch and not truth or node in other and truth):
+                        return None
+                elif node in branch or node in other:
+                    optional = True
+            elif isinstance(parent, (ast.For, ast.AsyncFor)):
+                if node in parent.body:
+                    if isinstance(parent.iter, (ast.List, ast.Tuple, ast.Set)):
+                        if not parent.iter.elts:
+                            return None
+                        # Break/continue can bypass a write in some iteration.
+                        optional |= any(isinstance(n, (ast.Break, ast.Continue)) for n in ast.walk(parent))
+                    else:
+                        optional = True
+                elif node in parent.orelse:
+                    optional = True
+            elif isinstance(parent, ast.While):
+                if node in parent.body and isinstance(parent.test, ast.Constant):
+                    if not parent.test.value:
+                        return None
+                else:
+                    optional = True
+            elif isinstance(parent, ast.BoolOp):
+                for predecessor in parent.values[:parent.values.index(node)]:
+                    if isinstance(predecessor, ast.Constant):
+                        truth = bool(predecessor.value)
+                        if isinstance(parent.op, ast.And) and not truth or isinstance(parent.op, ast.Or) and truth:
+                            return None
+                    else:
+                        optional = True
+            elif isinstance(parent, (ast.Try, ast.With, ast.AsyncWith, ast.Match)):
+                optional = True
+            # Do not mix a deferred function body with conditions that only
+            # governed when its enclosing function/class was defined.
+            if isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                break
+            node = parent
+        return optional
+
+    def _static_condition(self, expression, context):
+        if isinstance(expression, ast.Constant):
+            return bool(expression.value)
+        # Admit only an unshadowed sys.platform.startswith(literal) guard. The
+        # result must not depend on the analyzing machine: a guard is decided
+        # only when it holds on every known platform, or on none of them.
+        if (isinstance(expression, ast.Call) and not expression.keywords and len(expression.args)==1
+                and isinstance(expression.args[0], ast.Constant) and isinstance(expression.args[0].value, str)
+                and isinstance(expression.func, ast.Attribute) and expression.func.attr=='startswith'
+                and isinstance(expression.func.value, ast.Attribute) and expression.func.value.attr=='platform'
+                and isinstance(expression.func.value.value, ast.Name)):
+            root = expression.func.value.value.id
+            imports = self.imports_at(context)
+            if (imports.get(root)=='sys' and 'sys' not in self.origins.modules
+                    and self._trusted_stdlib_import(context, root, 'sys')
+                    and not any(root in a.get('targets', []) or root+'.platform' in a.get('targets', [])
+                                for a in self.data.get('assignments', []))):
+                matches = {p.startswith(expression.args[0].value) for p in KNOWN_PLATFORMS}
+                return matches.pop() if len(matches) == 1 else None
+        return None
+
+    def safe_callable(self, symbol):
+        """Unknown decorators/class writes cannot certify the original binding.
+
+        Function decorators other than classmethod/staticmethod may replace the
+        function. Class decorators are handled where methods are looked up
+        (_mro / class_decorators.py), as in JSE: creating the class stays a
+        source-backed candidate.
+        """
+        if symbol['id'] in self.mutated_methods:
+            return False
+        if symbol['kind'] == 'CLASS':
+            return True
+        return all(d in ('classmethod', 'staticmethod') and symbol['kind'] == 'METHOD'
+                   for d in symbol.get('decorators', []))
+
+    def _collect_class_mutations(self):
+        # Deliberately project-wide: ordering across imports/entry points is
+        # unknown. A write can invalidate earlier saved aliases too, so this
+        # guard may abstain more often than a full namespace interpreter.
+        writes = list(self.data.get('assignments', []))
+        writes.extend({**h, 'targets': [h['name']]} for h in self.data.get('binding_hazards', [])
+                      if h['type'] == 'DELETE')
+        for call in self.calls:
+            if call.get('callee_text') not in ('setattr', 'delattr'):
+                continue
+            try:
+                expression = ast.parse(call['source'], mode='eval').body
+            except (KeyError, SyntaxError):
+                continue
+            if not isinstance(expression, ast.Call) or len(expression.args) < 2:
+                continue
+            key = expression.args[1]
+            attr = key.value if isinstance(key, ast.Constant) and isinstance(key.value, str) else '*'
+            writes.append({**call, 'targets': [ast.unparse(expression.args[0]) + '.' + attr]})
+        for assignment in writes:
+            if not any('.' in target for target in assignment.get('targets', [])):
+                continue
+            optional = self._mutation_optional(assignment)
+            if optional is None:
+                continue
+            call = {**assignment, 'scope': assignment.get('scope') or '<module>'}
+            imports = self.imports_at(call)
+            for target in assignment.get('targets', []):
+                if '.' not in target:
+                    continue
+                owner, attribute = target.rsplit('.', 1)
+                refs = self._resolve_reference(owner, assignment['module'], imports)
+                if not refs:
+                    scopes = (call.get('scope') or '').split('.')
+                    while scopes and not refs:
+                        refs = self._lookup('.'.join([assignment['module'], *scopes, owner]))
+                        scopes.pop()
+                # Follow simple class aliases in the visible lexical scopes.
+                seen = set()
+                while not refs and owner.isidentifier() and owner not in seen:
+                    seen.add(owner)
+                    binding = self._find_binding(call, owner)
+                    value = (binding or {}).get('binding', {})
+                    if value.get('kind') not in ('name', 'attribute'):
+                        break
+                    owner = value['name']
+                    refs = self._resolve_reference(owner, assignment['module'], imports)
+                for cls in refs:
+                    if cls['kind'] == 'CLASS':
+                        self.mutated_class_attributes.add((cls['canonical_name'], attribute))
+                        if attribute == '*':
+                            hierarchy, _ = self._mro(cls)
+                            methods = [s for s in self.symbols if s['kind'] == 'METHOD'
+                                       and s['canonical_name'].rsplit('.', 1)[0] in hierarchy]
+                        else:
+                            methods, _ = self._find_method(cls, attribute)
+                            # _find_method skips descriptors such as property;
+                            # a write replaces those definitions as well.
+                            hierarchy, status = self._mro(cls)
+                            owners = hierarchy if status == 'complete' else [cls['canonical_name']]
+                            methods = methods + [s for owner in owners for s in self._lookup(owner + '.' + attribute)
+                                                 if s['kind'] == 'METHOD']
+                        destination = self.conditionally_mutated_methods if optional else self.mutated_methods
+                        destination.update(m['id'] for m in methods)
+        self.conditionally_mutated_methods.difference_update(self.mutated_methods)
+
+    @staticmethod
+    def _scope_visible(inner: str, outer: str) -> bool:
+        return outer == '<module>' or inner == outer or inner.startswith(outer + '.')
+
+    def imports_at(self, call: dict) -> dict[str, str]:
+        # The visible imports depend only on (file, scope) plus how many
+        # function-local imports precede the call line, so cache on that.
+        # Callers may mutate the result; always hand out a copy.
+        key = (call['file'], call['scope'])
+        entry = self._imports_cache.get(key)
+        if entry is None:
+            scopes = set(self.lexical_scopes(call['scope'], call['module'])) | {'<module>'}
+            visible = [imp for imp in self.imports[call['file']]
+                       if (imp.get('scope') or '<module>') in scopes]
+            local_lines = sorted({imp.get('line') or 0 for imp in visible
+                                  if (imp.get('scope') or '<module>') != '<module>'})
+            entry = self._imports_cache[key] = (visible, local_lines, {})
+        visible, local_lines, by_position = entry
+        position = bisect_right(local_lines, call.get('line') or 0)
+        if position not in by_position:
+            by_position[position] = self._compute_imports(visible, call.get('line') or 0)
+        return dict(by_position[position])
+
+    def _compute_imports(self, visible: list[dict], line: int) -> dict[str, str]:
+        imports = {}
+        for imp in visible:
+            scope = imp.get('scope') or '<module>'
+            if scope != '<module>' and (imp.get('line') or 0) > line:
+                continue
+            target = canonical_import(imp)
+            if imp.get('local_name'):
+                imports[imp['local_name']] = target
+                # A later same-module function/class definition replaces an
+                # imported binding (normal module initialization semantics).
+                candidate = self._lookup(imp['module'] + '.' + imp['local_name'])
+                if (scope == '<module>' and candidate and
+                    max(s.get('line') or 0 for s in candidate) > (imp.get('line') or 0)):
+                    imports.pop(imp['local_name'], None)
+        return imports
+
+    def _lookup(self, canonical: str) -> list[dict]:
+        return self.by_canonical.get(canonical, [])
+
+    def _owner_class(self, call: dict) -> dict | None:
+        parts = (call.get('scope') or '').split('.')
+        for i in range(len(parts) - 1, 0, -1):
+            candidate = '.'.join([call['module'], *parts[:i]])
+            if candidate in self.classes:
+                return self.classes[candidate]
+        return None
+
+    # These two CPython stdlib base classes have a known, fixed hierarchy.
+    # Treat them as MRO-only nodes, never as source-backed callable targets.
+    _KNOWN_STDLIB_BASES = frozenset({'typing.Generic', 'abc.ABC'})
+
+    def _delegates_generic_getitem(self, symbol: dict) -> bool:
+        """Admit a custom __class_getitem__ only when every return is super().
+
+        For example, Click ParamType fills in omitted type parameters and then
+        delegates to typing.Generic.__class_getitem__. User-written methods
+        returning unrelated classes/aliases must stay opaque.
+        """
+        key = (symbol['file'], symbol.get('line'))
+        if key in self._generic_getitem_cache:
+            return self._generic_getitem_cache[key]
+        result = False
+        source = (self.data.get('analysis_sources') or {}).get(symbol['file'])
+        if source:
+            try:
+                tree = self.syntax_trees[symbol['file']]
+                matches = [n for n in ast.walk(tree)
+                           if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                           and n.name == '__class_getitem__' and n.lineno == symbol.get('line')]
+                if len(matches) == 1:
+                    fn = matches[0]
+                    # Do not certify a function if super is rebound locally.
+                    shadows_super = any(isinstance(n, (ast.Name, ast.arg)) and
+                                        (n.id if isinstance(n, ast.Name) else n.arg) == 'super' and
+                                        (isinstance(n, ast.arg) or isinstance(n.ctx, (ast.Store, ast.Del)))
+                                        for n in ast.walk(fn))
+                    returns = [n for n in ast.walk(fn) if isinstance(n, ast.Return)]
+                    if returns and not shadows_super:
+                        def delegated(node):
+                            value = node.value
+                            return (isinstance(value, ast.Call)
+                                    and isinstance(value.func, ast.Attribute)
+                                    and value.func.attr == '__class_getitem__'
+                                    and isinstance(value.func.value, ast.Call)
+                                    and isinstance(value.func.value.func, ast.Name)
+                                    and value.func.value.func.id == 'super'
+                                    and not value.func.value.args
+                                    and not value.func.value.keywords)
+                        result = all(delegated(node) for node in returns)
+            except (SyntaxError, ValueError):
+                pass
+        self._generic_getitem_cache[key] = result
+        return result
+
+    def _generic_alias_is_class(self, cls: dict) -> bool:
+        """Require source-backed Generic ancestry and no opaque subscription override."""
+        key = cls['canonical_name']
+        if key in self._generic_check_active:
+            return False
+        self._generic_check_active.add(key)
+        try:
+            order, status = self._mro(cls)
+            if status != 'complete' or 'typing.Generic' not in order:
+                return False
+            for canonical in order:
+                if canonical not in self.classes:
+                    continue
+                parent = self.classes[canonical]
+                if any('__class_getitem__' in ass.get('targets', [])
+                       for ass in self.assignments.get((parent['file'], parent['qualified_name']), [])):
+                    return False
+                for method in self._lookup(canonical + '.__class_getitem__'):
+                    if method['kind'] != 'METHOD' or not self._delegates_generic_getitem(method):
+                        return False
+            return True
+        finally:
+            self._generic_check_active.remove(key)
+
+    @staticmethod
+    def _safe_union_operand(expr: ast.AST, imports: dict[str, str], context: dict,
+                            binding_check) -> bool:
+        """Only trusted builtin/stdlib type operands can form an eager | union."""
+        if isinstance(expr, ast.Name):
+            return (expr.id in {'str', 'bytes', 'int', 'bool', 'float', 'object'}
+                    and expr.id not in imports and not binding_check(context, expr.id))
+        if isinstance(expr, ast.Subscript):
+            return (Resolver._safe_union_operand(expr.value, imports, context, binding_check) and
+                    Resolver._static_type_argument(expr.slice, imports, context, binding_check))
+        if isinstance(expr, ast.Attribute):
+            name = ast.unparse(expr)
+            root = name.split('.')[0]
+            canonical = imports.get(root, '') + name[len(root):]
+            return (canonical in {'os.PathLike'} and not binding_check(context, root)
+                    and not binding_check(context, name))
+        return False
+
+    @staticmethod
+    def _static_type_argument(expr: ast.AST, imports: dict[str, str], context: dict,
+                              binding_check) -> bool:
+        """Reject effectful type arguments; allow a narrow, provenance-checked union."""
+        if isinstance(expr, ast.BinOp) and isinstance(expr.op, ast.BitOr):
+            return (Resolver._safe_union_operand(expr.left, imports, context, binding_check) and
+                    Resolver._safe_union_operand(expr.right, imports, context, binding_check))
+        if isinstance(expr, (ast.Name, ast.Constant)):
+            return True
+        if isinstance(expr, ast.Attribute):
+            return Resolver._static_type_argument(expr.value, imports, context, binding_check)
+        if isinstance(expr, (ast.Tuple, ast.List)):
+            return all(Resolver._static_type_argument(x, imports, context, binding_check) for x in expr.elts)
+        if isinstance(expr, ast.Subscript):
+            return (Resolver._static_type_argument(expr.value, imports, context, binding_check) and
+                    Resolver._static_type_argument(expr.slice, imports, context, binding_check))
+        return False
+
+    def _bare_base_name(self, expr: ast.AST, imports: dict[str, str], context: dict) -> str | None:
+        """Only plain name/attribute bases and safe type subscripts are admitted."""
+        if isinstance(expr, ast.Subscript):
+            if not self._static_type_argument(expr.slice, imports, context, self._find_binding):
+                return None
+            expr = expr.value
+        if isinstance(expr, (ast.Name, ast.Attribute)):
+            return ast.unparse(expr)
+        return None
+
+    def _trusted_stdlib_import(self, cls: dict, root: str, origin: str) -> bool:
+        """No conditional/competing import may masquerade as a known stub."""
+        definitions = [s for s in self.symbols
+                       if s['file'] == cls['file'] and s['module'] == cls['module']
+                       and s.get('scope') == '<module>' and s['name'] == root
+                       and (s.get('line') or 0) < (cls.get('line') or 0)]
+        if definitions:
+            return False
+        options = [imp for imp in self.imports[cls['file']]
+                   if imp.get('local_name') == root
+                   and (imp.get('line') or 0) < (cls.get('line') or 0)
+                   and imp.get('scope') == '<module>']
+        return (len(options) == 1 and not options[0].get('control_depth')
+                and canonical_import(options[0]) == origin)
+
+    def _base_order(self, cls: dict) -> tuple[list[str], bool]:
+        """Keep declaration order and uncertainty; never drop an opaque base."""
+        imports = self.imports_at({"file": cls['file'], "module": cls['module'], "scope": cls['scope'] or '<module>', "line": cls.get('line') or 0})
+        # Base expressions execute at class definition time, unlike a method
+        # body which can observe imports performed later during initialization.
+        for imp in self.imports[cls['file']]:
+            if (imp.get('line') or 0) >= (cls.get('line') or 0):
+                imports.pop(imp.get('local_name'), None)
+        found, complete = [], True
+        for base in cls.get('bases', []):
+            try:
+                expr = ast.parse(base or '', mode='eval').body
+            except SyntaxError:
+                complete = False
+                continue
+            context = {**cls, 'scope': cls.get('scope') or '<module>'}
+            base_name = self._bare_base_name(expr, imports, context)
+            if not base_name:
+                complete = False
+                continue
+            is_subscript = isinstance(expr, ast.Subscript)
+            # A subscription such as Base[T] is not the same thing as a base
+            # class unless its result is known to preserve the class origin.
+            root = base_name.split('.')[0]
+            bindings = [self._find_binding(context, root)]
+            if base_name != root:
+                bindings.append(self._find_binding(context, base_name))
+            imported_name = imports.get(root)
+            rebound = [self._mutation_optional(b) for b in bindings if b]
+            # A conditional rebinding of an imported name (mp.Process = ... under
+            # an if) is judged with the external-base patches below, annotated.
+            external_import = bool(imported_name) and imported_name.split('.')[0] not in self.origins.modules
+            if any(r is False for r in rebound) or (any(rebound) and not external_import):
+                complete = False
+                continue
+            canonical_stdlib = ('.'.join([imported_name, *base_name.split('.')[1:]])
+                                if imported_name else None)
+            if canonical_stdlib in self._KNOWN_STDLIB_BASES:
+                if (canonical_stdlib.split('.')[0] in self.origins.modules or
+                        not self._trusted_stdlib_import(cls, root, imported_name)):
+                    complete = False
+                    continue
+                # Generic[T] resolves through typing.Generic.__class_getitem__;
+                # abc.ABC is not subscriptable.
+                if not is_subscript or canonical_stdlib == 'typing.Generic':
+                    found.append(canonical_stdlib)
+                else:
+                    complete = False
+                continue
+            if is_subscript and canonical_stdlib:
+                # Do not treat an arbitrary imported __class_getitem__ as an
+                # identity-preserving generic alias (PEP 560 __mro_entries__).
+                complete = False
+                continue
+            if (canonical_stdlib and not is_subscript
+                    and canonical_stdlib.split('.')[0] in sys.stdlib_module_names
+                    and canonical_stdlib.split('.')[0] not in self.origins.modules
+                    and self._trusted_stdlib_import(cls, root, imported_name)
+                    and self._external_base(canonical_stdlib)):
+                written = self._external_namespace_written(canonical_stdlib)
+                if written == 'definite':
+                    complete = False  # An explicit patch: the dir()/AST model no longer holds.
+                else:
+                    found.append(canonical_stdlib)
+                    if written:
+                        self.conditional_external_bases.add(canonical_stdlib)
+                continue
+            base_candidates = self._resolve_reference(base_name, cls['module'], imports)
+            if not base_candidates and cls.get('scope') != '<module>':
+                scope = (cls.get('scope') or '').split('.')
+                while scope and not base_candidates:
+                    base_candidates = self._lookup('.'.join([cls['module'], *scope, base_name]))
+                    scope.pop()
+            if len(base_candidates) == 1 and base_candidates[0]['kind'] == 'CLASS':
+                candidate = base_candidates[0]
+                if candidate['file'] == cls['file'] and candidate['line'] >= cls['line']:
+                    complete = False
+                elif is_subscript and not self._generic_alias_is_class(candidate):
+                    complete = False
+                else:
+                    found.append(candidate['canonical_name'])
+            elif not is_subscript and base_name == 'object' and root not in imports and not base_candidates:
+                found.append('builtins.object')
+            elif (not is_subscript and '.' not in base_name and root not in imports and not base_candidates
+                    and builtin_class(base_name) is not None and self._external_base('builtins.' + base_name)):
+                found.append('builtins.' + base_name)
+            else:
+                complete = False
+        return found, complete
+
+    # Class decorators/metaclasses that return the decorated class itself and
+    # never replace methods it defines; anything else stays opaque.
+    _TRANSPARENT_CLASS_DECORATORS = frozenset({
+        'dataclasses.dataclass', 'functools.total_ordering', 'enum.unique',
+        'typing.final', 'typing.runtime_checkable',
+        'typing_extensions.final', 'typing_extensions.runtime_checkable'})
+    _SAFE_METACLASSES = frozenset({'abc.ABCMeta'})
+
+    def _transparent_customization(self, cls: dict) -> bool:
+        imports = self.imports_at({"file": cls['file'], "module": cls['module'],
+                                   "scope": cls['scope'] or '<module>', "line": cls.get('line') or 0})
+        context = {**cls, 'scope': cls.get('scope') or '<module>'}
+
+        def stdlib_name(text, allow_call):
+            try:
+                expr = ast.parse(text or '', mode='eval').body
+            except SyntaxError:
+                return None
+            if allow_call and isinstance(expr, ast.Call):
+                expr = expr.func
+            if not isinstance(expr, (ast.Name, ast.Attribute)):
+                return None
+            name = ast.unparse(expr)
+            root = name.split('.')[0]
+            if root not in imports or self._find_binding(context, root):
+                return None
+            if not self._trusted_stdlib_import(cls, root, imports[root]):
+                return None
+            return '.'.join([imports[root], *name.split('.')[1:]])
+
+        if any(stdlib_name(d, allow_call=True) not in self._TRANSPARENT_CLASS_DECORATORS
+               for d in cls.get('decorators') or []):
+            return False
+        values = cls.get('class_keyword_values') or {}
+        return all(kw == 'metaclass' and stdlib_name(values.get(kw), allow_call=False) in self._SAFE_METACLASSES
+                   for kw in cls.get('class_keywords') or [])
+
+    def _attribute_names(self) -> set[str]:
+        """Names ever stored as an attribute (`x.name = ...`) in the project.
+        An instance attribute shadows a method found on the class."""
+        if not hasattr(self, '_assigned_attributes'):
+            self._assigned_attributes = {t.rsplit('.', 1)[1] for a in self.data.get('assignments', [])
+                                         for t in a.get('targets', []) if '.' in t}
+        return self._assigned_attributes
+
+    def _descendants(self, cls: dict) -> list[dict]:
+        if not hasattr(self, '_children'):
+            self._children = defaultdict(list)
+            for c in self.classes.values():
+                for base in self._get_bases(c):
+                    self._children[base['canonical_name']].append(c)
+        found, pending, seen = [], [cls], {cls['canonical_name']}
+        while pending:
+            for child in self._children.get(pending.pop()['canonical_name'], []):
+                if child['canonical_name'] not in seen:
+                    seen.add(child['canonical_name'])
+                    found.append(child)
+                    pending.append(child)
+        return found
+
+    def _receiver_classes(self, call: dict, head: str) -> tuple[list[dict], bool]:
+        """Project classes a receiver may be an instance of, and whether
+        subclasses are possible (self/cls) or the type is exact (constructor)."""
+        caller = self.by_id.get(call.get('caller_id') or '')
+        if head in ('self', 'cls') and caller and caller['kind'] == 'METHOD' \
+                and (caller.get('parameters') or [None])[0] == head \
+                and 'staticmethod' not in (caller.get('decorators') or []):
+            cls = self.classes.get(caller['module'] + '.' + caller['scope'])
+            rebound = any(head in a.get('targets', [])
+                          for a in self.assignments.get((caller['file'], caller['qualified_name']), []))
+            return ([cls], True) if cls and not rebound else ([], False)
+        flow = call.get('flow') or {}
+        binding = flow.get('binding') or {}
+        options = binding.get('options') or []
+        if flow.get('variable') != head or not options or binding.get('may_be_unbound'):
+            return [], False
+        imports = self.imports_at(call)
+        classes = []
+        for option in options:
+            if option.get('kind') != 'constructed' or not option.get('name'):
+                return [], False
+            refs = self._resolve_reference(option['name'], call['module'], imports)
+            if len(refs) != 1 or refs[0]['kind'] != 'CLASS':
+                return [], False
+            classes.append(refs[0])
+        return classes, False
+
+    def external_member(self, call: dict) -> tuple[dict | None, dict | None]:
+        """For an unresolved `obj.m()` on a project class instance:
+        (proof, hint). proof: method lookup reaches a builtin/stdlib base that
+        defines m before any project definition. hint: m is defined by no
+        project class in an MRO left open by a third-party base."""
+        text = call.get('callee_text') or ''
+        if call.get('syntax_type') != 'ATTRIBUTE' or text.count('.') != 1:
+            return None, None
+        head, name = text.split('.')
+        receivers, open_subclasses = self._receiver_classes(call, head)
+        if not receivers or name in self._attribute_names():
+            return None, None
+        if open_subclasses and any(self._lookup(d['canonical_name'] + '.' + name)
+                                   for r in receivers for d in self._descendants(r)):
+            return None, None                         # a subclass override may run
+        hits, open_bases = set(), set()
+        for cls in receivers:
+            order, status = self._mro(cls)
+            if status != 'complete':
+                # Search project ancestors only; never claim an origin.
+                pending, seen = [cls], set()
+                while pending:
+                    current = pending.pop()
+                    if current['canonical_name'] in seen:
+                        continue
+                    seen.add(current['canonical_name'])
+                    if self._lookup(current['canonical_name'] + '.' + name):
+                        return None, None
+                    names, complete = self._base_order(current)
+                    if not complete:
+                        known = {n.rsplit('.', 1)[-1] for n in names}
+                        open_bases.update(b for b in current.get('bases', [])
+                                          if b.rsplit('.', 1)[-1] not in known)
+                    pending.extend(self.classes[n] for n in names if n in self.classes)
+                continue
+            hit = None
+            for key in order:
+                if key in self.external_bases:
+                    if name in self.external_bases[key]:
+                        hit = key
+                        break
+                elif key == 'builtins.object':
+                    hit = key if name in dir(object) else None
+                    break
+                elif key in self.classes and (self._lookup(key + '.' + name) or any(
+                        name in a.get('targets', []) for a in
+                        self.assignments.get((self.classes[key]['file'], self.classes[key]['qualified_name']), []))):
+                    return None, None                 # a project definition comes first
+            if hit is None:
+                return None, None
+            hits.add(hit)
+        if open_bases:
+            return None, {'rule': 'POSSIBLY_INHERITED_FROM_EXTERNAL_BASE', 'kind': 'EXTERNAL_IMPORT',
+                          'confidence': 'inferred', 'unresolved_bases': sorted(open_bases)}
+        kind = 'BUILTIN' if all(h.startswith('builtins.') for h in hits) else 'STDLIB'
+        return {'bases': sorted(hits), 'kind': kind, 'python': PYTHON_VERSION}, None
+
+    def _external_base(self, canonical: str) -> bool:
+        if canonical not in self.external_bases:
+            attrs = self.external_index.attributes(canonical)
+            if attrs is None:
+                return False
+            self.external_bases[canonical] = attrs
+        return True
+
+    def _get_bases(self, cls: dict, seen: set[str] | None = None) -> list[dict]:
+        names, _ = self._base_order(cls)
+        return [self.classes[n] for n in names if n in self.classes]
+
+    def _mro(self, cls: dict, active: frozenset[str] = frozenset()) -> tuple[list[str], str]:
+        """C3: L(C) = C + merge(L(B1), ..., L(Bn), [B1,...,Bn]).
+
+        Unknown hierarchy and invalid hierarchy are distinct. Neither permits
+        a DFS fallback. object participates in merging but is never a node.
+        """
+        key = cls['canonical_name']
+        if key in active:
+            return [], 'invalid_cycle'
+        if key in self._mro_cache:
+            return self._mro_cache[key]
+        if (cls.get('class_keywords') or cls.get('decorators')) and not self._transparent_customization(cls):
+            result = ([], 'unknown_class_customization')
+        else:
+            bases, complete = self._base_order(cls)
+            if not complete:
+                result = ([], 'unknown_base')
+            elif len(set(bases)) != len(bases):
+                result = ([], 'invalid_duplicate_base')
+            else:
+                bases = bases or ['builtins.object']
+                sequences, reason = [], 'complete'
+                for base in bases:
+                    order, status = ((['builtins.object'], 'complete') if base == 'builtins.object'
+                                     else ([base, 'builtins.object'], 'complete')
+                                     if base in self._KNOWN_STDLIB_BASES or base in self.external_bases
+                                     else self._mro(self.classes[base], active | {key}))
+                    if status != 'complete':
+                        reason = status
+                        break
+                    sequences.append(list(order))
+                if reason != 'complete':
+                    result = ([], reason)
+                else:
+                    sequences.append(list(bases))
+                    order = [key]
+                    while any(sequences):
+                        sequences = [s for s in sequences if s]
+                        head = next((s[0] for s in sequences
+                                     if not any(s[0] in t[1:] for t in sequences)), None)
+                        if head is None:
+                            reason = 'invalid_c3_conflict'
+                            break
+                        order.append(head)
+                        for seq in sequences:
+                            if seq[0] == head:
+                                seq.pop(0)
+                    result = (order if reason == 'complete' else [], reason)
+        self._mro_cache[key] = result
+        return result
+
+    def _local_method(self, cls: dict, name: str) -> tuple[list[dict], bool]:
+        local = self._lookup(cls['canonical_name'] + '.' + name)
+        assignments = [a for a in self.assignments.get((cls['file'], cls['qualified_name']), [])
+                       if name in a.get('targets', [])]
+        # Non-method class attributes and descriptors stop inheritance lookup.
+        if assignments and (not local or max(a['line'] for a in assignments) >= max(s['line'] for s in local)):
+            return [], True
+        if local:
+            methods = [s for s in local if s['kind'] == 'METHOD'
+                       and not s.get('control_depth')
+                       and all(d in ('staticmethod', 'classmethod') for d in s.get('decorators', []))]
+            return methods, True
+        return [], False
+
+    def _lookup_mro(self, order: list[str], name: str) -> tuple[list[dict], list[str]]:
+        path = []
+        for key in order:
+            path.append(key)
+            if key == 'builtins.object':
+                break
+            if key in self._KNOWN_STDLIB_BASES:
+                # Only their known MRO position is modeled; no internal calls
+                # are emitted for methods defined by the stdlib classes.
+                continue
+            if key in self.external_bases:
+                # Python finds the external definition first: not internal.
+                if name in self.external_bases[key]:
+                    return [], path
+                continue
+            found, shadows = self._local_method(self.classes[key], name)
+            if shadows:
+                return found, path
+        return [], path
+
+    def _external_namespace_written(self, name: str) -> str | None:
+        """Explicit patches invalidate source-only stdlib namespace assumptions.
+
+        A reachable write (assignment, del, setattr/delattr) into the external
+        base's top-level package, e.g. `multiprocessing.Process = Fake` or
+        `threading.Thread.run = f`: 'definite' disables the model; 'conditional'
+        (inside an if/loop/try or a platform guard) keeps it, annotated.
+        """
+        return self._external_writes().get(name.split('.')[0])
+
+    def _external_writes(self) -> dict[str, str]:
+        """Top-level packages written by project code -> 'definite' or 'conditional'."""
+        if self._external_write_cache is not None:
+            return self._external_write_cache
+        writes = list(self.data.get('assignments', []))
+        writes += [{**h, 'targets': [h['name']]} for h in self.data.get('binding_hazards', []) if h['type']=='DELETE']
+        for call in self.calls:
+            if call.get('callee_text') in ('setattr', 'delattr'):
+                try:
+                    expr = ast.parse(call['source'], mode='eval').body
+                    if isinstance(expr, ast.Call) and expr.args:
+                        writes.append({**call, 'targets': [ast.unparse(expr.args[0]) + '.*']})
+                except (SyntaxError, KeyError):
+                    pass
+        packages = {}
+        for write in writes:
+            optional = self._mutation_optional(write)
+            if optional is None:
+                continue
+            imports = self.imports_at({**write, 'scope': write.get('scope') or '<module>'})
+            for name in write.get('targets', []):
+                root, _, tail = name.partition('.')
+                if not tail:
+                    continue  # Rebinding a local name does not patch the module.
+                origin = imports.get(root)
+                if not origin:
+                    binding = self._find_binding({**write, 'scope': write.get('scope') or '<module>'}, root)
+                    value = (binding or {}).get('binding', {})
+                    alias = value.get('name', '') if value.get('kind') in ('name', 'attribute') else ''
+                    origin = imports.get(alias.partition('.')[0])
+                if origin:
+                    package = origin.split('.')[0]
+                    if not optional or package not in packages:
+                        packages[package] = 'conditional' if optional else 'definite'
+        self._external_write_cache = packages
+        return packages
+
+    def _find_method(self, cls: dict, name: str, seen: set[str] | None = None, include_self: bool = True) -> tuple[list[dict], list[str]]:
+        order, reason = self._mro(cls)
+        if reason != 'complete':
+            if reason == 'unknown_class_customization':
+                from class_decorators import preserves_local_method
+                key = (cls['canonical_name'], name.startswith('__'))
+                if key not in self._decorator_method_cache:
+                    self._decorator_method_cache[key] = preserves_local_method(self, cls, name)
+                if self._decorator_method_cache[key] and include_self:
+                    local, _ = self._local_method(cls, name)
+                    return local, [cls['canonical_name'], 'source_proven_decorator_local_method']
+            # A direct ordinary method can still be a grounded may-call on an
+            # unknown base, but invalid/customized classes are not assumed valid.
+            if reason == 'unknown_base' and include_self:
+                local, _ = self._local_method(cls, name)
+                return local, [cls['canonical_name'], reason]
+            return [], [cls['canonical_name'], reason]
+        return self._lookup_mro(order if include_self else order[1:], name)
+
+    def _resolve_super(self, call: dict, owner: dict | None, imports: dict) -> tuple[list[dict], str, list[str]]:
+        """Resolve super after its anchor in each source-backed receiver MRO.
+
+        Method bodies are context-insensitive: self may be an instance of a
+        known subclass, so cooperative sibling dispatch is a may-call union.
+        Read original source because legacy callee_text erases call arguments.
+        """
+        fn = self.by_id.get(call.get('caller_id'), {})
+        if not owner or fn.get('scope') != owner['qualified_name']:
+            return [], 'super_context_unknown', []
+        if ('super' in imports or 'super' in fn.get('parameters', []) or
+                self._lookup(call['module'] + '.super') or self._find_binding(call, 'super')):
+            return [], 'super_shadowed', []
+        if (self._lookup(call['module'] + '.' + call['scope'] + '.super') or
+                any('super' in a.get('targets', [])
+                    for a in self.assignments.get((call['file'], call['scope']), []))):
+            return [], 'super_shadowed', []
+        try:
+            expr = ast.parse(call.get('source') or '', mode='eval').body
+        except SyntaxError:
+            return [], 'super_syntax_unknown', []
+        if not (isinstance(expr, ast.Call) and isinstance(expr.func, ast.Attribute)
+                and isinstance(expr.func.value, ast.Call)):
+            return [], 'super_syntax_unknown', []
+        proxy = expr.func.value
+        if not isinstance(proxy.func, ast.Name) or proxy.func.id != 'super' or proxy.keywords:
+            return [], 'super_syntax_unknown', []
+        params = fn.get('parameters', [])
+        anchor = owner
+        if not params or 'staticmethod' in fn.get('decorators', []):
+            return [], 'super_receiver_unknown', []
+        receiver = params[0]
+        if self._find_binding(call, receiver):
+            return [], 'super_receiver_rebound', []
+        if proxy.args:
+            if len(proxy.args) != 2 or not isinstance(proxy.args[1], ast.Name) or proxy.args[1].id != receiver:
+                return [], 'super_receiver_unknown', []
+            refs = self._resolve_reference(ast.unparse(proxy.args[0]), call['module'], imports)
+            if len(refs) != 1 or refs[0]['kind'] != 'CLASS':
+                return [], 'super_anchor_unknown', []
+            anchor = refs[0]
+        targets, trace = [], []
+        for cls in self.classes.values():
+            order, status = self._mro(cls)
+            if status != 'complete' or owner['canonical_name'] not in order or anchor['canonical_name'] not in order:
+                continue
+            tail = order[order.index(anchor['canonical_name']) + 1:]
+            found, path = self._lookup_mro(tail, expr.func.attr)
+            targets.extend(found)
+            if found:
+                trace.extend(['receiver:' + cls['canonical_name'], 'anchor:' + anchor['canonical_name'], *path])
+        return targets, 'super_c3_may_call' if targets else 'super_method_not_found', trace
+
+    def _resolve_reference(self, name: str, module: str, imports: dict[str, str]) -> list[dict]:
+        # Imported names must not fall back to accidental same-name definitions.
+        parts = name.split('.')
+        if parts[0] in imports:
+            candidate = '.'.join([imports[parts[0]], *parts[1:]])
+            return self.origins.project_symbols(candidate)
+        return self._lookup(module + '.' + name)
+
+    def _find_binding(self, call: dict, var: str) -> dict | None:
+        # Nearest lexical scope, most recent preceding binding.
+        scope = call['scope']
+        scopes = [*self.lexical_scopes(scope, call['module']), '<module>']
+        for scope_candidate in scopes:
+            prior = [a for a in self.assignments.get((call['file'], scope_candidate), [])
+                     if var in a.get('targets', [])
+                     and (a.get('line') or 0, a.get('column') or 0) <
+                     (call.get('line') or 0, call.get('column') or 0)]
+            if prior:
+                return prior[-1]
+        return None
+
+    def _resolve_binding(self, call: dict, var: str, imports: dict[str, str], visited: set[str] | None = None) -> tuple[list[dict], str]:
+        visited = set() if visited is None else visited
+        if var in visited:
+            return [], 'circular_alias'
+        visited.add(var)
+        bind = self._find_binding(call, var)
+        if bind is None:
+            return [], 'no_local_binding'
+        # A binding in a branch is not necessarily the value reaching a call.
+        if bind.get('control_depth', 0) and bind.get('type') != 'FOR_TARGET':
+            return [], 'branch_assignment_requires_control_flow_analysis'
+        b = bind.get('binding') or {}
+        if b.get('kind') == 'call':
+            refs = self._resolve_reference(b.get('callee') or '', call['module'], imports)
+            return [s for s in refs if s['kind'] == 'CLASS'], 'assignment_constructor'
+        if b.get('kind') == 'name':
+            name = b.get('name')
+            refs = self._resolve_reference(name or '', call['module'], imports)
+            if refs:
+                return refs, 'assignment_alias'
+            return self._resolve_binding(call, name or '', imports, visited)
+        if b.get('kind') == 'sequence':
+            vals = []
+            for name in b.get('items', []):
+                vals.extend(self._resolve_reference(name, call['module'], imports))
+            return vals, 'sequence_elements'
+        if b.get('kind') == 'iterate':
+            source = b.get('source')
+            if source:
+                vals, detail = self._resolve_binding(call, source, imports, visited)
+                return vals, 'loop_over_' + detail
+        return [], 'unknown_binding_kind'
+
+    def _flow_targets(self, call: dict, var: str, imports: dict[str, str],
+                      *, method_receiver: bool) -> tuple[list[dict], str, list[str]] | None:
+        """Resolve at the call's program point (not last AST assignment).
+
+        None means no structured-flow snapshot was recorded and the legacy
+        fallback is needed. An empty target list means a real snapshot was
+        recorded but the binding is unresolvable or not defined.
+        """
+        flow = call.get('flow')
+        if flow is None or flow.get('variable') != var:
+            return None
+        binding = flow.get('binding')
+        if binding is None:
+            return [], 'flow_variable_unbound', []
+        targets, trace, contains_unknown = [], [], False
+        annotated = False
+        for option in binding.get('options', []):
+            kind, name = option.get('kind'), option.get('name') or ''
+            if kind == 'unknown':
+                contains_unknown = True
+                continue
+            if kind in ('sequence_reference', 'sequence_constructed', 'sequence_unknown',
+                        'dictionary_reference', 'dictionary_unknown'):
+                # A list/set is not an instance of an element class.
+                contains_unknown = True
+                continue
+            if kind == 'constructed' and not method_receiver:
+                # Calling an object is not equivalent to calling its class.
+                contains_unknown = True
+                continue
+            if kind == 'annotated_parameter':
+                # Parameter annotations describe *instances*, not class
+                # constructors, and Python does not enforce them at runtime.
+                if not method_receiver:
+                    contains_unknown = True
+                    continue
+                annotated = True
+            refs = self._resolve_reference(name, call['module'], imports)
+            if kind == 'annotated_parameter':
+                refs = [r for r in refs if r['kind'] == 'CLASS']
+                # Ambiguous or ungrounded hints cannot prove a project class.
+                if len(refs) != 1:
+                    contains_unknown = True
+                    continue
+            if not refs and kind == 'reference' and '.' not in name:
+                # Nested functions live in lexical scopes, not module scope.
+                for scope in self.lexical_scopes(call.get('scope'), call['module']):
+                    refs = self._lookup(call['module'] + '.' + scope + '.' + name)
+                    if refs:
+                        break
+            if method_receiver:
+                refs = [r for r in refs if r['kind'] == 'CLASS']
+            if not refs:
+                contains_unknown = True
+            targets.extend(refs)
+            trace.append(f"{kind}:{name}@{option.get('line')}")
+        targets = list({t['id']: t for t in targets}.values())
+        if not targets:
+            return [], 'flow_unknown_or_external', trace
+        if contains_unknown:
+            rule = 'flow_partial_type_candidates'
+        elif binding.get('may_be_unbound'):
+            rule = 'flow_maybe_unbound'
+        elif len(targets) > 1:
+            rule = ('flow_collection_candidates' if any(o.get('from_collection') for o in binding['options'])
+                    else 'flow_merged_candidates')
+        elif annotated:
+            rule = 'parameter_type_hint'
+        else:
+            rule = ('flow_collection_single_candidate' if any(o.get('from_collection') for o in binding['options'])
+                    else 'flow_reaching_assignment')
+        return targets, rule, trace
+
+    def resolve(self, call: dict) -> tuple[list[dict], str, list[str]]:
+        callee = call.get('callee_text') or ''
+        imports = self.imports_at(call)
+        owner = self._owner_class(call)
+        if callee.startswith('super().'):
+            return self._resolve_super(call, owner, imports)
+        current_fn = self.by_id.get(call.get('caller_id'), {})
+        receiver_params = current_fn.get('parameters', [])
+        is_receiver = (current_fn.get('kind') == 'METHOD' and receiver_params
+                       and callee.startswith(receiver_params[0] + '.'))
+        if callee.startswith(('self.', 'cls.')) or is_receiver:
+            if owner and callee.count('.') == 1:
+                receiver = callee.split('.')[0]
+                fn = self.by_id.get(call.get('caller_id'), {})
+                # Nested functions/lambdas can capture the enclosing method's
+                # receiver. Their own parameter/local bindings still shadow it.
+                if fn.get('kind') != 'METHOD':
+                    enclosing = [s for s in self.symbols if s['file'] == call['file']
+                                 and s['kind'] == 'METHOD'
+                                 and call['scope'].startswith(s['qualified_name'] + '.')]
+                    outer = max(enclosing, key=lambda s: len(s['qualified_name']), default=None)
+                    shadowed = receiver in fn.get('parameters', [])
+                    if outer:
+                        between = [s for s in self.symbols if s['file'] == call['file']
+                                   and s['qualified_name'].startswith(outer['qualified_name'] + '.')
+                                   and (call['scope'] == s['qualified_name']
+                                        or call['scope'].startswith(s['qualified_name'] + '.'))]
+                        shadowed |= any(receiver in s.get('parameters', []) for s in between)
+                        shadowed |= any(receiver in a.get('targets', []) for s in between
+                                        for a in self.assignments.get((call['file'], s['qualified_name']), []))
+                    if outer and not shadowed:
+                        fn = outer
+                params = fn.get('parameters', [])
+                hazards = [h for h in self.data.get('binding_hazards', [])
+                           if h['file'] == call['file'] and h.get('scope') == call['scope']
+                           and h.get('name') == receiver and h.get('line', 0) <= call.get('line', 0)]
+                if (fn.get('kind') != 'METHOD' or not params or params[0] != receiver
+                        or 'staticmethod' in fn.get('decorators', [])
+                        or self._find_binding(call, receiver) or hazards):
+                    return [], 'rebound_or_non_receiver_parameter', []
+                meth = callee.split('.', 1)[1]
+                found, trace = self._find_method(owner, meth)
+                return found, ('self_inheritance' if len(trace) > 1 else 'self_method') if found else 'unknown_self_method', trace
+            return [], 'chained_attribute_not_supported', []
+        if call.get('syntax_type') == 'NAME':
+            flow_result = self._flow_targets(call, callee, imports, method_receiver=False)
+            if flow_result is not None and (call.get('flow') or {}).get('binding') is not None:
+                return flow_result
+            if flow_result is not None and self._find_binding(call, callee):
+                return flow_result  # no reaching definition; avoid future/branch guesses
+            if flow_result is None:
+                binding = self._find_binding(call, callee)
+                if binding:
+                    found, why = self._resolve_binding(call, callee, imports)
+                    return found, why if found else 'local_' + why, [f"local:{callee}"]
+            # Do not mistake a parameter for a same-named project function.
+            current_fn = self.by_id.get(call['caller_id'], {})
+            if callee in current_fn.get('parameters', []):
+                return [], 'parameter_callable_unknown', []
+            # Local definitions and enclosing function definitions.
+            scope = call['scope']
+            if scope and scope != '<module>':
+                for visible in self.lexical_scopes(scope, call['module']):
+                    nested = self._lookup(call['module'] + '.' + visible + '.' + callee)
+                    if nested:
+                        return nested, 'lexical_nested_function', [visible]
+            refs = self._resolve_reference(callee, call['module'], imports)
+            if refs:
+                return refs, 'import_or_same_module', [callee]
+            return [], 'unresolved_name_builtin_external_or_dynamic', []
+        if '.' in callee:
+            left, rest = callee.split('.', 1)
+            refs = self._resolve_reference(left, call['module'], imports)
+            class_refs = [r for r in refs if r['kind'] == 'CLASS']
+            if class_refs:
+                matches = []
+                traces = []
+                for cls in class_refs:
+                    ms, trace = self._find_method(cls, rest)
+                    matches.extend(ms)
+                    traces += trace
+                return matches, 'explicit_class_method' if matches else 'class_method_missing', traces
+            flow_result = self._flow_targets(call, left, imports, method_receiver=True)
+            if flow_result is not None:
+                instances, why, origins = flow_result
+                matches, traces = [], []
+                for cls in instances:
+                    ms, path = self._find_method(cls, rest)
+                    matches.extend(ms)
+                    traces.extend(path)
+                if matches:
+                    return matches, 'instance_' + why, origins + traces
+                # A real assignment exists, but points only to unknown or
+                # external candidates. Do not guess based on variable name.
+                if (call.get('flow') or {}).get('binding') is not None:
+                    return [], 'instance_method_unresolved', origins
+            else:
+                bind = self._find_binding(call, left)
+                if bind:
+                    instances, why = self._resolve_binding(call, left, imports)
+                    matches, traces = [], []
+                    for cls in instances:
+                        if cls['kind'] == 'CLASS':
+                            ms, trace = self._find_method(cls, rest)
+                            matches.extend(ms)
+                            traces += trace
+                    return matches, 'instance_' + why if matches else 'instance_method_unresolved', traces
+            # Imported module aliases: module.function / module.Class.method.
+            if left in imports:
+                full_name = imports[left] + '.' + rest
+                found = self.origins.project_symbols(full_name)
+                if found:
+                    return found, 'imported_module', [imports[left]]
+                # Imported class? attempted above; imported module path with a class method.
+                if '.' in rest:
+                    cls_part, meth = rest.rsplit('.', 1)
+                    cls = self.classes.get(imports[left] + '.' + cls_part)
+                    if cls:
+                        found, trace = self._find_method(cls, meth)
+                        return found, 'imported_class_method', trace
+            # locally import without explicit alias, e.g. package.module.func
+            local = self._lookup(call['module'] + '.' + callee)
+            if local:
+                return local, 'same_module_qualified', [callee]
+            return [], 'external_or_dynamic_attribute', []
+        return [], 'unsupported_dynamic_syntax', []
+
+    def _module_binding_at_call(self, call: dict, targets: list[dict]) -> list[dict]:
+        """Select the live, straight-line local definition at module evaluation.
+
+        Only same-file, unconditional duplicate functions are disambiguated.
+        Deferred function bodies cannot be resolved by comparing source lines.
+        """
+        result = []
+        for target in targets:
+            group = self._lookup(target['canonical_name'])
+            versions = [s for s in group if s['kind'] == target['kind']
+                        and s['file'] == call['file'] and s['module'] == call['module']]
+            if len(versions) <= 1 or not all(s.get('control_depth', 0) == 0 for s in versions):
+                result.append(target)
+                continue
+            # A function is bound *after* its defaults/decorators run. Calls
+            # on its own declaration line must see the previous definition.
+            prior = [s for s in versions if (s.get('line') or 0) < (call.get('line') or 0)]
+            if call.get('execution_phase') not in ('definition_default', 'definition_decorator',
+                                                     'definition_annotation'):
+                prior.extend(s for s in versions
+                             if (s.get('line') or 0) == (call.get('line') or 0)
+                             and (s.get('column') or 0) < (call.get('column') or 0))
+            if prior:
+                result.append(max(prior, key=lambda s: (s.get('line') or 0, s.get('column') or 0)))
+            # Otherwise the call predates all definitions and is unresolved.
+        return list({s['id']: s for s in result}.values())
+
+    def _implicit_edges(self, results: list[dict], module_nodes: dict) -> list[dict]:
+        from ast_parser import SourceText
+        texts, edges = {}, []
+        for item in results:
+            file = item['file']
+            if file not in texts:
+                texts[file] = SourceText((self.data.get('analysis_sources') or {}).get(file, ''))
+            node = ast.AST()
+            node.lineno, node.col_offset = item['line'], item['column']
+            node.end_lineno, node.end_col_offset = item['end_line'], item['end_column']
+            try:
+                source = texts[file].segment(node)
+            except (IndexError, UnicodeDecodeError):
+                source = None
+            caller = item['owner'] or module_nodes.get(item['module'])
+            for target in item['targets']:
+                evidence = {
+                    'file': file, 'line': item['line'], 'column': item['column'], 'source': source,
+                    'implicit_kind': item['kind'], 'member': item['member'],
+                    'receiver_classes': item['receivers'], 'rule': 'object_flow_implicit_call',
+                    'certainty': 'implicit_may_call', 'module_level': not item['owner'],
+                    'note': ('Runs without a call expression; receiver type from object flow. '
+                             'Not counted in resolved/unresolved call sites.')}
+                evidence.update(item.get('evidence', {}))
+                edges.append({'source': caller, 'target': target, 'type': 'CALLS_IMPLICIT', 'evidence': evidence})
+        return edges
+
+    def _callback_results(self, object_flow) -> list[dict]:
+        """sorted(key=f): the builtin may call f; cited by the triggering call."""
+        results = []
+        for call in self.calls:
+            targets = object_flow.callback_events.get(call['id'])
+            if not targets:
+                continue
+            results.append({'file': call['file'], 'line': call['line'], 'column': call.get('column'),
+                            'end_line': call.get('end_line'), 'end_column': call.get('end_column'),
+                            'kind': 'callback', 'member': 'key', 'owner': call.get('caller_id'),
+                            'module': call['module'], 'targets': sorted(targets), 'receivers': [],
+                            'evidence': {'trigger_call_id': call['id'], 'rule': 'builtin_sorted_key_callback',
+                                         'certainty': 'callback_may_execute',
+                                         'note': ('Key may execute for non-empty valid input; callback '
+                                                  'body/return values are not interpreted. The sorted '
+                                                  'call itself stays KNOWN_NON_INTERNAL.')}})
+        return results
+
+    def build(self) -> dict:
+        from object_flow import ObjectFlow
+        object_flow = ObjectFlow(self, fields=True, dispatch=True)
+        self.object_flow = object_flow
+        object_results = object_flow.run()
+        implicit_results = object_flow.implicit_results
+        self.return_summaries = object_flow.summaries
+        external_flow_calls = []
+        for call in self.calls:
+            modes = ['specific'] if call.get('caller_id') in object_flow.specific else ['root', 'generic']
+            for name, kind in sorted(set().union(*(object_flow.external_events.get((call['id'], mode), set()) for mode in modes))):
+                external_flow_calls.append(dict(call_id=call['id'], canonical_name=name, value_kind=kind))
+        self.object_flow_stats = {'expression_steps': object_flow.steps,
+                                  'root_step_limit': object_flow.root_step_limit,
+                                  'recursion_or_budget_cutoffs': object_flow.cutoffs,
+                                  'generic_context_fallbacks': object_flow.generic_context_fallbacks,
+                                  'summarized_functions': len(object_flow.summaries),
+                                  'managed_calls': len(object_results)}
+        nodes = [{"id": s['id'], "kind": s['kind'], "name": s['name'],
+                  "canonical_name": s['canonical_name'], "file": s['file'],
+                  "line": s.get('line')} for s in self.symbols]
+        # A module-level call has a real caller: module initialization. Keep
+        # module nodes separate from function nodes, without guessing external
+        # package implementations or fabricating a user function caller.
+        module_files = {s['module']: s['file'] for s in self.symbols}
+        module_files.update({c['module']: c['file'] for c in self.calls})
+        if getattr(self, 'enhanced', False):
+            from symbol_builder import module_name_from_file
+            for file in self.data.get('analysis_sources', {}):
+                module_files[module_name_from_file(file, self.data.get('repository'),
+                                                  self.data.get('source_roots', []))] = file
+        module_nodes = {m: 'MODULE:' + m for m in module_files}
+        for module in sorted(module_files):
+            nodes.append({'id': module_nodes[module], 'kind': 'MODULE',
+                          'name': module.split('.')[-1], 'canonical_name': module,
+                          'file': module_files[module], 'line': 1})
+        # Prevent dangling/ambiguous graph identities even if input facts
+        # contain repeated definitions from conditional declarations.
+        nodes = list({node['id']: node for node in nodes}.values())
+        edges, unresolved, ambiguous, conditional = [], [], [], []
+        for s in self.symbols:
+            if s['kind'] != 'METHOD':
+                continue
+            cls = self.classes.get(s['module'] + '.' + s['scope'])
+            if cls:
+                edges.append({"source": cls['id'], "target": s['id'], "type": "CONTAINS",
+                              "evidence": {"file": s['file'], "line": s['line'], "rule": "method_scope"}})
+        for cls in self.classes.values():
+            for base in self._get_bases(cls):
+                edges.append({"source": cls['id'], "target": base['id'], "type": "INHERITS",
+                              "evidence": {"file": cls['file'], "line": cls['line'], "rule": "declared_base"}})
+        resolved_sites = set()
+        for call in self.calls:
+            top_level = not call.get('caller_id')
+            caller_id = call.get('caller_id') or module_nodes[call['module']]
+            targets, reason, trace = object_results.get(call['id'], (None, None, None))
+            if targets is None:
+                targets, reason, trace = self.resolve(call)
+            elif targets:
+                legacy_targets, legacy_reason, legacy_trace = self.resolve(call)
+                if {t['id'] for t in targets} == {t['id'] for t in legacy_targets}:
+                    # Preserve established flow provenance for unchanged edges.
+                    targets, reason, trace = legacy_targets, legacy_reason, legacy_trace
+            # A proven-invalid C3 hierarchy cannot be instantiated. Unknown
+            # external bases still permit a source-backed class candidate.
+            targets = [t for t in targets if not (
+                t['kind'] == 'CLASS' and self._mro(t)[1].startswith('invalid'))]
+            safe = [t for t in targets if self.safe_callable(t)]
+            if len(safe) != len(targets):
+                targets, reason = safe, 'decorated_or_mutated_binding_unknown'
+            if top_level:
+                # Module initialization and definition-time expressions execute
+                # before later definitions are bound. Preserve an earlier
+                # definition even when the canonical name is later redefined.
+                targets = self._module_binding_at_call(call, targets)
+                targets = [t for t in targets if not (
+                    t['module'] == call['module'] and (t.get('line') or 0) > (call.get('line') or 0))]
+            # Repeated targets from two aliases don't create duplicate edges.
+            targets = list({s['id']: s for s in targets}.values())
+            if not targets:
+                item = {"call_id": call['id'], "callee_text": call['callee_text'],
+                        "file": call['file'], "line": call['line'],
+                        "reason": 'no_enclosing_function' if top_level else reason,
+                        "execution_scope": call.get('execution_scope', call.get('scope')),
+                        "execution_phase": call.get('execution_phase', 'unspecified')}
+                if not top_level:
+                    item['caller_id'] = caller_id
+                if top_level:
+                    item['resolution_reason'] = reason
+                proof, hint = self.external_member(call)
+                if proof:
+                    item['external_member'] = proof
+                elif hint:
+                    item['external_hint'] = hint
+                unresolved.append(item)
+                continue
+            resolved_sites.add(call['id'])
+            if len(targets) > 1:
+                ambiguous.append({"call_id": call['id'], "callee_text": call['callee_text'],
+                                  "targets": [s['id'] for s in targets], "type": "may_call_candidates"})
+            flow = call.get('flow') or {}
+            bound = flow.get('binding') or {}
+            may_unbound = bool(bound.get('may_be_unbound'))
+            may_unknown = ('partial_type_candidates' in reason or any(o.get('kind') == 'unknown' for o in bound.get('options', [])))
+            evidence = {"call_id": call['id'], "file": call['file'], "line": call['line'],
+                        "column": call.get('column'), "source": call.get('source'),
+                        "rule": reason, "trace": trace, "module_level": top_level,
+                        "execution_scope": call.get('execution_scope', call.get('scope')),
+                        "execution_phase": call.get('execution_phase', 'unspecified')}
+            if reason == 'super_c3_may_call':
+                evidence['certainty'] = 'receiver_hierarchy_may_call'
+            trace_keys = [k for k in trace or [] if isinstance(k, str)]
+            checked = sorted({k for k in trace_keys if k in self.external_bases})
+            if checked:
+                evidence['external_bases_checked'] = {
+                    'bases': checked, 'python': PYTHON_VERSION,
+                    'rule': 'name_not_defined_by_external_base',
+                    'note': 'Builtin dir() / stdlib AST of the analyzing Python version.'}
+            if reason == 'object_flow_may_call':
+                evidence['certainty'] = 'interprocedural_may_call'
+            if top_level:
+                evidence['certainty'] = 'module_initialization_may_execute'
+            if call.get('execution_phase') == 'definition_annotation':
+                evidence['certainty'] = 'annotation_evaluation_version_dependent'
+            if len(targets) > 1 and 'certainty' not in evidence:
+                evidence['certainty'] = 'multiple_possible_targets'
+            if reason.startswith(('instance_flow_', 'flow_')):
+                evidence['certainty'] = ('conditional_may_call' if may_unbound or may_unknown
+                                         else 'multiple_possible_targets' if len(targets) > 1 else 'definite_within_supported_flow')
+                evidence['reaching_definitions'] = bound.get('options', [])
+                evidence['may_be_unbound'] = may_unbound
+            if reason.startswith('instance_') and any(
+                    opt.get('kind') == 'annotated_parameter'
+                    for opt in bound.get('options', [])):
+                # An annotation is advisory and subclasses may override the
+                # method. This is a source-backed candidate, not definite
+                # runtime dispatch or complete polymorphic target coverage.
+                evidence['certainty'] = 'declared_parameter_type_may_call'
+                evidence['reaching_definitions'] = bound.get('options', [])
+                evidence['annotation_note'] = ('Parameter hints are not enforced at runtime; '
+                                               'subclass dispatch and reassignment may change targets.')
+            patched_bases = sorted({k for k in trace_keys if k in self.conditional_external_bases})
+            if any(t['id'] in self.conditionally_mutated_methods for t in targets) or patched_bases:
+                evidence['certainty'] = 'conditional_namespace_may_call'
+                evidence['namespace_caveat'] = 'Original binding is possible; conditional replacements are not exhaustively modeled.'
+                if patched_bases:
+                    evidence['conditionally_patched_bases'] = patched_bases
+            if may_unbound and reason.startswith(('instance_flow_', 'flow_')):
+                conditional.append({"call_id": call['id'], "caller_id": caller_id,
+                                    "callee_text": call['callee_text'], "file": call['file'],
+                                    "line": call['line'], "target_ids": [t['id'] for t in targets],
+                                    "reason": "may_be_unbound_on_some_paths"})
+            for target in targets:
+                t = 'INSTANTIATES' if target['kind'] == 'CLASS' else 'CALLS'
+                edges.append({"source": caller_id, "target": target['id'],
+                              "type": t, "evidence": evidence})
+                if target['kind'] == 'CLASS':
+                    init, path = self._find_method(target, '__init__')
+                    for ctor in init:
+                        if not self.safe_callable(ctor):
+                            continue
+                        ctor_evidence = {**evidence, 'rule': 'constructor_init', 'trace': path}
+                        if ctor['id'] in self.conditionally_mutated_methods:
+                            ctor_evidence['certainty'] = 'conditional_namespace_may_call'
+                        edges.append({"source": caller_id, "target": ctor['id'],
+                                      "type": "CALLS", "evidence": ctor_evidence})
+        implicit_edges = self._implicit_edges(implicit_results + self._callback_results(object_flow), module_nodes)
+        # Structural relations run after call resolution and never feed it.
+        from override_relations import build_override_edges
+        edges.extend(build_override_edges(self))
+        # Each call relation is a unique (caller, callee, type, call-site) fact.
+        edge_map = {}
+        for edge in edges:
+            ev = edge.get('evidence') or {}
+            key = (edge['source'], edge['target'], edge['type'], ev.get('call_id'))
+            edge_map.setdefault(key, edge)
+        edges = list(edge_map.values())
+        module_sites = {edge['evidence']['call_id'] for edge in edges
+                        if edge.get('evidence', {}).get('call_id') and edge['evidence'].get('module_level')}
+        collection_sites = {edge['evidence']['call_id'] for edge in edges
+                            if edge.get('evidence', {}).get('call_id') and
+                            'flow_collection_' in edge['evidence'].get('rule', '')}
+        return {"repository": self.data.get('repository'),
+                "node_count": len(nodes), "edge_count": len(edges),
+                "total_call_sites": len(self.calls), "resolved_call_sites": len(resolved_sites),
+                "unresolved_call_sites": len(unresolved),
+                "module_level_resolved_sites": len(module_sites),
+                "collection_indirect_resolved_sites": len(collection_sites),
+                "nodes": nodes, "edges": edges,
+                "object_flow_stats": self.object_flow_stats,
+                "external_flow_calls": external_flow_calls,
+                "unresolved_calls": unresolved, "ambiguous_calls": ambiguous,
+                "conditional_calls": conditional,
+                # Methods Python runs without a call expression (properties,
+                # operators, with, for, len()...). Also kept apart from edges.
+                "implicit_edges": implicit_edges,
+                "implicit_summary": {
+                    'implicit_edges': len(implicit_edges),
+                    'sites': len({(e['evidence']['file'], e['evidence']['line'], e['evidence']['column'],
+                                   e['evidence']['implicit_kind']) for e in implicit_edges}),
+                    'kinds': dict(Counter(e['evidence']['implicit_kind'] for e in implicit_edges))}}

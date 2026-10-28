@@ -1,0 +1,30 @@
+--- original/test_external_mro_callbacks.py
++++ schema-adapted/test_external_mro_callbacks.py
+@@ -123,7 +123,7 @@
+         ''','obj.work'),{'METHOD:app.Internal.work'})
+ 
+     def test_unrecognized_stdlib_layout_stays_unknown(self):
+-        with patch('stdlib_mro.multiprocessing_contract',return_value=({},[])):
++        with patch('external_bases.ExternalClassIndex.attributes', return_value=None):
+             self.assertEqual(self.targets('''
+                 from multiprocessing import Process
+                 class Internal:
+@@ -155,7 +155,7 @@
+         ''','obj.work',{'multiprocessing.py':'class Process(Unknown): pass\n'}),set())
+ 
+     def callbacks(self,g):
+-        return [e for e in g['edges'] if e['evidence'].get('callback_call_id')]
++        return [e for e in g['implicit_edges'] if e['evidence'].get('implicit_kind') == 'callback']
+ 
+     def test_sorted_lambda_callback_has_separate_trigger(self):
+         g=self.graph('def go(values):\n    return sorted(values,key=lambda x:x)\n')
+@@ -164,7 +164,8 @@
+         self.assertTrue(edges[0]['target'].startswith('LAMBDA:app.go.'))
+         self.assertEqual(edges[0]['source'],'FUNCTION:app.go')
+         self.assertEqual(edges[0]['evidence']['certainty'],'callback_may_execute')
+-        self.assertIsNone(edges[0]['evidence']['call_id'])
++        self.assertNotIn('call_id', edges[0]['evidence'])
++        self.assertIn('trigger_call_id', edges[0]['evidence'])
+         self.assertEqual(next(r for r in g['call_statuses'] if r['callee_text']=='sorted')['status'],'KNOWN_NON_INTERNAL')
+ 
+     def test_named_key_callback_is_not_omitted_to_match_benchmark(self):

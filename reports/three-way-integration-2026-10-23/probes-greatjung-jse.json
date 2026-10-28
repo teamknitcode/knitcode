@@ -1,0 +1,745 @@
+{
+  "direct_call": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.target"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.target"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.target",
+        "CALLS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "c3_mro": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.C.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.C.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.A",
+        "app.A.run",
+        "CONTAINS"
+      ],
+      [
+        "app.C",
+        "app.C.run",
+        "CONTAINS"
+      ],
+      [
+        "app.B",
+        "app.A",
+        "INHERITS"
+      ],
+      [
+        "app.C",
+        "app.A",
+        "INHERITS"
+      ],
+      [
+        "app.D",
+        "app.B",
+        "INHERITS"
+      ],
+      [
+        "app.D",
+        "app.C",
+        "INHERITS"
+      ],
+      [
+        "app.go",
+        "app.C.run",
+        "CALLS"
+      ],
+      [
+        "app.go",
+        "app.D",
+        "INSTANTIATES"
+      ],
+      [
+        "app.A.run",
+        "app.C.run",
+        "OVERRIDDEN_BY"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "property_return": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Box.item"
+      ],
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.run",
+        "CONTAINS"
+      ],
+      [
+        "app.Box",
+        "app.Box.item",
+        "CONTAINS"
+      ],
+      [
+        "app.Box.item",
+        "app.Item",
+        "INSTANTIATES"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "INSTANTIATES"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "with_as": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.run",
+        "CONTAINS"
+      ],
+      [
+        "app.Box",
+        "app.Box.__enter__",
+        "CONTAINS"
+      ],
+      [
+        "app.Box",
+        "app.Box.__exit__",
+        "CONTAINS"
+      ],
+      [
+        "app.Box.__enter__",
+        "app.Item",
+        "INSTANTIATES"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "INSTANTIATES"
+      ],
+      [
+        "app.go",
+        "app.Item.run",
+        "CALLS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "operator": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.__add__"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.__add__",
+        "CONTAINS"
+      ],
+      [
+        "app.go",
+        "app.Item",
+        "INSTANTIATES"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "typed_truth": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Flag.__bool__"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.Flag",
+        "app.Flag.__bool__",
+        "CONTAINS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "typed_container": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.run",
+        "CONTAINS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "annotated_factory": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ],
+      [
+        "app.go",
+        "app.factory"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.run",
+        "CONTAINS"
+      ],
+      [
+        "app.go",
+        "app.Item.run",
+        "CALLS"
+      ],
+      [
+        "app.go",
+        "app.factory",
+        "CALLS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "subclass_dispatch_candidates": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Base.run"
+      ],
+      [
+        "app.go",
+        "app.Child.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Base.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Base",
+        "app.Base.run",
+        "CONTAINS"
+      ],
+      [
+        "app.Child",
+        "app.Child.run",
+        "CONTAINS"
+      ],
+      [
+        "app.Child",
+        "app.Base",
+        "INHERITS"
+      ],
+      [
+        "app.go",
+        "app.Base.run",
+        "CALLS"
+      ],
+      [
+        "app.Base.run",
+        "app.Child.run",
+        "OVERRIDDEN_BY"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "sorted_callback": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.key"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "default_factory": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.factory"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Item",
+        "app.Item.run",
+        "CONTAINS"
+      ],
+      [
+        "app.go",
+        "app.factory",
+        "CALLS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "lexical_scope": {
+    "expected_pairs": [
+      [
+        "app.Box.go",
+        "app.work"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.Box.go",
+        "app.work"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Box",
+        "app.Box.work",
+        "CONTAINS"
+      ],
+      [
+        "app.Box",
+        "app.Box.go",
+        "CONTAINS"
+      ],
+      [
+        "app.Box.go",
+        "app.work",
+        "CALLS"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "method_patch_abstention": {
+    "expected_pairs": [],
+    "forbidden_pairs": [
+      [
+        "app.go",
+        "app.Box.run"
+      ]
+    ],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": false,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Box.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Box",
+        "app.Box.run",
+        "CONTAINS"
+      ],
+      [
+        "app.go",
+        "app.Box.run",
+        "CALLS"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "INSTANTIATES"
+      ]
+    ],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": true
+  },
+  "thread_target_reference": {
+    "expected_pairs": [],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [],
+    "result_keys": [
+      "ambiguous_calls",
+      "call_statuses",
+      "classification_summary",
+      "collection_indirect_resolved_sites",
+      "conditional_calls",
+      "edge_count",
+      "edges",
+      "module_level_resolved_sites",
+      "node_count",
+      "nodes",
+      "object_flow_stats",
+      "repository",
+      "resolved_call_sites",
+      "status_summary",
+      "total_call_sites",
+      "unresolved_call_sites",
+      "unresolved_calls"
+    ],
+    "original_method_connected": false
+  },
+  "metadata": {
+    "schema_version": null,
+    "entry_points": null,
+    "reading_order": null,
+    "hierarchy": null,
+    "import_cycles": null,
+    "dynamic_calls": null
+  }
+}

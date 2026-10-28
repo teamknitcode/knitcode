@@ -1,0 +1,131 @@
+{
+  "repeat": 5,
+  "scope": "Same 5 projects, includes imports, both analyses and all JSON/HTML exports",
+  "rows": [
+    {
+      "iteration": 1,
+      "version": "before",
+      "wall_seconds": 2.433755374979228,
+      "projects": {
+        "Sublist3r": 0.46,
+        "asciinema": 0.36,
+        "autojump": 0.69,
+        "fabric": 0.42,
+        "face_classification": 0.45
+      }
+    },
+    {
+      "iteration": 1,
+      "version": "after",
+      "wall_seconds": 2.3023447091691196,
+      "projects": {
+        "Sublist3r": 0.44,
+        "asciinema": 0.34,
+        "autojump": 0.65,
+        "fabric": 0.39,
+        "face_classification": 0.42
+      }
+    },
+    {
+      "iteration": 2,
+      "version": "after",
+      "wall_seconds": 2.307184417033568,
+      "projects": {
+        "Sublist3r": 0.44,
+        "asciinema": 0.34,
+        "autojump": 0.64,
+        "fabric": 0.4,
+        "face_classification": 0.42
+      }
+    },
+    {
+      "iteration": 2,
+      "version": "before",
+      "wall_seconds": 2.4275196250528097,
+      "projects": {
+        "Sublist3r": 0.47,
+        "asciinema": 0.37,
+        "autojump": 0.68,
+        "fabric": 0.42,
+        "face_classification": 0.44
+      }
+    },
+    {
+      "iteration": 3,
+      "version": "before",
+      "wall_seconds": 2.4351709159091115,
+      "projects": {
+        "Sublist3r": 0.46,
+        "asciinema": 0.37,
+        "autojump": 0.69,
+        "fabric": 0.41,
+        "face_classification": 0.44
+      }
+    },
+    {
+      "iteration": 3,
+      "version": "after",
+      "wall_seconds": 2.333527833921835,
+      "projects": {
+        "Sublist3r": 0.45,
+        "asciinema": 0.35,
+        "autojump": 0.65,
+        "fabric": 0.4,
+        "face_classification": 0.43
+      }
+    },
+    {
+      "iteration": 4,
+      "version": "after",
+      "wall_seconds": 2.3431371659971774,
+      "projects": {
+        "Sublist3r": 0.46,
+        "asciinema": 0.36,
+        "autojump": 0.64,
+        "fabric": 0.4,
+        "face_classification": 0.43
+      }
+    },
+    {
+      "iteration": 4,
+      "version": "before",
+      "wall_seconds": 2.432329542003572,
+      "projects": {
+        "Sublist3r": 0.47,
+        "asciinema": 0.36,
+        "autojump": 0.69,
+        "fabric": 0.41,
+        "face_classification": 0.44
+      }
+    },
+    {
+      "iteration": 5,
+      "version": "before",
+      "wall_seconds": 2.4267397499643266,
+      "projects": {
+        "Sublist3r": 0.47,
+        "asciinema": 0.36,
+        "autojump": 0.68,
+        "fabric": 0.41,
+        "face_classification": 0.44
+      }
+    },
+    {
+      "iteration": 5,
+      "version": "after",
+      "wall_seconds": 2.3509597089141607,
+      "projects": {
+        "Sublist3r": 0.45,
+        "asciinema": 0.35,
+        "autojump": 0.65,
+        "fabric": 0.41,
+        "face_classification": 0.43
+      }
+    }
+  ],
+  "median_seconds": {
+    "before": 2.432329542003572,
+    "after": 2.333527833921835
+  },
+  "relative_change": -0.04062019819911067
+}

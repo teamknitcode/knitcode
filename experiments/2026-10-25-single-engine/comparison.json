@@ -1,0 +1,284 @@
+{
+  "metric": "paper: selected explicit + implicit + statically grounded external calls",
+  "common_adapter": "pycg_adapter.py unchanged from baseline",
+  "macro": [
+    {
+      "project": "Sublist3r",
+      "before": {
+        "precision": 0.9515570934256056,
+        "recall": 0.6773399014778325,
+        "f1": 0.7913669064748202,
+        "tp": 275,
+        "fp": 14,
+        "fn": 131
+      },
+      "after": {
+        "precision": 0.9515570934256056,
+        "recall": 0.6773399014778325,
+        "f1": 0.7913669064748202,
+        "tp": 275,
+        "fp": 14,
+        "fn": 131
+      },
+      "added": [],
+      "removed": []
+    },
+    {
+      "project": "asciinema",
+      "before": {
+        "precision": 0.9205776173285198,
+        "recall": 0.750733137829912,
+        "f1": 0.8270252807743227,
+        "tp": 255,
+        "fp": 22,
+        "fn": 85
+      },
+      "after": {
+        "precision": 0.9205776173285198,
+        "recall": 0.750733137829912,
+        "f1": 0.8270252807743227,
+        "tp": 255,
+        "fp": 22,
+        "fn": 85
+      },
+      "added": [],
+      "removed": []
+    },
+    {
+      "project": "autojump",
+      "before": {
+        "precision": 0.9646464646464646,
+        "recall": 0.7113594040968343,
+        "f1": 0.8188638799571275,
+        "tp": 382,
+        "fp": 14,
+        "fn": 153
+      },
+      "after": {
+        "precision": 0.9646464646464646,
+        "recall": 0.7113594040968343,
+        "f1": 0.8188638799571275,
+        "tp": 382,
+        "fp": 14,
+        "fn": 153
+      },
+      "added": [],
+      "removed": []
+    },
+    {
+      "project": "fabric",
+      "before": {
+        "precision": 0.9218106995884774,
+        "recall": 0.5879265091863517,
+        "f1": 0.717948717948718,
+        "tp": 224,
+        "fp": 19,
+        "fn": 157
+      },
+      "after": {
+        "precision": 0.9218106995884774,
+        "recall": 0.5879265091863517,
+        "f1": 0.717948717948718,
+        "tp": 224,
+        "fp": 19,
+        "fn": 157
+      },
+      "added": [],
+      "removed": []
+    },
+    {
+      "project": "face_classification",
+      "before": {
+        "precision": 0.9875621890547264,
+        "recall": 0.9126436781609195,
+        "f1": 0.9486260454002389,
+        "tp": 397,
+        "fp": 5,
+        "fn": 38
+      },
+      "after": {
+        "precision": 0.9875621890547264,
+        "recall": 0.9126436781609195,
+        "f1": 0.9486260454002389,
+        "tp": 397,
+        "fp": 5,
+        "fn": 38
+      },
+      "added": [],
+      "removed": []
+    }
+  ],
+  "micro": {
+    "before": {
+      "complete": 111,
+      "sound": 68,
+      "cases": 112
+    },
+    "after": {
+      "complete": 111,
+      "sound": 71,
+      "cases": 112
+    },
+    "edge_totals_before": {
+      "tp": 182,
+      "fp": 1,
+      "fn": 72
+    },
+    "edge_totals_after": {
+      "tp": 182,
+      "fp": 1,
+      "fn": 72
+    },
+    "changes": [
+      {
+        "case": "dicts/ext_key",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": [
+            "ext"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "imports/init_import",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": [
+            "nested"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "imports/parent_import",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": [
+            "nested"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": true,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "imports/relative_import_with_name",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": [
+            "nested"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": true,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "imports/submodule_import_all",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "missing_nodes": [
+            "from_module"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "imports/submodule_import_from",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": [
+            "from_module"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": true,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "missing_nodes": []
+        }
+      },
+      {
+        "case": "lists/ext_index",
+        "before": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": [
+            "ext"
+          ]
+        },
+        "after": {
+          "complete": true,
+          "sound": false,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "missing_nodes": []
+        }
+      }
+    ],
+    "explanation": "Sound +3 restores empty/import-only module nodes. Predicted micro call edges are unchanged.",
+    "predicted_edges_identical": true
+  }
+}

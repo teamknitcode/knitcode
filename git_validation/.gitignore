@@ -1,0 +1,11 @@
+# Only git_validation artifacts; parent team's .gitignore is unchanged.
+__pycache__/
+*.pyc
+.github_token
+.env
+.env.*
+output/
+output_*/
+reports/
+*_report/
+*_output/

@@ -1,0 +1,1261 @@
+{
+  "direct_call": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.target"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.target"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.target",
+        "calls"
+      ],
+      [
+        "app",
+        "app.target",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "c3_mro": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.C.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.C.run"
+      ],
+      [
+        "app.go",
+        "app.D"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.C.run",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.D",
+        "calls"
+      ],
+      [
+        "app",
+        "app.A",
+        "contains"
+      ],
+      [
+        "app.A",
+        "app.A.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.B",
+        "contains"
+      ],
+      [
+        "app",
+        "app.C",
+        "contains"
+      ],
+      [
+        "app.C",
+        "app.C.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.D",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ],
+      [
+        "app.B",
+        "app.A",
+        "extends"
+      ],
+      [
+        "app.C",
+        "app.A",
+        "extends"
+      ],
+      [
+        "app.D",
+        "app.B",
+        "extends"
+      ],
+      [
+        "app.D",
+        "app.C",
+        "extends"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "property_return": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Box.item"
+      ],
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.Box.item",
+        "app.Item"
+      ],
+      [
+        "app.go",
+        "app.Box"
+      ],
+      [
+        "app.go",
+        "app.Box.item"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Box.item",
+        "app.Item",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Box.item",
+        "calls_implicit"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.Box",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.item",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "with_as": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.Box.__enter__",
+        "app.Item"
+      ],
+      [
+        "app.go",
+        "app.Box"
+      ],
+      [
+        "app.go",
+        "app.Box.__enter__"
+      ],
+      [
+        "app.go",
+        "app.Box.__exit__"
+      ],
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Box.__enter__",
+        "app.Item",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Item.run",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Box.__enter__",
+        "calls_implicit"
+      ],
+      [
+        "app.go",
+        "app.Box.__exit__",
+        "calls_implicit"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.Box",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.__enter__",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.__exit__",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "operator": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.__add__"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Item"
+      ],
+      [
+        "app.go",
+        "app.Item.__add__"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Item",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Item.__add__",
+        "calls_implicit"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.__add__",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "typed_truth": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Flag.__bool__"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Flag.__bool__"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Flag.__bool__",
+        "calls_implicit"
+      ],
+      [
+        "app",
+        "app.Flag",
+        "contains"
+      ],
+      [
+        "app.Flag",
+        "app.Flag.__bool__",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "typed_container": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Item.run",
+        "calls"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.Box",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "annotated_factory": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ],
+      [
+        "app.go",
+        "app.factory"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Item.run",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.factory",
+        "calls"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.factory",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "subclass_dispatch_candidates": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Base.run"
+      ],
+      [
+        "app.go",
+        "app.Child.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Base.run"
+      ],
+      [
+        "app.go",
+        "app.Child.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Base.run",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Child.run",
+        "calls_override"
+      ],
+      [
+        "app",
+        "app.Base",
+        "contains"
+      ],
+      [
+        "app.Base",
+        "app.Base.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.Child",
+        "contains"
+      ],
+      [
+        "app.Child",
+        "app.Child.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ],
+      [
+        "app.Child",
+        "app.Base",
+        "extends"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "sorted_callback": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.key"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.go",
+        "app.key",
+        "references"
+      ],
+      [
+        "app",
+        "app.key",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "default_factory": {
+    "expected_pairs": [
+      [
+        "app.go",
+        "app.Item.run"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": false,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.factory"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.factory",
+        "calls"
+      ],
+      [
+        "app",
+        "app.Item",
+        "contains"
+      ],
+      [
+        "app.Item",
+        "app.Item.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.factory",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "lexical_scope": {
+    "expected_pairs": [
+      [
+        "app.Box.go",
+        "app.work"
+      ]
+    ],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.Box.go",
+        "app.work"
+      ]
+    ],
+    "edges": [
+      [
+        "app.Box.go",
+        "app.work",
+        "calls"
+      ],
+      [
+        "app",
+        "app.work",
+        "contains"
+      ],
+      [
+        "app",
+        "app.Box",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.work",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "method_patch_abstention": {
+    "expected_pairs": [],
+    "forbidden_pairs": [
+      [
+        "app.go",
+        "app.Box.run"
+      ]
+    ],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": false,
+    "thread_target_reference_found": false,
+    "call_pairs": [
+      [
+        "app.go",
+        "app.Box"
+      ],
+      [
+        "app.go",
+        "app.Box.run"
+      ]
+    ],
+    "edges": [
+      [
+        "app.go",
+        "app.Box.run",
+        "calls"
+      ],
+      [
+        "app.go",
+        "app.Box",
+        "calls"
+      ],
+      [
+        "app",
+        "app.Box",
+        "contains"
+      ],
+      [
+        "app.Box",
+        "app.Box.run",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": true
+  },
+  "thread_target_reference": {
+    "expected_pairs": [],
+    "forbidden_pairs": [],
+    "all_expected_found": true,
+    "forbidden_pairs_absent": true,
+    "thread_target_reference_found": true,
+    "call_pairs": [],
+    "edges": [
+      [
+        "app.go",
+        "app.work",
+        "references"
+      ],
+      [
+        "app",
+        "app.work",
+        "contains"
+      ],
+      [
+        "app",
+        "app.go",
+        "contains"
+      ]
+    ],
+    "result_keys": [
+      "dynamic_calls",
+      "edges",
+      "entry_points",
+      "external_edges",
+      "external_nodes",
+      "hierarchy",
+      "import_cycles",
+      "nodes",
+      "reading_order",
+      "schema_version",
+      "skipped_files",
+      "summary",
+      "unresolved"
+    ],
+    "original_method_connected": false
+  },
+  "metadata": {
+    "schema_version": 1,
+    "entry_points": [
+      {
+        "id": "app.py::go",
+        "kind": "main_call",
+        "category": "runtime",
+        "detail": "app.py 의 __main__ 블록에서 호출",
+        "file": "app.py",
+        "line": 3,
+        "confidence": "certain"
+      },
+      {
+        "id": "app.py",
+        "kind": "main_guard",
+        "category": "runtime",
+        "detail": "if __name__ == \"__main__\"",
+        "file": "app.py",
+        "line": 3,
+        "confidence": "certain"
+      }
+    ],
+    "reading_order": {
+      "strategy": "진입점에서 가까운 순서, 같은 거리에서는 중요도(PageRank) 순서. 테스트 파일은 제외",
+      "modules": [
+        {
+          "id": "app.py",
+          "min_depth": 0,
+          "importance": 1.0,
+          "entry": [
+            "main_call",
+            "main_guard"
+          ],
+          "read_first": [
+            "app.py::go"
+          ],
+          "reasons": [
+            "진입점: main_call, main_guard",
+            "많은 코드가 기대는 핵심 파일",
+            "순환 import 에 포함"
+          ],
+          "rank": 1
+        },
+        {
+          "id": "helper.py",
+          "min_depth": null,
+          "importance": 1.0,
+          "entry": [],
+          "read_first": [
+            "helper.py::work"
+          ],
+          "reasons": [
+            "진입점에서 호출로 닿지 않음",
+            "많은 코드가 기대는 핵심 파일",
+            "순환 import 에 포함"
+          ],
+          "rank": 2
+        }
+      ],
+      "nodes": [
+        {
+          "rank": 1,
+          "id": "app.py::go",
+          "depth": 0,
+          "importance": 1.0,
+          "entry": [
+            "main_call"
+          ],
+          "reasons": [
+            "진입점: main_call",
+            "많은 코드가 기대는 핵심"
+          ]
+        },
+        {
+          "rank": 2,
+          "id": "helper.py::work",
+          "depth": null,
+          "importance": 1.0,
+          "entry": [],
+          "reasons": [
+            "진입점에서 호출로 닿지 않음",
+            "많은 코드가 기대는 핵심"
+          ]
+        }
+      ]
+    },
+    "hierarchy": {
+      "levels": [
+        "package",
+        "module",
+        "class",
+        "function"
+      ],
+      "units": [
+        {
+          "uid": "package:./",
+          "level": "package",
+          "id": "./",
+          "name": ".",
+          "kind": "package",
+          "parent": null,
+          "loc": 5,
+          "modules": 2,
+          "functions": 2,
+          "classes": 0,
+          "complexity": 2,
+          "total_loc": 5,
+          "total_modules": 2,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 0,
+          "fan_out": 0,
+          "instability": null,
+          "children": 2
+        },
+        {
+          "uid": "module:app.py",
+          "level": "module",
+          "id": "app.py",
+          "name": "app.py",
+          "kind": "module",
+          "parent": "package:./",
+          "loc": 3,
+          "modules": 1,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 1,
+          "fan_out": 1,
+          "instability": 0.5,
+          "children": 1
+        },
+        {
+          "uid": "module:helper.py",
+          "level": "module",
+          "id": "helper.py",
+          "name": "helper.py",
+          "kind": "module",
+          "parent": "package:./",
+          "loc": 2,
+          "modules": 1,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 1,
+          "fan_out": 1,
+          "instability": 0.5,
+          "children": 1
+        },
+        {
+          "uid": "class:app.py::go",
+          "level": "class",
+          "id": "app.py::go",
+          "name": "go",
+          "kind": "function",
+          "parent": "module:app.py",
+          "loc": 1,
+          "modules": 0,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 0,
+          "fan_out": 0,
+          "instability": null,
+          "children": 1
+        },
+        {
+          "uid": "class:helper.py::work",
+          "level": "class",
+          "id": "helper.py::work",
+          "name": "work",
+          "kind": "function",
+          "parent": "module:helper.py",
+          "loc": 1,
+          "modules": 0,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 0,
+          "fan_out": 0,
+          "instability": null,
+          "children": 1
+        },
+        {
+          "uid": "function:app.py::go",
+          "level": "function",
+          "id": "app.py::go",
+          "name": "go",
+          "kind": "function",
+          "parent": "class:app.py::go",
+          "loc": 1,
+          "modules": 0,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 0,
+          "fan_out": 0,
+          "instability": null,
+          "children": 0
+        },
+        {
+          "uid": "function:helper.py::work",
+          "level": "function",
+          "id": "helper.py::work",
+          "name": "work",
+          "kind": "function",
+          "parent": "class:helper.py::work",
+          "loc": 1,
+          "modules": 0,
+          "functions": 1,
+          "classes": 0,
+          "complexity": 1,
+          "in_weight": 0,
+          "out_weight": 0,
+          "internal_weight": 0,
+          "fan_in": 0,
+          "fan_out": 0,
+          "instability": null,
+          "children": 0
+        }
+      ],
+      "edges": {
+        "package": [],
+        "module": [
+          {
+            "from": "module:app.py",
+            "to": "module:helper.py",
+            "weight": 0,
+            "by_type": {},
+            "import_weight": 1
+          },
+          {
+            "from": "module:helper.py",
+            "to": "module:app.py",
+            "weight": 0,
+            "by_type": {},
+            "import_weight": 1
+          }
+        ],
+        "class": [],
+        "function": []
+      }
+    },
+    "import_cycles": [
+      {
+        "id": "cycle:1",
+        "kind": "import_time",
+        "modules": [
+          "app.py",
+          "helper.py"
+        ],
+        "size": 2,
+        "path": [
+          "app.py",
+          "helper.py",
+          "app.py"
+        ],
+        "edges": [
+          {
+            "from": "app.py",
+            "to": "helper.py",
+            "scope": "top",
+            "line": 1
+          },
+          {
+            "from": "helper.py",
+            "to": "app.py",
+            "scope": "top",
+            "line": 1
+          }
+        ]
+      }
+    ],
+    "dynamic_calls": [
+      {
+        "from": "app.py::go",
+        "kind": "getattr",
+        "expr": "getattr(obj, name)",
+        "line": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  ".gitignore": {
+    "before": null,
+    "after": "4a583ad0a9c75329d1ec63bb4b9d3b3d95179604105cebf00aa0979e5bb5ee39"
+  },
+  "EXPERIMENT_LOG_KO.md": {
+    "before": "891d07c7f2b10b6a0bcaf712981089fd477de850af5ec693007b379ed4ef9fe9",
+    "after": "51cabf01745325b87af2f0a93283bc0e052bea0ce98602581a83ab32e60e3ec0"
+  },
+  "INTEGRATION_REVIEW_KO.md": {
+    "before": "19d30b4ab6eee445dd10f0b0094c5d4e1539ed66ec7ddf27cad62aa25dda13d4",
+    "after": "8c3bde98129255627a47c31598df02495595a245e8687e2e3437a1b3042fa149"
+  },
+  "LJY_PROVENANCE.md": {
+    "before": "46ea190ee0e8c7638f05cc3e780753559cb06dc1b5edf5850b7efbb35d569a69",
+    "after": "3d1ade748f59bbbce6a65eaabc9f52f278a9fb7fa84977f696f7ad9332c2b8f6"
+  },
+  "README.md": {
+    "before": "8e3d21e7203ba56099f32ad108319093a30dce7d2b8f445d321903b484d67bbc",
+    "after": "9c62db6453499e04eafbf0c3c3ffedd6f7fee9e8e40f9e09b42ee3a04c269ebd"
+  },
+  "analysis_defaults.py": {
+    "before": "cd0b6ef7c75cdf6869cbdacd6db1b076819ecabdf454024efd6f94f17ac51929",
+    "after": "808653e700651a8d0f01bac49ad13607f409eadb888053459a974de6e6ad9409"
+  },
+  "call_status.py": {
+    "before": "5d06bb5b711dd52f1c979bb776372998b1de5b03d77c3e577aae4f86944a9916",
+    "after": "7534d01cf4face79465e9a90abda3744b6fccc2fc324dcee22c239560f914cb7"
+  },
+  "graph_builder.py": {
+    "before": "7a4578fce3b4db7b91554054e6ca9a524d43fa364597a95750df817e76297e7a",
+    "after": "4ae024000b74790c3af51bd71a15d7396ff05bec52afd612ae86e4e80888bd7f"
+  },
+  "graph_entrypoints.py": {
+    "before": null,
+    "after": "e1aca35c8802021df77faec1d8317ff78b7eaee057e5529b72428660b2e8ffaa"
+  },
+  "graph_navigation.py": {
+    "before": null,
+    "after": "397fcf28927ce30d2db572d072e510e13f99c01c819d27f5a993ed0be9dfd4fe"
+  },
+  "ljy_integration.py": {
+    "before": "701e4ad592df3e0b58f1f15bbe39a31bbf93af0a11307f72b0f946bb47067f1d",
+    "after": "cb0e5acbae3ee065b1cf2e66f68e75a7945e311bf25206a0864208afa5b3598b"
+  },
+  "main.py": {
+    "before": "3f82358b8c7042b8a5b771ac9aced9cafc9f612a61f669ac2517ced2d372d108",
+    "after": "3a2408af51da616f6cd3975ce025143b7739db7ef64f0eb5dbf7c66bcd41aa21"
+  },
+  "object_flow.py": {
+    "before": "a11408fdb5fb31db340843368ee404b7cd0c628664ee993b73bed0dad9a189c4",
+    "after": "115eaa9b9ca9983b020aba1930a9af26a426e77a668f75e197bb4c5da642a5bb"
+  },
+  "scripts/benchmark_integration_latency.py": {
+    "before": "8b0745acd0d6957ccfc6477732b82221ad135529933225644f49d86d137e8f9e",
+    "after": "d584f8542b396bd0f034356633e056414dc7447746f3b6ba387605094dac48d8"
+  },
+  "scripts/evaluate_integration_fixtures.py": {
+    "before": null,
+    "after": "1b7bf8b4c69c16e13d9b5dc65519eb0fe63fa538690bab2114a4209ba62a6829"
+  },
+  "tests/jse_original/test_v24.py": {
+    "before": "4815d8954e9ee5f6668973fd9493ddfcb0d7d1c69f8f147227382be90ceda965",
+    "after": "110703595d52c66cea3dab33602b93f8f44329f7d5d5c7d112dc166919ce92d1"
+  },
+  "tests/single_engine_expected_calls.json": {
+    "before": null,
+    "after": "8903974b0ef7fc65c77bfb01209e8d1fef24fafef5ac9e7aea74ae3cc0a0ac67"
+  },
+  "tests/single_engine_expected_references.json": {
+    "before": null,
+    "after": "e6405c43948e0d4afd62ba1c718c3c6bf675601f6212f352679b153dda31caba"
+  },
+  "tests/test_ljy_integration.py": {
+    "before": "a49db528575a4f81a6d9904d50884425aeb33e58b061038e2919c04749958e8e",
+    "after": "acd9bd4a0b20e012fddca1030f13f72a0bbdcb14c164cf78ee3cde642fc5f3f3"
+  },
+  "tests/test_single_engine.py": {
+    "before": null,
+    "after": "e23d116bfafec8967cbfb77941e9a50fd27a436a5258f5ea3df00de25aa54b2d"
+  },
+  "tests/test_source_snapshot.py": {
+    "before": "93ebdee5ffe782b6b106567d0efbdd11278eb25ea0ffd1b5f43be20606c74a21",
+    "after": "bc8c1a1fc034078ac4792e0c720f094aea06365b909a6435ce52319d1af77b98"
+  },
+  "unified_graph.py": {
+    "before": null,
+    "after": "eafef27af5037850acdc1448d4d969a78f2bd62daff4f9f9dc3d0f8f7181b709"
+  }
+}

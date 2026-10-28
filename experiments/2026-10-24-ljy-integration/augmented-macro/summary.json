@@ -1,0 +1,286 @@
+[
+  {
+    "project": "Sublist3r",
+    "files": 4,
+    "parse_errors": 0,
+    "seconds": 0.48,
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 6
+    },
+    "internal": {
+      "precision": 0.7916666666666666,
+      "recall": 0.28078817733990147,
+      "f1": 0.4145454545454545,
+      "tp": 114,
+      "fp": 30,
+      "fn": 292
+    },
+    "full": {
+      "precision": 0.8643533123028391,
+      "recall": 0.6748768472906403,
+      "f1": 0.7579529737206085,
+      "tp": 274,
+      "fp": 43,
+      "fn": 132
+    },
+    "full_with_implicit": {
+      "precision": 0.8620689655172413,
+      "recall": 0.6773399014778325,
+      "f1": 0.7586206896551724,
+      "tp": 275,
+      "fp": 44,
+      "fn": 131
+    },
+    "primary_full": {
+      "precision": 0.9547038327526133,
+      "recall": 0.6748768472906403,
+      "f1": 0.7907647907647909,
+      "tp": 274,
+      "fp": 13,
+      "fn": 132
+    },
+    "analysis_profile": "integrated",
+    "call_graph_policy": "augmented",
+    "supplemental_summary": {
+      "producer": "ljy",
+      "edges": 43,
+      "types": {
+        "CALLS_OVERRIDE": 32,
+        "REFERENCES": 7,
+        "CALLS_IMPLICIT": 3,
+        "IMPORTS": 1
+      },
+      "skipped": {}
+    }
+  },
+  {
+    "project": "asciinema",
+    "files": 24,
+    "parse_errors": 0,
+    "seconds": 0.37,
+    "skipped": {
+      "class_instantiation_without_init": 18,
+      "non_dotted_external": 3
+    },
+    "internal": {
+      "precision": 0.9217391304347826,
+      "recall": 0.31378299120234604,
+      "f1": 0.46818435120018165,
+      "tp": 106,
+      "fp": 9,
+      "fn": 234
+    },
+    "full": {
+      "precision": 0.9538461538461539,
+      "recall": 0.7302052785923754,
+      "f1": 0.8271760387922952,
+      "tp": 248,
+      "fp": 12,
+      "fn": 92
+    },
+    "full_with_implicit": {
+      "precision": 0.9074733096085409,
+      "recall": 0.750733137829912,
+      "f1": 0.8216953760754229,
+      "tp": 255,
+      "fp": 26,
+      "fn": 85
+    },
+    "primary_full": {
+      "precision": 0.96875,
+      "recall": 0.7302052785923754,
+      "f1": 0.8327309995145369,
+      "tp": 248,
+      "fp": 8,
+      "fn": 92
+    },
+    "analysis_profile": "integrated",
+    "call_graph_policy": "augmented",
+    "supplemental_summary": {
+      "producer": "ljy",
+      "edges": 60,
+      "types": {
+        "CALLS_OVERRIDE": 4,
+        "REFERENCES": 3,
+        "CALLS_IMPLICIT": 16,
+        "IMPORTS": 37
+      },
+      "skipped": {
+        "unmatched_callable": 11,
+        "unsafe_callable": 1
+      }
+    }
+  },
+  {
+    "project": "autojump",
+    "files": 4,
+    "parse_errors": 0,
+    "seconds": 0.71,
+    "skipped": {
+      "class_instantiation_without_init": 3,
+      "non_dotted_external": 0
+    },
+    "internal": {
+      "precision": 0.9333333333333333,
+      "recall": 0.28677839851024206,
+      "f1": 0.4387464387464387,
+      "tp": 154,
+      "fp": 11,
+      "fn": 381
+    },
+    "full": {
+      "precision": 0.9432098765432099,
+      "recall": 0.7113594040968343,
+      "f1": 0.8110403397027601,
+      "tp": 382,
+      "fp": 23,
+      "fn": 153
+    },
+    "full_with_implicit": {
+      "precision": 0.9362745098039216,
+      "recall": 0.7113594040968343,
+      "f1": 0.8084656084656086,
+      "tp": 382,
+      "fp": 26,
+      "fn": 153
+    },
+    "primary_full": {
+      "precision": 0.9670886075949368,
+      "recall": 0.7113594040968343,
+      "f1": 0.8197424892703864,
+      "tp": 382,
+      "fp": 13,
+      "fn": 153
+    },
+    "analysis_profile": "integrated",
+    "call_graph_policy": "augmented",
+    "supplemental_summary": {
+      "producer": "ljy",
+      "edges": 39,
+      "types": {
+        "CALLS_OVERRIDE": 8,
+        "CALLS": 4,
+        "INSTANTIATES": 3,
+        "REFERENCES": 12,
+        "CALLS_IMPLICIT": 10,
+        "IMPORTS": 2
+      },
+      "skipped": {
+        "unmatched_callable": 11
+      }
+    }
+  },
+  {
+    "project": "fabric",
+    "files": 20,
+    "parse_errors": 0,
+    "seconds": 0.42,
+    "skipped": {
+      "class_instantiation_without_init": 5,
+      "non_dotted_external": 3
+    },
+    "internal": {
+      "precision": 0.9452054794520548,
+      "recall": 0.18110236220472442,
+      "f1": 0.3039647577092512,
+      "tp": 69,
+      "fp": 4,
+      "fn": 312
+    },
+    "full": {
+      "precision": 0.9525862068965517,
+      "recall": 0.5800524934383202,
+      "f1": 0.7210440456769985,
+      "tp": 221,
+      "fp": 11,
+      "fn": 160
+    },
+    "full_with_implicit": {
+      "precision": 0.9180327868852459,
+      "recall": 0.5879265091863517,
+      "f1": 0.7167999999999999,
+      "tp": 224,
+      "fp": 20,
+      "fn": 157
+    },
+    "primary_full": {
+      "precision": 0.9513274336283186,
+      "recall": 0.5643044619422573,
+      "f1": 0.7084019769357496,
+      "tp": 215,
+      "fp": 11,
+      "fn": 166
+    },
+    "analysis_profile": "integrated",
+    "call_graph_policy": "augmented",
+    "supplemental_summary": {
+      "producer": "ljy",
+      "edges": 71,
+      "types": {
+        "INSTANTIATES": 3,
+        "CALLS": 6,
+        "CALLS_IMPLICIT": 30,
+        "REFERENCES": 10,
+        "IMPORTS": 22
+      },
+      "skipped": {
+        "unsafe_callable": 18
+      }
+    }
+  },
+  {
+    "project": "face_classification",
+    "files": 20,
+    "parse_errors": 0,
+    "seconds": 0.45,
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 5
+    },
+    "internal": {
+      "precision": 0.9897959183673469,
+      "recall": 0.22298850574712645,
+      "f1": 0.36397748592870544,
+      "tp": 97,
+      "fp": 1,
+      "fn": 338
+    },
+    "full": {
+      "precision": 0.9851116625310173,
+      "recall": 0.9126436781609195,
+      "f1": 0.9474940334128877,
+      "tp": 397,
+      "fp": 6,
+      "fn": 38
+    },
+    "full_with_implicit": {
+      "precision": 0.9851116625310173,
+      "recall": 0.9126436781609195,
+      "f1": 0.9474940334128877,
+      "tp": 397,
+      "fp": 6,
+      "fn": 38
+    },
+    "primary_full": {
+      "precision": 0.9875621890547264,
+      "recall": 0.9126436781609195,
+      "f1": 0.9486260454002389,
+      "tp": 397,
+      "fp": 5,
+      "fn": 38
+    },
+    "analysis_profile": "integrated",
+    "call_graph_policy": "augmented",
+    "supplemental_summary": {
+      "producer": "ljy",
+      "edges": 7,
+      "types": {
+        "CALLS": 1,
+        "REFERENCES": 4,
+        "IMPORTS": 2
+      },
+      "skipped": {}
+    }
+  }
+]

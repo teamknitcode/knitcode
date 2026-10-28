@@ -1,0 +1,578 @@
+{
+  "celery": {
+    "calls": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "entries": {
+      "before": 1,
+      "after": 1,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "classvalue_project": {
+    "calls": {
+      "before": 12,
+      "after": 13,
+      "lost": [],
+      "added": [
+        [
+          "tpkg.use.use",
+          "tpkg.app.App.run"
+        ]
+      ]
+    },
+    "references": {
+      "before": 0,
+      "after": 18,
+      "lost": [],
+      "added": [
+        [
+          "alias",
+          "models.Config"
+        ],
+        [
+          "alias.reassigned",
+          "models.Config"
+        ],
+        [
+          "alias.two_classes",
+          "models.Config"
+        ],
+        [
+          "alias.two_classes",
+          "models.Session"
+        ],
+        [
+          "alias.via_local_alias",
+          "models.Config"
+        ],
+        [
+          "models",
+          "models.Base"
+        ],
+        [
+          "models",
+          "models.Provider"
+        ],
+        [
+          "models",
+          "models.Session"
+        ],
+        [
+          "models.Base",
+          "models.Config"
+        ],
+        [
+          "models.Base",
+          "models.FastProvider"
+        ],
+        [
+          "models.Base",
+          "models.Provider"
+        ],
+        [
+          "models.Base",
+          "models.Session"
+        ],
+        [
+          "models.Base.pick",
+          "models.Client"
+        ],
+        [
+          "models.Base.uses_cls_method",
+          "models.Base"
+        ],
+        [
+          "tpkg.globs",
+          "tpkg.app.App"
+        ],
+        [
+          "tpkg.globs",
+          "tpkg.app.Service"
+        ],
+        [
+          "tpkg.globs",
+          "tpkg.globs.AppProxy"
+        ],
+        [
+          "tpkg.globs",
+          "tpkg.globs.Both"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "generic_project": {
+    "calls": {
+      "before": 27,
+      "after": 28,
+      "lost": [],
+      "added": [
+        [
+          "use.overloaded",
+          "models.Item.run"
+        ]
+      ]
+    },
+    "references": {
+      "before": 0,
+      "after": 13,
+      "lost": [],
+      "added": [
+        [
+          "models",
+          "models.Item"
+        ],
+        [
+          "models",
+          "models.Tag"
+        ],
+        [
+          "models.Box.__init__",
+          "models.Item"
+        ],
+        [
+          "models.Box.__init__",
+          "models.Tag"
+        ],
+        [
+          "models.Holder",
+          "models.Item"
+        ],
+        [
+          "use",
+          "models.Bag"
+        ],
+        [
+          "use",
+          "models.Box"
+        ],
+        [
+          "use",
+          "models.Flag"
+        ],
+        [
+          "use",
+          "models.Holder"
+        ],
+        [
+          "use",
+          "models.Item"
+        ],
+        [
+          "use",
+          "models.Req"
+        ],
+        [
+          "use",
+          "models.Req2"
+        ],
+        [
+          "use",
+          "models.Sized"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "graph_project": {
+    "calls": {
+      "before": 17,
+      "after": 17,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 4,
+      "after": 11,
+      "lost": [],
+      "added": [
+        [
+          "pkg_b.y",
+          "pkg_a.x.Base"
+        ],
+        [
+          "web2.dj",
+          "web2.dj.Home"
+        ],
+        [
+          "web2.dj",
+          "web2.dj.about"
+        ],
+        [
+          "web2.factory.create_app",
+          "web2.views.Item"
+        ],
+        [
+          "web2.factory.create_app",
+          "web2.views.UserAPI"
+        ],
+        [
+          "web2.fakes",
+          "web2.fakes.MethodView"
+        ],
+        [
+          "web2.views",
+          "web2.views.UserAPI"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 36,
+      "after": 36,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "mini_project": {
+    "calls": {
+      "before": 14,
+      "after": 15,
+      "lost": [],
+      "added": [
+        [
+          "service.Service.ambiguous_union",
+          "models.Child.ping"
+        ]
+      ]
+    },
+    "references": {
+      "before": 0,
+      "after": 4,
+      "lost": [],
+      "added": [
+        [
+          "models",
+          "base.Base"
+        ],
+        [
+          "service.Service",
+          "base.Base"
+        ],
+        [
+          "service.Service",
+          "models.Child"
+        ],
+        [
+          "service.Service",
+          "models.Other"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "proto_project": {
+    "calls": {
+      "before": 39,
+      "after": 39,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 0,
+      "after": 12,
+      "lost": [],
+      "added": [
+        [
+          "mro",
+          "mro.A"
+        ],
+        [
+          "mro",
+          "mro.B"
+        ],
+        [
+          "mro",
+          "mro.C"
+        ],
+        [
+          "mro",
+          "mro.D"
+        ],
+        [
+          "mro",
+          "mro.E"
+        ],
+        [
+          "ops",
+          "ops.OnlyR"
+        ],
+        [
+          "ops",
+          "ops.Plain"
+        ],
+        [
+          "ops",
+          "ops.Vec"
+        ],
+        [
+          "ops",
+          "ops.Vec2"
+        ],
+        [
+          "rets",
+          "rets.Factory"
+        ],
+        [
+          "rets.Factory.shadowed",
+          "rets.Other"
+        ],
+        [
+          "rets.go",
+          "rets.Factory"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 11,
+      "after": 11,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "refs_project": {
+    "calls": {
+      "before": 22,
+      "after": 22,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 9,
+      "after": 12,
+      "lost": [],
+      "added": [
+        [
+          "app",
+          "app.Resource"
+        ],
+        [
+          "app",
+          "deco.log_calls"
+        ],
+        [
+          "app.make",
+          "app.make.Base"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "shadow_project": {
+    "calls": {
+      "before": 3,
+      "after": 3,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "entries": {
+      "before": 2,
+      "after": 2,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "src_layout_project": {
+    "calls": {
+      "before": 1,
+      "after": 1,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "entries": {
+      "before": 6,
+      "after": 6,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "trace_project": {
+    "calls": {
+      "before": 20,
+      "after": 20,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 4,
+      "after": 6,
+      "lost": [],
+      "added": [
+        [
+          "core",
+          "core.Base"
+        ],
+        [
+          "core",
+          "core.deco"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 2,
+      "after": 2,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 1,
+      "after": 1,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  },
+  "typed_project": {
+    "calls": {
+      "before": 27,
+      "after": 27,
+      "lost": [],
+      "added": []
+    },
+    "references": {
+      "before": 1,
+      "after": 6,
+      "lost": [],
+      "added": [
+        [
+          "models",
+          "models.Client"
+        ],
+        [
+          "models.Client",
+          "models.Resp"
+        ],
+        [
+          "models.Client",
+          "models.custom_decorator"
+        ],
+        [
+          "models.SubClient",
+          "models.Resp"
+        ],
+        [
+          "use",
+          "models.Client"
+        ]
+      ]
+    },
+    "entries": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "dynamic": {
+      "before": 0,
+      "after": 0,
+      "lost": [],
+      "added": []
+    },
+    "cycles_identical": true
+  }
+}

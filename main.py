@@ -1,0 +1,121 @@
+"""Usage: python main.py Sublist3r [--output-dir output]"""
+import argparse
+import subprocess
+from pathlib import Path
+from ast_parser import scan_repository
+from symbol_builder import build_symbol_result, save_json
+from graph_builder import build_graph
+from graph_report import write_html
+from unresolved_classifier import reclassify_graph, write_classification
+from call_status import annotate_call_statuses, write_call_statuses
+from dependency_analysis import analyze_dependencies, write_dependency_results
+from implicit_calls import write_implicit_csv
+from external_calls import write_external_call_graph
+from flow_viewer import write_flow_html
+
+
+def run(repo: str | Path, output_dir: str | Path = 'output', *,
+        analyze_deps: bool = False, dep_roots=(), max_dep_files: int = 300,
+        source_roots: list[str] | None = None, analysis_profile=None, call_policy=None):
+    ast_data = scan_repository(repo, source_roots=source_roots)
+    try:
+        head = subprocess.run(
+            ['git', '-C', str(Path(repo).resolve()), 'rev-parse', 'HEAD'],
+            capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        head = None
+    ast_data['commit'] = head
+    symbols = build_symbol_result(ast_data)
+    symbols['commit'] = head
+    graph = annotate_call_statuses(reclassify_graph(
+        build_graph(symbols, profile=analysis_profile, call_policy=call_policy), symbols), symbols)
+    graph['commit'] = head
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    save_json(ast_data, out / 'ast_result.json')
+    save_json(symbols, out / 'symbol_result.json')
+    save_json(graph, out / 'graph_result.json')
+    write_classification(graph, out)
+    write_call_statuses(graph, out)
+    write_implicit_csv(graph, out)
+    write_external_call_graph(symbols, graph, out)
+    write_html(graph, out / 'report.html')
+    write_flow_html(graph, symbols, out / 'flow.html')
+    if graph.get('ljy_result') is not None:
+        from ljy_integration import write_legacy_outputs
+        write_legacy_outputs(graph, symbols, out)
+    if analyze_deps:
+        dep_result = analyze_dependencies(symbols, graph, roots=dep_roots, max_files=max_dep_files)
+        write_dependency_results(dep_result, out)
+        print('Dependency source analysis:', dep_result['summary'])
+    print('=== KnitCode static call graph v2.9 (object flow + implicit calls + OVERRIDDEN_BY + external classification) ===')
+    print(f"Commit          : {head or 'not a git repo'}")
+    print(f"Python files    : {ast_data['python_file_count']}")
+    print(f"Parse errors    : {len(ast_data['parse_errors'])}")
+    for err in ast_data['parse_errors']:
+        print(f"  {err['file']}: {err['message']}")
+    print(f"Symbols         : {len(symbols['symbols'])}")
+    print(f"Call sites      : {graph['total_call_sites']}")
+    print(f"Resolved sites  : {graph['resolved_call_sites']}")
+    print(f"Unresolved sites: {graph['unresolved_call_sites']}")
+    print(f"Module-level resolved sites: {graph['module_level_resolved_sites']}")
+    print(f"Collection indirect sites   : {graph['collection_indirect_resolved_sites']}")
+    print(f"Graph edges     : {graph['edge_count']} (CONTAINS/INHERITS/CALLS/INSTANTIATES/OVERRIDDEN_BY)")
+    flow_stats = graph.get('object_flow_stats') or {}
+    if flow_stats:
+        print(f"Object Flow     : {flow_stats.get('expression_steps', 0)} expression steps, "
+              f"{flow_stats.get('recursion_or_budget_cutoffs', 0)} budget/recursion cutoffs "
+              f"(entry limit {flow_stats.get('root_step_limit', 0)})")
+    im = graph['implicit_summary']
+    print(f"Implicit calls  : {im['implicit_edges']} CALLS_IMPLICIT at {im['sites']} sites "
+          f"(separate from edges; {im['kinds']})")
+    if graph.get('supplemental_summary'):
+        print(f"Unified relations: {graph['supplemental_summary']['edges']} supplemental relations "
+              f"(prediction policy: {graph['call_graph_policy']}; one semantic engine)")
+        print('Navigation      : ljy_graph.json / ljy_report.html (entry points, reading order, hierarchy, cycles)')
+    print(f"Ambiguous sites : {len(graph['ambiguous_calls'])} (multiple may-call candidates)")
+    print(f"Conditional     : {len(graph['conditional_calls'])} (may be unbound)")
+    print("Call-site status:")
+    for status, count in graph['status_summary']['statuses'].items():
+        print(f"  {status:20}: {count}")
+    print("Known non-internal origin:")
+    for kind, count in graph['status_summary']['known_non_internal_origins'].items():
+        print(f"  {kind:20}: {count}")
+    print("Classification :")
+    for category, count in graph["classification_summary"]["categories"].items():
+        if count:
+            print(f"  {category:20}: {count}")
+    print("  Note: categories are heuristic, not verified ground truth.")
+    print(f"Output          : {out.resolve()} (report.html, flow.html, classification JSON/CSV, call_statuses JSON/CSV, implicit_calls.csv, external_call_graph.json)")
+    return ast_data, symbols, graph
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Analyze a Python repo statically (never execute target code)')
+    parser.add_argument('repo', help='Directory of Python repository (e.g. ./Sublist3r)')
+    parser.add_argument('--output-dir', default='output')
+    parser.add_argument('--source-root', action='append', default=None,
+                        help='Repository-relative import root (e.g. src). Repeat if needed; '
+                             'use "." to disable automatic src-layout detection.')
+    parser.add_argument('--analysis-profile', choices=('baseline', 'integrated'), default=None)
+    parser.add_argument('--call-policy', choices=('primary', 'augmented', 'supported'), default=None)
+    parser.add_argument('--analyze-deps', action='store_true',
+                        help='Inspect stdlib and installed/external imported source using AST only')
+    parser.add_argument('--dep-root', action='append', default=[],
+                        help='Extra dependency source root (site-packages or one package); repeatable')
+    parser.add_argument('--max-dep-files', type=int, default=300,
+                        help='Bound inspected dependency Python source files (default 300)')
+    parser.add_argument('--git-validation', action='store_true',
+                        help='기존 정적분석 완료 후 Git 변경 이력 통합 보고서도 생성')
+    parser.add_argument('--git-commits', type=int, default=50,
+                        help='통합 Git 이력 분석 최대 커밋 수 (기본 50)')
+    args = parser.parse_args()
+    results = run(args.repo, args.output_dir, analyze_deps=args.analyze_deps,
+        dep_roots=args.dep_root, max_dep_files=max(1, args.max_dep_files),
+        source_roots=args.source_root, analysis_profile=args.analysis_profile, call_policy=args.call_policy)
+    if args.git_validation:
+        from git_validation.auto_integration import generate
+        if not 1 <= args.git_commits <= 300:
+            parser.error('--git-commits는 1~300 범위여야 합니다.')
+        generate(args.repo, args.output_dir, results[1], results[2], commits=args.git_commits)
+

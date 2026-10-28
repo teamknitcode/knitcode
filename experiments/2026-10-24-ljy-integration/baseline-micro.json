@@ -1,0 +1,2726 @@
+{
+  "include_implicit": false,
+  "cases": 112,
+  "complete": 111,
+  "sound": 68,
+  "categories": {
+    "assignments": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 2,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 2
+    },
+    "builtins": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 2,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 2
+    },
+    "classes": {
+      "cases": 22,
+      "complete": 22,
+      "sound": 21,
+      "strict_no_extra_edges": 22,
+      "all_truth_edges_found": 21
+    },
+    "decorators": {
+      "cases": 7,
+      "complete": 7,
+      "sound": 0,
+      "strict_no_extra_edges": 7,
+      "all_truth_edges_found": 0
+    },
+    "dicts": {
+      "cases": 12,
+      "complete": 11,
+      "sound": 5,
+      "strict_no_extra_edges": 11,
+      "all_truth_edges_found": 5
+    },
+    "direct_calls": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 0,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 0
+    },
+    "exceptions": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 0,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 0
+    },
+    "functions": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 4,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 4
+    },
+    "generators": {
+      "cases": 6,
+      "complete": 6,
+      "sound": 1,
+      "strict_no_extra_edges": 6,
+      "all_truth_edges_found": 1
+    },
+    "imports": {
+      "cases": 14,
+      "complete": 14,
+      "sound": 8,
+      "strict_no_extra_edges": 14,
+      "all_truth_edges_found": 11
+    },
+    "kwargs": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 2,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 2
+    },
+    "lambdas": {
+      "cases": 5,
+      "complete": 5,
+      "sound": 4,
+      "strict_no_extra_edges": 5,
+      "all_truth_edges_found": 4
+    },
+    "lists": {
+      "cases": 8,
+      "complete": 8,
+      "sound": 4,
+      "strict_no_extra_edges": 8,
+      "all_truth_edges_found": 4
+    },
+    "mro": {
+      "cases": 7,
+      "complete": 7,
+      "sound": 6,
+      "strict_no_extra_edges": 7,
+      "all_truth_edges_found": 6
+    },
+    "parameters": {
+      "cases": 6,
+      "complete": 6,
+      "sound": 6,
+      "strict_no_extra_edges": 6,
+      "all_truth_edges_found": 6
+    },
+    "returns": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 3,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 3
+    }
+  },
+  "records": [
+    {
+      "case": "assignments/chained",
+      "category": "assignments",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.004194959066808224
+    },
+    {
+      "case": "assignments/recursive_tuple",
+      "category": "assignments",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 3,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ],
+        [
+          "main",
+          "main.func3"
+        ],
+        [
+          "main",
+          "main.func4"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0017479159869253635
+    },
+    {
+      "case": "assignments/starred",
+      "category": "assignments",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func1"
+        ],
+        [
+          "main",
+          "main.func2"
+        ],
+        [
+          "main",
+          "main.func3"
+        ],
+        [
+          "main",
+          "main.func4"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012029169593006372
+    },
+    {
+      "case": "assignments/tuple",
+      "category": "assignments",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010682910215109587
+    },
+    {
+      "case": "builtins/functions",
+      "category": "builtins",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0007039159536361694
+    },
+    {
+      "case": "builtins/map",
+      "category": "builtins",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 4,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func"
+        ],
+        [
+          "main",
+          "main.func2"
+        ],
+        [
+          "main",
+          "main.func3"
+        ],
+        [
+          "main",
+          "main.func3.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015859580598771572
+    },
+    {
+      "case": "builtins/types",
+      "category": "builtins",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011528749018907547
+    },
+    {
+      "case": "classes/assigned_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011827910784631968
+    },
+    {
+      "case": "classes/assigned_self_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011272088158875704
+    },
+    {
+      "case": "classes/base_class_attr",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013405829668045044
+    },
+    {
+      "case": "classes/base_class_calls_child",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.002007917035371065
+    },
+    {
+      "case": "classes/call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011138750705868006
+    },
+    {
+      "case": "classes/direct_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0014525421429425478
+    },
+    {
+      "case": "classes/imported_attr_access",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013798750005662441
+    },
+    {
+      "case": "classes/imported_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.00117958290502429
+    },
+    {
+      "case": "classes/imported_call_without_init",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010284159798175097
+    },
+    {
+      "case": "classes/imported_nested_attr_access",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011000421363860369
+    },
+    {
+      "case": "classes/instance",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001068750163540244
+    },
+    {
+      "case": "classes/nested_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011423749383538961
+    },
+    {
+      "case": "classes/nested_class_calls",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0018883331213146448
+    },
+    {
+      "case": "classes/parameter_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015887499321252108
+    },
+    {
+      "case": "classes/return_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013662499841302633
+    },
+    {
+      "case": "classes/return_call_direct",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011160408612340689
+    },
+    {
+      "case": "classes/self_assign_func",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013575409539043903
+    },
+    {
+      "case": "classes/self_assignment",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012233329471200705
+    },
+    {
+      "case": "classes/self_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012180418707430363
+    },
+    {
+      "case": "classes/static_method_call",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0007871668785810471
+    },
+    {
+      "case": "classes/super_class_return",
+      "category": "classes",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001302249962463975
+    },
+    {
+      "case": "classes/tuple_assignment",
+      "category": "classes",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 3,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.MyClass.func1"
+        ],
+        [
+          "main",
+          "main.MyClass.func2"
+        ],
+        [
+          "main",
+          "main.MyClass.func3"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001642125193029642
+    },
+    {
+      "case": "decorators/assigned",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.dec"
+        ],
+        [
+          "main",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008303751237690449
+    },
+    {
+      "case": "decorators/call",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.dec"
+        ],
+        [
+          "main",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0007547908462584019
+    },
+    {
+      "case": "decorators/nested",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.func",
+          "main.func.dec"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008298330940306187
+    },
+    {
+      "case": "decorators/nested_decorators",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 6,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.dec1"
+        ],
+        [
+          "main",
+          "main.dec1.inner"
+        ],
+        [
+          "main",
+          "main.dec2"
+        ],
+        [
+          "main",
+          "main.func"
+        ],
+        [
+          "main.dec1.inner",
+          "main.dec2.inner"
+        ],
+        [
+          "main.dec2.inner",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012698329519480467
+    },
+    {
+      "case": "decorators/param_call",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 3,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.dec"
+        ],
+        [
+          "main",
+          "main.func"
+        ],
+        [
+          "main.dec",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009299588855355978
+    },
+    {
+      "case": "decorators/return",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func1.dec"
+        ],
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008849999867379665
+    },
+    {
+      "case": "decorators/return_different_func",
+      "category": "decorators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 3,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.dec"
+        ],
+        [
+          "main.dec.inner",
+          "main.func"
+        ],
+        [
+          "main.func2",
+          "main.dec.inner"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011762080248445272
+    },
+    {
+      "case": "dicts/add_key",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009280410595238209
+    },
+    {
+      "case": "dicts/assign",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func1"
+        ],
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009216659236699343
+    },
+    {
+      "case": "dicts/call",
+      "category": "dicts",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013526249676942825
+    },
+    {
+      "case": "dicts/ext_key",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [
+        "ext"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001043875003233552
+    },
+    {
+      "case": "dicts/nested",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func1"
+        ],
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001236042007803917
+    },
+    {
+      "case": "dicts/new_key_param",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011194581165909767
+    },
+    {
+      "case": "dicts/param",
+      "category": "dicts",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015712499152868986
+    },
+    {
+      "case": "dicts/param_key",
+      "category": "dicts",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.func1",
+          "main.func2"
+        ],
+        [
+          "main.func1",
+          "main.func3"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.002057958161458373
+    },
+    {
+      "case": "dicts/return",
+      "category": "dicts",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001279124990105629
+    },
+    {
+      "case": "dicts/return_assign",
+      "category": "dicts",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010645000729709864
+    },
+    {
+      "case": "dicts/type_coercion",
+      "category": "dicts",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.000952292000874877
+    },
+    {
+      "case": "dicts/update",
+      "category": "dicts",
+      "complete": false,
+      "sound": false,
+      "strict_no_extra_edges": false,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 2,
+      "false_positives": [
+        [
+          "main",
+          "<**PyDict**>.update"
+        ]
+      ],
+      "false_negatives": [
+        [
+          "main",
+          "main.func1"
+        ],
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0014296660665422678
+    },
+    {
+      "case": "direct_calls/assigned_call",
+      "category": "direct_calls",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.return_func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012778749223798513
+    },
+    {
+      "case": "direct_calls/imported_return_call",
+      "category": "direct_calls",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "to_import.return_func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011250409297645092
+    },
+    {
+      "case": "direct_calls/return_call",
+      "category": "direct_calls",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.return_func"
+        ],
+        [
+          "main",
+          "main.return_func.nested_return_func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.00177679187618196
+    },
+    {
+      "case": "direct_calls/with_parameters",
+      "category": "direct_calls",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011004169937223196
+    },
+    {
+      "case": "exceptions/raise",
+      "category": "exceptions",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.A.__init__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008452089969068766
+    },
+    {
+      "case": "exceptions/raise_assigned",
+      "category": "exceptions",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.A.__init__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008393339812755585
+    },
+    {
+      "case": "exceptions/raise_attr",
+      "category": "exceptions",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.A.B.__init__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011262500192970037
+    },
+    {
+      "case": "functions/assigned_call",
+      "category": "functions",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009508749935775995
+    },
+    {
+      "case": "functions/assigned_call_lit_param",
+      "category": "functions",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009294168557971716
+    },
+    {
+      "case": "functions/call",
+      "category": "functions",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008213331457227468
+    },
+    {
+      "case": "functions/imported_call",
+      "category": "functions",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0017522498965263367
+    },
+    {
+      "case": "generators/iter_param",
+      "category": "generators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.func",
+          "main.Cls.__iter__"
+        ],
+        [
+          "main.func",
+          "main.Cls.__next__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001928625162690878
+    },
+    {
+      "case": "generators/iter_return",
+      "category": "generators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 3,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.Cls.__iter__"
+        ],
+        [
+          "main",
+          "main.Cls.__next__"
+        ],
+        [
+          "main",
+          "main.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.002338416175916791
+    },
+    {
+      "case": "generators/iterable",
+      "category": "generators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func.__iter__"
+        ],
+        [
+          "main",
+          "main.func.__next__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.002504166914150119
+    },
+    {
+      "case": "generators/iterable_assigned",
+      "category": "generators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.Cls.__iter__"
+        ],
+        [
+          "main",
+          "main.Cls.__next__"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001612541964277625
+    },
+    {
+      "case": "generators/no_iter",
+      "category": "generators",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015859161503612995
+    },
+    {
+      "case": "generators/yield",
+      "category": "generators",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013988339342176914
+    },
+    {
+      "case": "imports/chained_import",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013104998506605625
+    },
+    {
+      "case": "imports/import_all",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "from_module.func1"
+        ],
+        [
+          "main",
+          "from_module.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010712500661611557
+    },
+    {
+      "case": "imports/import_as",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009688748978078365
+    },
+    {
+      "case": "imports/import_from",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001128166913986206
+    },
+    {
+      "case": "imports/init_func_import",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0014609999489039183
+    },
+    {
+      "case": "imports/init_import",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "nested.nested.Smth.func"
+        ]
+      ],
+      "missing_nodes": [
+        "nested"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001632167026400566
+    },
+    {
+      "case": "imports/parent_import",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [
+        "nested"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0017912089824676514
+    },
+    {
+      "case": "imports/relative_import",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009314578492194414
+    },
+    {
+      "case": "imports/relative_import_with_name",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [
+        "nested"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015425002202391624
+    },
+    {
+      "case": "imports/simple_import",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008250409737229347
+    },
+    {
+      "case": "imports/submodule_import",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001098250038921833
+    },
+    {
+      "case": "imports/submodule_import_all",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "from_module.nested_module.func1"
+        ],
+        [
+          "main",
+          "from_module.nested_module.func2"
+        ]
+      ],
+      "missing_nodes": [
+        "from_module"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012559581082314253
+    },
+    {
+      "case": "imports/submodule_import_as",
+      "category": "imports",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001172458054497838
+    },
+    {
+      "case": "imports/submodule_import_from",
+      "category": "imports",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [
+        "from_module"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001132874982431531
+    },
+    {
+      "case": "kwargs/assigned_call",
+      "category": "kwargs",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009392921347171068
+    },
+    {
+      "case": "kwargs/call",
+      "category": "kwargs",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011286658700555563
+    },
+    {
+      "case": "kwargs/chained_call",
+      "category": "kwargs",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.func2",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010054579470306635
+    },
+    {
+      "case": "lambdas/call",
+      "category": "lambdas",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.000739875016734004
+    },
+    {
+      "case": "lambdas/calls_parameter",
+      "category": "lambdas",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.<lambda1>",
+          "main.func1"
+        ],
+        [
+          "main.<lambda1>",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009117091540247202
+    },
+    {
+      "case": "lambdas/chained_calls",
+      "category": "lambdas",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0013763750903308392
+    },
+    {
+      "case": "lambdas/parameter_call",
+      "category": "lambdas",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008322498761117458
+    },
+    {
+      "case": "lambdas/return_call",
+      "category": "lambdas",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001005625119432807
+    },
+    {
+      "case": "lists/comprehension_if",
+      "category": "lists",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009487499482929707
+    },
+    {
+      "case": "lists/comprehension_val",
+      "category": "lists",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011406659614294767
+    },
+    {
+      "case": "lists/ext_index",
+      "category": "lists",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [
+        "ext"
+      ],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0015233750455081463
+    },
+    {
+      "case": "lists/nested",
+      "category": "lists",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010578338988125324
+    },
+    {
+      "case": "lists/nested_comprehension",
+      "category": "lists",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011273750569671392
+    },
+    {
+      "case": "lists/param_index",
+      "category": "lists",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main.func1",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009389170445501804
+    },
+    {
+      "case": "lists/simple",
+      "category": "lists",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func4"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012041658628731966
+    },
+    {
+      "case": "lists/slice",
+      "category": "lists",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009355000220239162
+    },
+    {
+      "case": "mro/basic",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010246250312775373
+    },
+    {
+      "case": "mro/basic_init",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009676669724285603
+    },
+    {
+      "case": "mro/parents_same_superclass",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011369169224053621
+    },
+    {
+      "case": "mro/self_assignment",
+      "category": "mro",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.B.func"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 1,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001759708160534501
+    },
+    {
+      "case": "mro/super_call",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001261209137737751
+    },
+    {
+      "case": "mro/two_parents",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0012383749708533287
+    },
+    {
+      "case": "mro/two_parents_method_defined",
+      "category": "mro",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0011427921708673239
+    },
+    {
+      "case": "parameters/assigned_call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0008489580359309912
+    },
+    {
+      "case": "parameters/call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0007825000211596489
+    },
+    {
+      "case": "parameters/imported_assigned_call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009578331373631954
+    },
+    {
+      "case": "parameters/imported_call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009232081938534975
+    },
+    {
+      "case": "parameters/nested_call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009909579530358315
+    },
+    {
+      "case": "parameters/param_call",
+      "category": "parameters",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0009129999671131372
+    },
+    {
+      "case": "returns/call",
+      "category": "returns",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010273328516632318
+    },
+    {
+      "case": "returns/imported_call",
+      "category": "returns",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010692090727388859
+    },
+    {
+      "case": "returns/nested_import_call",
+      "category": "returns",
+      "complete": true,
+      "sound": true,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": true,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "false_positives": [],
+      "false_negatives": [],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.0010295829270035028
+    },
+    {
+      "case": "returns/return_complex",
+      "category": "returns",
+      "complete": true,
+      "sound": false,
+      "strict_no_extra_edges": true,
+      "all_truth_edges_found": false,
+      "tp": 5,
+      "fp": 0,
+      "fn": 1,
+      "false_positives": [],
+      "false_negatives": [
+        [
+          "main",
+          "main.func2"
+        ]
+      ],
+      "missing_nodes": [],
+      "parse_errors": [],
+      "skipped": {
+        "class_instantiation_without_init": 0,
+        "non_dotted_external": 0
+      },
+      "seconds": 0.001339457929134369
+    }
+  ]
+}

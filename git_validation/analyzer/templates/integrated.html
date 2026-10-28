@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KnitCode 통합 분석</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#dfe8f5;background:#101824}body{max-width:1280px;margin:0 auto;padding:32px 22px}h1{margin-bottom:6px}p{line-height:1.7;color:#adbbcd}a{color:#82cdff}nav{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}nav a,.card{border:1px solid #334257;background:#192638;border-radius:10px;padding:16px;text-decoration:none}.stats{display:flex;gap:12px;flex-wrap:wrap}.card{flex:1;min-width:140px}.card strong{display:block;font-size:30px;color:#82e1c4}.toolbar{display:flex;gap:12px;margin:24px 0}input,select{font:inherit;padding:12px;background:#192638;border:1px solid #475871;border-radius:8px;color:inherit}input{flex:1;min-width:0}table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:14px;border-bottom:1px solid #334257;vertical-align:top}th{color:#91a8c4}summary{cursor:pointer;overflow-wrap:anywhere}.scroll{overflow:auto}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#101824;padding:12px}small{color:#9cacc0}li{margin:10px 0;line-height:1.5}.warning{color:#ffc187}code{overflow-wrap:anywhere}details p{margin:8px 0}@media(max-width:600px){body{padding:16px}.toolbar{flex-direction:column}td,th{padding:10px}}
+</style>
+<header><small>KNITCODE / STATIC + GIT INSIGHTS</small><h1>코드 구조와 변경 이력</h1><p id="source"></p></header>
+<nav><a href="static/report.html">정적분석 보고서 ↗</a><a href="git/report.html">GitHub 변경 분석 ↗</a><a href="integrated_result.json">통합 JSON ↗</a></nav>
+<div class="stats" id="stats"></div>
+<p>함수를 펼치면 수정 작성자·근거 커밋과 기준 커밋의 직접 호출 관계를 확인할 수 있습니다. 경로와 함수명이 같은 후보를 연결하며, 과거 함수의 동일성이나 실제 실행 영향을 확정하지 않습니다.</p>
+<div class="toolbar"><input id="search" aria-label="함수·파일·작성자 검색" placeholder="함수, 파일, 작성자 검색"><select id="match" aria-label="연결 상태"><option value="">전체 연결 상태</option><option value="unique_key">단일 후보 연결</option><option value="ambiguous_key">복수 후보</option><option value="unmatched">기준 커밋에서 미연결</option></select></div>
+<div class="scroll"><table><thead><tr><th>파일 / 함수 / 변경 근거</th><th>반복 변경 커밋</th><th>작성자</th><th>연결 상태</th></tr></thead><tbody id="rows"></tbody></table></div>
+<h2>분석 범위와 한계</h2><p id="scope"></p><ul id="limits"></ul><ul class="warning" id="warnings"></ul>
+<script id="data" type="application/json">__REPORT_DATA__</script>
+<script>
+const data=JSON.parse(document.getElementById('data').textContent);
+const $=id=>document.getElementById(id);
+function el(tag,text){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;}
+$('source').textContent=data.repository+' · 기준 커밋 '+data.commit;
+for(const [label,key] of [['변경 이력 함수','history_functions'],['단일 후보 연결','matched_keys'],['정적 그래프 노드','static_nodes'],['정적 그래프 간선','static_edges']]){const c=el('div');c.className='card';c.append(el('strong',data.summary[key]),el('span',label));$('stats').append(c);}
+$('scope').textContent=`분석 ${data.scope.analyzed_commits} / 날짜 조건에 맞는 ${data.scope.matching_commits} 커밋 · 선택 범위 ${data.scope.since||'시작 제한 없음'} ~ ${data.scope.until||'종료 제한 없음'} · 상한 적용 ${data.scope.truncated?'있음':'없음'} · 모든 호출 관계는 위 기준 커밋의 스냅샷입니다.`;
+for(const value of data.limitations)$('limits').append(el('li',value));
+for(const value of data.warnings)$('warnings').append(el('li',value));
+const labels={unique_key:'단일 후보 연결',ambiguous_key:'복수 후보 · 연결 보류',unmatched:'미연결'};
+function relations(details,label,edges,direction){details.append(el('p',label+' ('+edges.length+' 호출 간선)'));for(const e of edges){const node=data.nodes[e[direction]];details.append(el('pre',(node?.canonical_name||e[direction])+'\n'+JSON.stringify(e.evidence,null,2)));}}
+function render(){const q=$('search').value.toLowerCase(),m=$('match').value;$('rows').replaceChildren();for(const r of data.functions){if(m&&m!==r.match)continue;if(![r.file,r.name,...r.authors].join(' ').toLowerCase().includes(q))continue;const tr=el('tr'),td=el('td'),d=el('details');d.append(el('summary',r.file+' :: '+r.name));d.addEventListener('toggle',()=>{if(!d.open||d.dataset.loaded)return;d.dataset.loaded='1';d.append(el('p','기준 커밋 심볼 후보: '+(r.symbol_candidates.join(', ')||'없음')));relations(d,'이 함수를 직접 호출하는 후보',r.callers,'source');relations(d,'이 함수가 직접 호출하는 후보',r.callees,'target');for(const e of r.events){const item=el('pre',e.sha.slice(0,12)+' · '+e.date+' · '+e.author+'\n'+e.message+'\n'+e.kind+' · '+e.facts.join(' / ')+(e.excluded_reason?'\n집계 제외/주의: '+e.excluded_reason:''));d.append(item);}});td.append(d);tr.append(td,el('td',r.change_count),el('td',r.authors.join(', ')),el('td',labels[r.match]));$('rows').append(tr);}if(!$('rows').children.length){const r=el('tr'),t=el('td','해당하는 함수 변경 이력이 없습니다.');t.colSpan=4;r.append(t);$('rows').append(r);}}
+$('search').addEventListener('input',render);$('match').addEventListener('change',render);render();
+</script></html>

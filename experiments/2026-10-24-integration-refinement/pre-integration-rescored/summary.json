@@ -1,0 +1,122 @@
+[
+  {
+    "project": "Sublist3r",
+    "paper": {
+      "precision": 0.9515570934256056,
+      "recall": 0.6773399014778325,
+      "f1": 0.7913669064748202,
+      "tp": 275,
+      "fp": 14,
+      "fn": 131
+    },
+    "explicit_only": {
+      "precision": 0.9547038327526133,
+      "recall": 0.6748768472906403,
+      "f1": 0.7907647907647909,
+      "tp": 274,
+      "fp": 13,
+      "fn": 132
+    },
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 6
+    },
+    "note": "Re-scored frozen predictions with common scope names; no new engine inference"
+  },
+  {
+    "project": "asciinema",
+    "paper": {
+      "precision": 0.9205776173285198,
+      "recall": 0.750733137829912,
+      "f1": 0.8270252807743227,
+      "tp": 255,
+      "fp": 22,
+      "fn": 85
+    },
+    "explicit_only": {
+      "precision": 0.96875,
+      "recall": 0.7302052785923754,
+      "f1": 0.8327309995145369,
+      "tp": 248,
+      "fp": 8,
+      "fn": 92
+    },
+    "skipped": {
+      "class_instantiation_without_init": 18,
+      "non_dotted_external": 3
+    },
+    "note": "Re-scored frozen predictions with common scope names; no new engine inference"
+  },
+  {
+    "project": "autojump",
+    "paper": {
+      "precision": 0.9646464646464646,
+      "recall": 0.7113594040968343,
+      "f1": 0.8188638799571275,
+      "tp": 382,
+      "fp": 14,
+      "fn": 153
+    },
+    "explicit_only": {
+      "precision": 0.9670886075949368,
+      "recall": 0.7113594040968343,
+      "f1": 0.8197424892703864,
+      "tp": 382,
+      "fp": 13,
+      "fn": 153
+    },
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 0
+    },
+    "note": "Re-scored frozen predictions with common scope names; no new engine inference"
+  },
+  {
+    "project": "fabric",
+    "paper": {
+      "precision": 0.919831223628692,
+      "recall": 0.5721784776902887,
+      "f1": 0.7055016181229775,
+      "tp": 218,
+      "fp": 19,
+      "fn": 163
+    },
+    "explicit_only": {
+      "precision": 0.9513274336283186,
+      "recall": 0.5643044619422573,
+      "f1": 0.7084019769357496,
+      "tp": 215,
+      "fp": 11,
+      "fn": 166
+    },
+    "skipped": {
+      "class_instantiation_without_init": 2,
+      "non_dotted_external": 3
+    },
+    "note": "Re-scored frozen predictions with common scope names; no new engine inference"
+  },
+  {
+    "project": "face_classification",
+    "paper": {
+      "precision": 0.9875621890547264,
+      "recall": 0.9126436781609195,
+      "f1": 0.9486260454002389,
+      "tp": 397,
+      "fp": 5,
+      "fn": 38
+    },
+    "explicit_only": {
+      "precision": 0.9875621890547264,
+      "recall": 0.9126436781609195,
+      "f1": 0.9486260454002389,
+      "tp": 397,
+      "fp": 5,
+      "fn": 38
+    },
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 5
+    },
+    "note": "Re-scored frozen predictions with common scope names; no new engine inference"
+  }
+]

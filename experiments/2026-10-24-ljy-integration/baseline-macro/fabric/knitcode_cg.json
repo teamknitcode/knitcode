@@ -1,0 +1,398 @@
+{
+  "fabric._version": [
+    "<**PyStr**>.join",
+    "<builtin>.map"
+  ],
+  "fabric.config.Config.__init__": [
+    "<builtin>.super",
+    "fabric.config.Config.load_ssh_config",
+    "fabric.config.Config.set_runtime_ssh_path",
+    "paramiko.config.SSHConfig"
+  ],
+  "fabric.config.Config._clone_init_kwargs": [
+    "<builtin>.dict",
+    "<builtin>.super",
+    "copy.deepcopy",
+    "paramiko.config.SSHConfig"
+  ],
+  "fabric.config.Config._load_ssh_file": [
+    "<**PyStr**>.format",
+    "<builtin>.len",
+    "<builtin>.open",
+    "os.path.isfile"
+  ],
+  "fabric.config.Config._load_ssh_files": [
+    "<**PyStr**>.format",
+    "<builtin>.IOError",
+    "fabric.config.Config._load_ssh_file",
+    "os.path.exists",
+    "os.path.expanduser"
+  ],
+  "fabric.config.Config.clone": [
+    "<builtin>.getattr",
+    "<builtin>.setattr",
+    "<builtin>.super",
+    "fabric.config.Config.load_ssh_config"
+  ],
+  "fabric.config.Config.global_defaults": [
+    "fabric.util.get_local_user",
+    "invoke.config.Config.global_defaults",
+    "invoke.config.merge_dicts"
+  ],
+  "fabric.config.Config.load_ssh_config": [
+    "fabric.config.Config._load_ssh_files"
+  ],
+  "fabric.connection.Connection.__eq__": [
+    "<builtin>.isinstance",
+    "fabric.connection.Connection._identity"
+  ],
+  "fabric.connection.Connection.__exit__": [
+    "fabric.connection.Connection.close"
+  ],
+  "fabric.connection.Connection.__hash__": [
+    "<builtin>.hash",
+    "fabric.connection.Connection._identity"
+  ],
+  "fabric.connection.Connection.__init__": [
+    "<**PyStr**>.format",
+    "<builtin>.ValueError",
+    "<builtin>.int",
+    "<builtin>.isinstance",
+    "<builtin>.super",
+    "fabric.config.Config.__init__",
+    "fabric.config.Config.clone",
+    "fabric.connection.Connection.derive_shorthand",
+    "fabric.connection.Connection.get_gateway",
+    "fabric.connection.Connection.resolve_connect_kwargs",
+    "paramiko.client.AutoAddPolicy",
+    "paramiko.client.SSHClient"
+  ],
+  "fabric.connection.Connection.__lt__": [
+    "fabric.connection.Connection._identity"
+  ],
+  "fabric.connection.Connection.__repr__": [
+    "<**PyList**>.append",
+    "<**PyStr**>.format",
+    "<**PyStr**>.join",
+    "<builtin>.isinstance"
+  ],
+  "fabric.connection.Connection.create_session": [
+    "paramiko.agent.AgentRequestHandler"
+  ],
+  "fabric.connection.Connection.derive_shorthand": [
+    "<builtin>.int"
+  ],
+  "fabric.connection.Connection.forward_local": [
+    "fabric.tunnels.TunnelManager.__init__",
+    "invoke.exceptions.ThreadException",
+    "threading.Event",
+    "threading.Event.set"
+  ],
+  "fabric.connection.Connection.forward_remote.callback": [
+    "<**PyList**>.append",
+    "fabric.tunnels.Tunnel.__init__",
+    "socket.socket",
+    "threading.Event"
+  ],
+  "fabric.connection.Connection.get": [
+    "fabric.transfer.Transfer.__init__",
+    "fabric.transfer.Transfer.get"
+  ],
+  "fabric.connection.Connection.get_gateway": [
+    "<builtin>.dict",
+    "<builtin>.reversed",
+    "fabric.connection.Connection.__init__",
+    "fabric.connection.Connection.derive_shorthand"
+  ],
+  "fabric.connection.Connection.local": [
+    "<builtin>.super"
+  ],
+  "fabric.connection.Connection.open": [
+    "<**PyStr**>.format",
+    "<**PyStr**>.split",
+    "<builtin>.ValueError",
+    "<builtin>.dict",
+    "fabric.connection.Connection.open_gateway"
+  ],
+  "fabric.connection.Connection.open_gateway": [
+    "<**PyStr**>.format",
+    "<builtin>.int",
+    "<builtin>.isinstance",
+    "paramiko.config.SSHConfig",
+    "paramiko.proxy.ProxyCommand"
+  ],
+  "fabric.connection.Connection.put": [
+    "fabric.transfer.Transfer.__init__",
+    "fabric.transfer.Transfer.put"
+  ],
+  "fabric.executor.ConnectionCall.make_context": [
+    "fabric.connection.Connection.__init__"
+  ],
+  "fabric.executor.FabExecutor.expand_calls": [
+    "<**PyList**>.append",
+    "<**PyList**>.extend",
+    "<builtin>.isinstance",
+    "fabric.executor.FabExecutor.expand_calls",
+    "fabric.executor.FabExecutor.parameterize",
+    "invoke.Call",
+    "invoke.Task"
+  ],
+  "fabric.executor.FabExecutor.parameterize": [
+    "<**PyStr**>.format"
+  ],
+  "fabric.group.Group.__init__": [
+    "<builtin>.list.extend",
+    "<builtin>.map"
+  ],
+  "fabric.group.Group.from_connections": [
+    "fabric.group.Group.__init__"
+  ],
+  "fabric.group.GroupResult.__init__": [
+    "<builtin>.super"
+  ],
+  "fabric.group.GroupResult._bifurcate": [
+    "<builtin>.dict.items",
+    "<builtin>.isinstance"
+  ],
+  "fabric.group.GroupResult.failed": [
+    "fabric.group.GroupResult._bifurcate"
+  ],
+  "fabric.group.GroupResult.succeeded": [
+    "fabric.group.GroupResult._bifurcate"
+  ],
+  "fabric.group.SerialGroup.run": [
+    "fabric.exceptions.GroupException.__init__",
+    "fabric.group.GroupResult.__init__"
+  ],
+  "fabric.group.ThreadingGroup.run": [
+    "<**PyList**>.append",
+    "<builtin>.dict",
+    "fabric.exceptions.GroupException.__init__",
+    "fabric.group.GroupResult.__init__",
+    "invoke.util.ExceptionHandlingThread"
+  ],
+  "fabric.main": [
+    "fabric.main.make_program"
+  ],
+  "fabric.main.Fab.core_args": [
+    "<builtin>.super",
+    "invoke.Argument"
+  ],
+  "fabric.main.Fab.load_collection": [
+    "<builtin>.super",
+    "invoke.Collection"
+  ],
+  "fabric.main.Fab.no_tasks_given": [
+    "<builtin>.super"
+  ],
+  "fabric.main.Fab.print_version": [
+    "<**PyStr**>.format",
+    "<builtin>.print",
+    "<builtin>.super"
+  ],
+  "fabric.main.Fab.update_config": [
+    "<builtin>.super",
+    "getpass.getpass"
+  ],
+  "fabric.runners.Remote.generate_result": [
+    "fabric.runners.Result.__init__"
+  ],
+  "fabric.runners.Remote.start": [
+    "invoke.pty_size"
+  ],
+  "fabric.runners.Remote.stop": [
+    "<builtin>.hasattr"
+  ],
+  "fabric.runners.Result.__init__": [
+    "<builtin>.super"
+  ],
+  "fabric.transfer.Transfer.get": [
+    "<builtin>.ValueError",
+    "<builtin>.callable",
+    "<builtin>.hasattr",
+    "fabric.transfer.Result.__init__",
+    "os.chmod",
+    "os.path.abspath",
+    "posixpath.basename",
+    "posixpath.join",
+    "stat.S_IMODE"
+  ],
+  "fabric.transfer.Transfer.is_remote_dir": [
+    "stat.S_ISDIR"
+  ],
+  "fabric.transfer.Transfer.put": [
+    "<**PyStr**>.format",
+    "<builtin>.ValueError",
+    "<builtin>.callable",
+    "<builtin>.getattr",
+    "<builtin>.hasattr",
+    "fabric.transfer.Result.__init__",
+    "fabric.transfer.Transfer.is_remote_dir",
+    "os.path.abspath",
+    "os.path.basename",
+    "os.stat",
+    "posixpath.join",
+    "stat.S_IMODE"
+  ],
+  "fabric.tunnels.Tunnel.__init__": [
+    "<builtin>.super"
+  ],
+  "fabric.tunnels.Tunnel._run": [
+    "fabric.tunnels.Tunnel.read_and_write",
+    "select.select"
+  ],
+  "fabric.tunnels.Tunnel.read_and_write": [
+    "<builtin>.len"
+  ],
+  "fabric.tunnels.TunnelManager.__init__": [
+    "<builtin>.super"
+  ],
+  "fabric.tunnels.TunnelManager._run": [
+    "<**PyList**>.append",
+    "fabric.tunnels.Tunnel.__init__",
+    "invoke.exceptions.ThreadException",
+    "socket.socket",
+    "threading.Event",
+    "time.sleep"
+  ],
+  "fabric.util": [
+    "<builtin>.getattr",
+    "<builtin>.globals",
+    "logging.getLogger"
+  ],
+  "fabric.util.get_local_user": [
+    "getpass.getuser"
+  ],
+  "integration.concurrency._worker": [
+    "<**PyStr**>.format"
+  ],
+  "integration.concurrency.concurrency.manual_threading_works_okay": [
+    "<**PyList**>.append",
+    "<**PyStr**>.format",
+    "<builtin>.dict",
+    "<builtin>.enumerate",
+    "<builtin>.len",
+    "<builtin>.max",
+    "codecs.open",
+    "invoke.util.ExceptionHandlingThread",
+    "invoke.vendor.six.moves.queue.Queue",
+    "invoke.vendor.six.moves.zip_longest",
+    "pytest.skip"
+  ],
+  "integration.concurrency.concurrency.setup": [
+    "fabric.connection.Connection.__init__"
+  ],
+  "integration.connection.Connection_.large_remote_commands_finish_cleanly": [
+    "<**PyStr**>.format",
+    "<builtin>.len",
+    "<builtin>.open",
+    "fabric.connection.Connection.__init__"
+  ],
+  "integration.connection.Connection_.local.wraps_invoke_run": [
+    "fabric.connection.Connection.__init__",
+    "fabric.connection.Connection.local"
+  ],
+  "integration.connection.Connection_.mixed_use_of_local_and_run": [
+    "fabric.connection.Connection.__init__",
+    "fabric.connection.Connection.local"
+  ],
+  "integration.connection.Connection_.run.simple_command_on_host": [
+    "fabric.connection.Connection.__init__"
+  ],
+  "integration.connection.Connection_.run.simple_command_with_pty": [
+    "<builtin>.map",
+    "<builtin>.tuple",
+    "fabric.connection.Connection.__init__",
+    "invoke.pty_size"
+  ],
+  "integration.connection.Connection_.ssh_connections.close_method_closes_connection": [
+    "fabric.connection.Connection.close",
+    "integration.connection.Connection_.ssh_connections.open_method_generates_real_connection"
+  ],
+  "integration.connection.Connection_.ssh_connections.open_method_generates_real_connection": [
+    "fabric.connection.Connection.__init__",
+    "fabric.connection.Connection.open"
+  ],
+  "integration.connection.Connection_.sudo.mixed_sudo_and_normal_commands": [
+    "integration.connection.skip_outside_travis"
+  ],
+  "integration.connection.Connection_.sudo.setup": [
+    "fabric.config.Config.__init__",
+    "fabric.connection.Connection.__init__"
+  ],
+  "integration.connection.Connection_.sudo.sudo_command": [
+    "integration.connection.skip_outside_travis"
+  ],
+  "integration.connection.skip_outside_travis": [
+    "os.environ.get",
+    "pytest.skip"
+  ],
+  "integration.group.Group_.excepted_command": [
+    "<builtin>.isinstance",
+    "fabric.group.Group.__init__",
+    "fabric.group.ThreadingGroup.run"
+  ],
+  "integration.group.Group_.failed_command": [
+    "fabric.group.Group.__init__",
+    "fabric.group.ThreadingGroup.run"
+  ],
+  "integration.group.Group_.simple_command": [
+    "fabric.group.Group.__init__",
+    "fabric.group.ThreadingGroup.run"
+  ],
+  "integration.transfer.Transfer_.get.base_case": [
+    "<builtin>.str"
+  ],
+  "integration.transfer.Transfer_.get.file_like_objects": [
+    "io.BytesIO"
+  ],
+  "integration.transfer.Transfer_.get.mode_preservation": [
+    "<builtin>.str",
+    "stat.S_IMODE"
+  ],
+  "integration.transfer.Transfer_.get.setup": [
+    "fabric.connection.Connection.__init__",
+    "integration.transfer._support"
+  ],
+  "integration.transfer.Transfer_.put.base_case": [
+    "<builtin>.str",
+    "integration.transfer._support",
+    "py.path.local"
+  ],
+  "integration.transfer.Transfer_.put.file_like_objects": [
+    "<builtin>.str",
+    "io.BytesIO"
+  ],
+  "integration.transfer.Transfer_.put.mode_preservation": [
+    "<builtin>.str",
+    "stat.S_IMODE"
+  ],
+  "integration.transfer.Transfer_.put.setup": [
+    "fabric.connection.Connection.__init__",
+    "py.path.local.mkdtemp"
+  ],
+  "integration.transfer._support": [
+    "os.path.dirname",
+    "os.path.join"
+  ],
+  "sites.shared_conf": [
+    "<**PyList**>.append",
+    "alabaster.get_path",
+    "datetime.datetime.now",
+    "os.environ.get",
+    "os.path.abspath",
+    "os.path.dirname",
+    "os.path.join"
+  ],
+  "tasks": [
+    "invoke.Collection"
+  ],
+  "tasks.integration": [
+    "invocations.pytest.integration"
+  ],
+  "tasks.publish": [
+    "functools.partial",
+    "invocations.packaging.release.upload",
+    "invocations.util.tmpdir"
+  ]
+}

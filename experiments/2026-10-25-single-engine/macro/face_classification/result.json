@@ -1,0 +1,60 @@
+{
+  "project": "face_classification",
+  "files": 20,
+  "parse_errors": 0,
+  "seconds": 0.37,
+  "skipped": {
+    "class_instantiation_without_init": 0,
+    "non_dotted_external": 5
+  },
+  "internal": {
+    "precision": 1.0,
+    "recall": 0.22298850574712645,
+    "f1": 0.3646616541353384,
+    "tp": 97,
+    "fp": 0,
+    "fn": 338
+  },
+  "full": {
+    "precision": 0.9875621890547264,
+    "recall": 0.9126436781609195,
+    "f1": 0.9486260454002389,
+    "tp": 397,
+    "fp": 5,
+    "fn": 38
+  },
+  "full_with_implicit": {
+    "precision": 0.9875621890547264,
+    "recall": 0.9126436781609195,
+    "f1": 0.9486260454002389,
+    "tp": 397,
+    "fp": 5,
+    "fn": 38
+  },
+  "paper": {
+    "precision": 0.9875621890547264,
+    "recall": 0.9126436781609195,
+    "f1": 0.9486260454002389,
+    "tp": 397,
+    "fp": 5,
+    "fn": 38
+  },
+  "primary_full": {
+    "precision": 0.9875621890547264,
+    "recall": 0.9126436781609195,
+    "f1": 0.9486260454002389,
+    "tp": 397,
+    "fp": 5,
+    "fn": 38
+  },
+  "analysis_profile": "integrated",
+  "call_graph_policy": "supported",
+  "supplemental_summary": {
+    "producer": "unified",
+    "edges": 72,
+    "types": {
+      "REFERENCES": 5,
+      "IMPORTS": 67
+    }
+  }
+}

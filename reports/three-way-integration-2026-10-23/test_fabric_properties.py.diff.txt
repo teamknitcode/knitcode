@@ -1,0 +1,11 @@
+--- original/test_fabric_properties.py
++++ schema-adapted/test_fabric_properties.py
+@@ -10,7 +10,7 @@
+     def pairs(self, source):
+         graph = self.graph(source)
+         names = {n['id']: n['canonical_name'] for n in graph['nodes']}
+-        return {(names[e['source']], names[e['target']]) for e in graph['edges'] if e['type'] == 'CALLS'}
++        return {(names[e['source']], names[e['target']]) for e in [*graph['edges'], *graph.get('implicit_edges', [])] if e['type'] in ('CALLS','CALLS_IMPLICIT')}
+ 
+     def test_getter_access_has_implicit_edge(self):
+         pairs = self.pairs('''

@@ -1,0 +1,55 @@
+................................................................ [ 39%]
+...............................................................................................F....                            [100%]
+=================================== FAILURES ===================================
+___________________ TraceRecallTests.test_record_with_pytest ___________________
+
+self = <test_trace_recall.TraceRecallTests testMethod=test_record_with_pytest>
+
+    @unittest.skipUnless(importlib.util.find_spec('pytest'), 'pytest is not installed')
+    def test_record_with_pytest(self):
+        trace_path = Path(self.tmp.name) / 'recorded.json'
+        T.record(self.repo, trace_path, tests='')
+        trace = json.loads(trace_path.read_text(encoding='utf-8'))
+        self.assertEqual(trace['tests_failed'], 0)
+        report = T.compare(self.out, trace_path)
+>       self.assertEqual(report['scores']['explicit+implicit']['recall'], 1.0)
+E       AssertionError: 0.8571 != 1.0
+
+tests/test_trace_recall.py:130: AssertionError
+----------------------------- Captured stdout call -----------------------------
+=== KnitCode static call graph v2.9 (object flow + implicit calls + OVERRIDDEN_BY + external classification) ===
+Commit          : not a git repo
+Python files    : 2
+Parse errors    : 0
+Symbols         : 10
+Call sites      : 9
+Resolved sites  : 6
+Unresolved sites: 3
+Module-level resolved sites: 0
+Collection indirect sites   : 0
+Graph edges     : 10 (CONTAINS/INHERITS/CALLS/INSTANTIATES/OVERRIDDEN_BY)
+Object Flow     : 65 expression steps, 0 budget/recursion cutoffs (entry limit 6000)
+Implicit calls  : 1 CALLS_IMPLICIT at 1 sites (separate from edges; {'property_get': 1})
+Ambiguous sites : 0 (multiple may-call candidates)
+Conditional     : 0 (may be unbound)
+Call-site status:
+  RESOLVED_INTERNAL   : 6
+  KNOWN_NON_INTERNAL  : 2
+  UNKNOWN             : 1
+Known non-internal origin:
+  BUILTIN             : 1
+  STDLIB              : 1
+  EXTERNAL_IMPORT     : 0
+Classification :
+  BUILTIN             : 1
+  STDLIB              : 1
+  INTERNAL_CANDIDATE  : 1
+  Note: categories are heuristic, not verified ground truth.
+Output          : /private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmpvksxw3tm/out (report.html, flow.html, classification JSON/CSV, call_statuses JSON/CSV, implicit_calls.csv, external_call_graph.json)
+Running: /private/tmp/knitcode-review-venv/bin/python -m pytest -p calltrace_plugin -p no:cacheprovider -q (cwd=/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmpvksxw3tm/proj)
+..                                                                       [100%]
+2 passed in 0.01s
+Trace: 8 distinct calls, pytest exit 0 (0 failed of 2 collected) -> /private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmpvksxw3tm/recorded.json
+=========================== short test summary info ============================
+FAILED tests/test_trace_recall.py::TraceRecallTests::test_record_with_pytest
+1 failed, 163 passed, 25 subtests passed in 0.91s

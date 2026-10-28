@@ -1,0 +1,131 @@
+{
+  "repeat": 5,
+  "scope": "Same 5 projects, includes process startup, selected engine pipeline and all JSON/HTML exports",
+  "rows": [
+    {
+      "iteration": 1,
+      "version": "before",
+      "wall_seconds": 2.239744500024244,
+      "projects": {
+        "Sublist3r": 0.43,
+        "asciinema": 0.33,
+        "autojump": 0.62,
+        "fabric": 0.38,
+        "face_classification": 0.42
+      }
+    },
+    {
+      "iteration": 1,
+      "version": "after",
+      "wall_seconds": 1.8321668750140816,
+      "projects": {
+        "Sublist3r": 0.32,
+        "asciinema": 0.27,
+        "autojump": 0.51,
+        "fabric": 0.31,
+        "face_classification": 0.36
+      }
+    },
+    {
+      "iteration": 2,
+      "version": "after",
+      "wall_seconds": 1.842295667156577,
+      "projects": {
+        "Sublist3r": 0.32,
+        "asciinema": 0.28,
+        "autojump": 0.51,
+        "fabric": 0.31,
+        "face_classification": 0.35
+      }
+    },
+    {
+      "iteration": 2,
+      "version": "before",
+      "wall_seconds": 2.25828979187645,
+      "projects": {
+        "Sublist3r": 0.43,
+        "asciinema": 0.34,
+        "autojump": 0.63,
+        "fabric": 0.38,
+        "face_classification": 0.41
+      }
+    },
+    {
+      "iteration": 3,
+      "version": "before",
+      "wall_seconds": 2.270136916078627,
+      "projects": {
+        "Sublist3r": 0.43,
+        "asciinema": 0.34,
+        "autojump": 0.63,
+        "fabric": 0.39,
+        "face_classification": 0.41
+      }
+    },
+    {
+      "iteration": 3,
+      "version": "after",
+      "wall_seconds": 1.8493007079232484,
+      "projects": {
+        "Sublist3r": 0.33,
+        "asciinema": 0.28,
+        "autojump": 0.51,
+        "fabric": 0.32,
+        "face_classification": 0.36
+      }
+    },
+    {
+      "iteration": 4,
+      "version": "after",
+      "wall_seconds": 1.859245500061661,
+      "projects": {
+        "Sublist3r": 0.33,
+        "asciinema": 0.28,
+        "autojump": 0.51,
+        "fabric": 0.32,
+        "face_classification": 0.36
+      }
+    },
+    {
+      "iteration": 4,
+      "version": "before",
+      "wall_seconds": 2.288042417028919,
+      "projects": {
+        "Sublist3r": 0.43,
+        "asciinema": 0.34,
+        "autojump": 0.63,
+        "fabric": 0.39,
+        "face_classification": 0.43
+      }
+    },
+    {
+      "iteration": 5,
+      "version": "before",
+      "wall_seconds": 2.295737124979496,
+      "projects": {
+        "Sublist3r": 0.44,
+        "asciinema": 0.34,
+        "autojump": 0.63,
+        "fabric": 0.39,
+        "face_classification": 0.42
+      }
+    },
+    {
+      "iteration": 5,
+      "version": "after",
+      "wall_seconds": 1.8838152498938143,
+      "projects": {
+        "Sublist3r": 0.34,
+        "asciinema": 0.28,
+        "autojump": 0.52,
+        "fabric": 0.32,
+        "face_classification": 0.36
+      }
+    }
+  ],
+  "median_seconds": {
+    "before": 2.270136916078627,
+    "after": 1.8493007079232484
+  },
+  "relative_change": -0.18537921883686193
+}

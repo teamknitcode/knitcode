@@ -1,0 +1,122 @@
+{
+  "engine_module": "/Users/jeff_park/knitcode-integrated/graph_builder.py",
+  "adapter_module": "/Users/jeff_park/knitcode-integrated/pycg_adapter.py",
+  "include_implicit": true,
+  "cases": 112,
+  "complete": 111,
+  "sound": 71,
+  "categories": {
+    "assignments": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 2,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 2
+    },
+    "builtins": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 2,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 2
+    },
+    "classes": {
+      "cases": 22,
+      "complete": 22,
+      "sound": 21,
+      "strict_no_extra_edges": 22,
+      "all_truth_edges_found": 21
+    },
+    "decorators": {
+      "cases": 7,
+      "complete": 7,
+      "sound": 0,
+      "strict_no_extra_edges": 7,
+      "all_truth_edges_found": 0
+    },
+    "dicts": {
+      "cases": 12,
+      "complete": 11,
+      "sound": 5,
+      "strict_no_extra_edges": 11,
+      "all_truth_edges_found": 5
+    },
+    "direct_calls": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 0,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 0
+    },
+    "exceptions": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 0,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 0
+    },
+    "functions": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 4,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 4
+    },
+    "generators": {
+      "cases": 6,
+      "complete": 6,
+      "sound": 1,
+      "strict_no_extra_edges": 6,
+      "all_truth_edges_found": 1
+    },
+    "imports": {
+      "cases": 14,
+      "complete": 14,
+      "sound": 11,
+      "strict_no_extra_edges": 14,
+      "all_truth_edges_found": 11
+    },
+    "kwargs": {
+      "cases": 3,
+      "complete": 3,
+      "sound": 2,
+      "strict_no_extra_edges": 3,
+      "all_truth_edges_found": 2
+    },
+    "lambdas": {
+      "cases": 5,
+      "complete": 5,
+      "sound": 4,
+      "strict_no_extra_edges": 5,
+      "all_truth_edges_found": 4
+    },
+    "lists": {
+      "cases": 8,
+      "complete": 8,
+      "sound": 4,
+      "strict_no_extra_edges": 8,
+      "all_truth_edges_found": 4
+    },
+    "mro": {
+      "cases": 7,
+      "complete": 7,
+      "sound": 6,
+      "strict_no_extra_edges": 7,
+      "all_truth_edges_found": 6
+    },
+    "parameters": {
+      "cases": 6,
+      "complete": 6,
+      "sound": 6,
+      "strict_no_extra_edges": 6,
+      "all_truth_edges_found": 6
+    },
+    "returns": {
+      "cases": 4,
+      "complete": 4,
+      "sound": 3,
+      "strict_no_extra_edges": 4,
+      "all_truth_edges_found": 3
+    }
+  }
+}

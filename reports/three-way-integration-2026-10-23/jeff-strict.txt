@@ -1,0 +1,27 @@
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting tests/test_paper_evaluation.py ________________
+ImportError while importing test module '/Users/jeff_park/knitcode-integrated/benchmarks/three-way-review/jeff-strict/tests/test_paper_evaluation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_paper_evaluation.py:5: in <module>
+    from scripts.evaluate_paper import score, external_name
+E   ModuleNotFoundError: No module named 'scripts.evaluate_paper'
+_____________ ERROR collecting tests/test_paper_run_comparison.py ______________
+ImportError while importing test module '/Users/jeff_park/knitcode-integrated/benchmarks/three-way-review/jeff-strict/tests/test_paper_run_comparison.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_paper_run_comparison.py:6: in <module>
+    from scripts.compare_paper_runs import compare_runs
+E   ModuleNotFoundError: No module named 'scripts.compare_paper_runs'
+=========================== short test summary info ============================
+ERROR tests/test_paper_evaluation.py
+ERROR tests/test_paper_run_comparison.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.20s

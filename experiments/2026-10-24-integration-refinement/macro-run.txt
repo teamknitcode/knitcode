@@ -1,0 +1,52 @@
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/subbrute/subbrute.py:374: SyntaxWarning: invalid escape sequence '\.'
+  domain_match = re.compile("([a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*)+")
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:75: SyntaxWarning: invalid escape sequence '\_'
+  print("""%s
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:287: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:344: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:440: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:579: SyntaxWarning: invalid escape sequence '\?'
+  link_regx = re.compile('<a href="http://toolbar.netcraft.com/site_report\?url=(.*)">')
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:656: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/private/var/folders/bt/j1m2r_l94hx1p5y55mdw3mt40000gn/T/tmp2kqd_c9z/sublist3r.py:893: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+<unknown>:374: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:75: SyntaxWarning: invalid escape sequence '\_'
+<unknown>:287: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:344: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:440: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:579: SyntaxWarning: invalid escape sequence '\?'
+<unknown>:656: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:893: SyntaxWarning: invalid escape sequence '\-'
+<unknown>:374: SyntaxWarning: invalid escape sequence '\.'
+<unknown>:75: SyntaxWarning: invalid escape sequence '\_'
+<unknown>:287: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:344: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:440: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:579: SyntaxWarning: invalid escape sequence '\?'
+<unknown>:656: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:893: SyntaxWarning: invalid escape sequence '\-'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\_'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\?'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\/'
+<unknown>:1: SyntaxWarning: invalid escape sequence '\-'
+Sublist3r: done in 0.51s
+asciinema: done in 0.35s
+autojump: done in 0.65s
+fabric: done in 0.41s
+face_classification: done in 0.42s
+
+| project | KnitCode explicit internal P / R | KnitCode all calls P / R (F1) | PyCG P / R (F1) | overlap (Jaccard) |
+|---|---|---|---|---|
+| Sublist3r | 100.0% / 28.1% | 95.2% / 67.7% (79.1%) | - | - |
+| asciinema | 95.5% / 31.4% | 92.1% / 75.1% (82.7%) | - | - |
+| autojump | 99.4% / 28.7% | 96.5% / 71.1% (81.9%) | - | - |
+| fabric | 94.5% / 18.1% | 92.2% / 58.8% (71.8%) | - | - |
+| face_classification | 100.0% / 22.3% | 98.8% / 91.3% (94.9%) | - | - |

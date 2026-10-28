@@ -1,0 +1,13 @@
+{
+  "shadow_project": [],
+  "src_layout_project": [],
+  "mini_project": [],
+  "proto_project": [],
+  "graph_project": [["imp.b.fb", "imp.a.fa"], ["imp.d.fd", "imp.c.fc"], ["web.app.nope", "web.app.Cache.get"], ["web2.factory.create_app", "web2.other.legacy"]],
+  "generic_project": [],
+  "celery": [],
+  "classvalue_project": [],
+  "refs_project": [["app.Resource.start", "app.Resource._helper"], ["app.Tagged", "deco.tagged"], ["app.decorated", "deco.log_calls"], ["app.rebound", "app.other"], ["app.run", "app.on_done"], ["app.run", "app.other"], ["app.run", "app.run.helper"], ["deco.log_calls", "deco.log_calls.wrapper"], ["deco.tagged", "deco.tagged.decorate"]],
+  "trace_project": [["core.deco", "core.deco.wrapper"], ["core.decorated", "core.deco"], ["core.via_map", "core.convert"], ["core.via_sorted", "core.keyfn"]],
+  "typed_project": [["models.Client.decorated", "models.custom_decorator"]]
+}

@@ -1,0 +1,172 @@
+[
+  {
+    "project": "Sublist3r",
+    "files": 4,
+    "parse_errors": 0,
+    "seconds": 0.28,
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 6
+    },
+    "internal": {
+      "precision": 1.0,
+      "recall": 0.28078817733990147,
+      "f1": 0.43846153846153846,
+      "tp": 114,
+      "fp": 0,
+      "fn": 292
+    },
+    "full": {
+      "precision": 0.9547038327526133,
+      "recall": 0.6748768472906403,
+      "f1": 0.7907647907647909,
+      "tp": 274,
+      "fp": 13,
+      "fn": 132
+    },
+    "full_with_implicit": {
+      "precision": 0.9515570934256056,
+      "recall": 0.6773399014778325,
+      "f1": 0.7913669064748202,
+      "tp": 275,
+      "fp": 14,
+      "fn": 131
+    }
+  },
+  {
+    "project": "asciinema",
+    "files": 24,
+    "parse_errors": 0,
+    "seconds": 0.23,
+    "skipped": {
+      "class_instantiation_without_init": 18,
+      "non_dotted_external": 3
+    },
+    "internal": {
+      "precision": 0.954954954954955,
+      "recall": 0.31378299120234604,
+      "f1": 0.47235699560627203,
+      "tp": 106,
+      "fp": 5,
+      "fn": 234
+    },
+    "full": {
+      "precision": 0.96875,
+      "recall": 0.7302052785923754,
+      "f1": 0.8327309995145369,
+      "tp": 248,
+      "fp": 8,
+      "fn": 92
+    },
+    "full_with_implicit": {
+      "precision": 0.9205776173285198,
+      "recall": 0.750733137829912,
+      "f1": 0.8270252807743227,
+      "tp": 255,
+      "fp": 22,
+      "fn": 85
+    }
+  },
+  {
+    "project": "autojump",
+    "files": 4,
+    "parse_errors": 0,
+    "seconds": 0.42,
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 0
+    },
+    "internal": {
+      "precision": 0.9935483870967742,
+      "recall": 0.28677839851024206,
+      "f1": 0.44508670520231214,
+      "tp": 154,
+      "fp": 1,
+      "fn": 381
+    },
+    "full": {
+      "precision": 0.9670886075949368,
+      "recall": 0.7113594040968343,
+      "f1": 0.8197424892703864,
+      "tp": 382,
+      "fp": 13,
+      "fn": 153
+    },
+    "full_with_implicit": {
+      "precision": 0.9646464646464646,
+      "recall": 0.7113594040968343,
+      "f1": 0.8188638799571275,
+      "tp": 382,
+      "fp": 14,
+      "fn": 153
+    }
+  },
+  {
+    "project": "fabric",
+    "files": 20,
+    "parse_errors": 0,
+    "seconds": 0.28,
+    "skipped": {
+      "class_instantiation_without_init": 2,
+      "non_dotted_external": 3
+    },
+    "internal": {
+      "precision": 0.9402985074626866,
+      "recall": 0.16535433070866143,
+      "f1": 0.28125000000000006,
+      "tp": 63,
+      "fp": 4,
+      "fn": 318
+    },
+    "full": {
+      "precision": 0.9513274336283186,
+      "recall": 0.5643044619422573,
+      "f1": 0.7084019769357496,
+      "tp": 215,
+      "fp": 11,
+      "fn": 166
+    },
+    "full_with_implicit": {
+      "precision": 0.919831223628692,
+      "recall": 0.5721784776902887,
+      "f1": 0.7055016181229775,
+      "tp": 218,
+      "fp": 19,
+      "fn": 163
+    }
+  },
+  {
+    "project": "face_classification",
+    "files": 20,
+    "parse_errors": 0,
+    "seconds": 0.3,
+    "skipped": {
+      "class_instantiation_without_init": 0,
+      "non_dotted_external": 5
+    },
+    "internal": {
+      "precision": 1.0,
+      "recall": 0.22298850574712645,
+      "f1": 0.3646616541353384,
+      "tp": 97,
+      "fp": 0,
+      "fn": 338
+    },
+    "full": {
+      "precision": 0.9875621890547264,
+      "recall": 0.9126436781609195,
+      "f1": 0.9486260454002389,
+      "tp": 397,
+      "fp": 5,
+      "fn": 38
+    },
+    "full_with_implicit": {
+      "precision": 0.9875621890547264,
+      "recall": 0.9126436781609195,
+      "f1": 0.9486260454002389,
+      "tp": 397,
+      "fp": 5,
+      "fn": 38
+    }
+  }
+]

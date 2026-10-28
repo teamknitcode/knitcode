@@ -1,0 +1,34 @@
+{
+  "project": "Sublist3r",
+  "files": 4,
+  "parse_errors": 0,
+  "seconds": 0.31,
+  "skipped": {
+    "class_instantiation_without_init": 0,
+    "non_dotted_external": 6
+  },
+  "internal": {
+    "precision": 1.0,
+    "recall": 0.28078817733990147,
+    "f1": 0.43846153846153846,
+    "tp": 114,
+    "fp": 0,
+    "fn": 292
+  },
+  "full": {
+    "precision": 0.9547038327526133,
+    "recall": 0.6748768472906403,
+    "f1": 0.7907647907647909,
+    "tp": 274,
+    "fp": 13,
+    "fn": 132
+  },
+  "full_with_implicit": {
+    "precision": 0.9515570934256056,
+    "recall": 0.6773399014778325,
+    "f1": 0.7913669064748202,
+    "tp": 275,
+    "fp": 14,
+    "fn": 131
+  }
+}

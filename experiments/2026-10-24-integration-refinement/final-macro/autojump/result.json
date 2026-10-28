@@ -1,0 +1,67 @@
+{
+  "project": "autojump",
+  "files": 4,
+  "parse_errors": 0,
+  "seconds": 0.65,
+  "skipped": {
+    "class_instantiation_without_init": 0,
+    "non_dotted_external": 0
+  },
+  "internal": {
+    "precision": 0.9935483870967742,
+    "recall": 0.28677839851024206,
+    "f1": 0.44508670520231214,
+    "tp": 154,
+    "fp": 1,
+    "fn": 381
+  },
+  "full": {
+    "precision": 0.9670886075949368,
+    "recall": 0.7113594040968343,
+    "f1": 0.8197424892703864,
+    "tp": 382,
+    "fp": 13,
+    "fn": 153
+  },
+  "full_with_implicit": {
+    "precision": 0.9646464646464646,
+    "recall": 0.7113594040968343,
+    "f1": 0.8188638799571275,
+    "tp": 382,
+    "fp": 14,
+    "fn": 153
+  },
+  "paper": {
+    "precision": 0.9646464646464646,
+    "recall": 0.7113594040968343,
+    "f1": 0.8188638799571275,
+    "tp": 382,
+    "fp": 14,
+    "fn": 153
+  },
+  "primary_full": {
+    "precision": 0.9670886075949368,
+    "recall": 0.7113594040968343,
+    "f1": 0.8197424892703864,
+    "tp": 382,
+    "fp": 13,
+    "fn": 153
+  },
+  "analysis_profile": "integrated",
+  "call_graph_policy": "supported",
+  "supplemental_summary": {
+    "producer": "ljy",
+    "edges": 39,
+    "types": {
+      "CALLS_OVERRIDE": 8,
+      "CALLS": 4,
+      "INSTANTIATES": 3,
+      "REFERENCES": 12,
+      "CALLS_IMPLICIT": 10,
+      "IMPORTS": 2
+    },
+    "skipped": {
+      "unmatched_callable": 11
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-24",
+  "timezone": "Asia/Seoul",
+  "python": "3.12.2",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "engine_head": "5e92661301daf94767bfa6a9aa9d7daf0b7dc1bc",
+  "baseline_archive_sha256": "51aad3ef319b5b9691cae8709b2f661e3309ba2caac8023c837a4e09dd421be3",
+  "chosen_profile": "integrated",
+  "chosen_call_policy": "supported",
+  "adoption_checks": [
+    {
+      "project": "Sublist3r",
+      "primary_scores_identical": true,
+      "precision_not_lower": true,
+      "recall_not_lower": true,
+      "f1_not_lower": true
+    },
+    {
+      "project": "asciinema",
+      "primary_scores_identical": true,
+      "precision_not_lower": true,
+      "recall_not_lower": true,
+      "f1_not_lower": true
+    },
+    {
+      "project": "autojump",
+      "primary_scores_identical": true,
+      "precision_not_lower": true,
+      "recall_not_lower": true,
+      "f1_not_lower": true
+    },
+    {
+      "project": "fabric",
+      "primary_scores_identical": true,
+      "precision_not_lower": true,
+      "recall_not_lower": true,
+      "f1_not_lower": true
+    },
+    {
+      "project": "face_classification",
+      "primary_scores_identical": true,
+      "precision_not_lower": true,
+      "recall_not_lower": true,
+      "f1_not_lower": true
+    }
+  ],
+  "test_result": {
+    "passed": 496,
+    "skipped": 7,
+    "subtests_passed": 27,
+    "failed": 0
+  },
+  "micro": {
+    "baseline": {
+      "cases": 112,
+      "complete": 111,
+      "sound": 68
+    },
+    "augmented": {
+      "cases": 112,
+      "complete": 110,
+      "sound": 68
+    },
+    "selected": {
+      "cases": 112,
+      "complete": 111,
+      "sound": 68
+    }
+  },
+  "artifact_commit": "ce37eb5668465b0c17371914e863d699826447ee",
+  "project_commits": {
+    "Sublist3r": "3f5fc6da0142540c56e97c98f9925bb7d0855fb5",
+    "asciinema": "350d5e9d8b7cee1be5db4091815942c9d035e7dc",
+    "autojump": "06e082c91805cb022900819b2e0881eeae780d58",
+    "fabric": "34edfe4a1cc9e3d72c3cc41490673db29afe7bbb",
+    "face_classification": "2f152a227c528567924fa1c7587a2e6b8eb43309"
+  },
+  "source_sha256": {
+    "analysis_defaults.py": "73c41471a1f90d2f678a921c3d3dc4bcdd819775bef2c708c7f56839715cf71e",
+    "analyze_project.py": "780bf02e7cbf765d6d7c73b48aac19bb9852dc7bee91f9e8b5fa69061ec17c82",
+    "ast_parser.py": "ae9fffaa77bddd850f57959192f4a34f4451fef9af4817ee8d6affd75b3bdb96",
+    "audit_realworld_changes.py": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+    "builtin_receivers.py": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+    "call_status.py": "5d06bb5b711dd52f1c979bb776372998b1de5b03d77c3e577aae4f86944a9916",
+    "class_decorators.py": "d135ba69ba2b5653b18bea133e847012eea844be16b867af02ca675bd344db72",
+    "compare_execution_context_stable.py": "6f632caf6dea0c5457c9dc9f79aa9cc7eb251b25c0df107682d4e5ae207349cd",
+    "compare_pycg.py": "720a4b367745c64b753503558882cd7bb181198cf1d48b4d144f74dc6931332f",
+    "compare_results.py": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+    "dependency_analysis.py": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+    "external_bases.py": "872a11dd221bf870dd0cd6b131745d9f66a3f94c4ce6569f92cd7a5b1063132a",
+    "external_calls.py": "0a1a546557d8839ca72f9fb0e82a38884b118c38b5f7671d4a952c651b3ccc45",
+    "external_returns.py": "fea94354c764d1829fd15f035b7dbe17bc5b8b3897ad8fe732b4c24a231d5819",
+    "flow_analysis.py": "1261a1c93632011930a0491509888d720239d5ccf82d109ca2b030038d521977",
+    "flow_viewer.py": "00e8c9b3bb3b195813ef70d03c223f0dd489e0538967adc1ffeb1838f49a5723",
+    "graph_builder.py": "7a4578fce3b4db7b91554054e6ca9a524d43fa364597a95750df817e76297e7a",
+    "graph_report.py": "eb9fc9d3d015ad9d5a202d8aa62b42d294943b7d1e575f59ab7cd8ea8a87e08d",
+    "implicit_calls.py": "a52f2ae95aa63bb67a067ac74fbf191d96c9b84315f6ee9f207220613f61cb57",
+    "import_resolution.py": "fc159fdf2ba1f303d70b2f30b815de876b02ac2d66f40b9d90b07523ef621224",
+    "join_origin.py": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+    "knit_viewer.py": "3597e7f6781432adbbc8cd9e7efc30543eec435f8f8878fc0d7aaac27b31c5bc",
+    "ljy_integration.py": "41250bf115cbde28295b0bb6989dd26fc97ba46899cd7dc980955af6a007941e",
+    "ljy_trace_recall.py": "43c99c40b9bca8b13d63589cf7cf4f24782ae44c35fadeb69d26cee8e6bf18f4",
+    "main.py": "3f82358b8c7042b8a5b771ac9aced9cafc9f612a61f669ac2517ced2d372d108",
+    "measure_object_flow.py": "3a74637314298dae78604840a34a4144c4aaeed979a8b108dd9a383c6cb8df16",
+    "object_flow.py": "87c82bcbba3ffc8d2ab213fc8474cba1b77546a843d76c7e244afea0df80de90",
+    "override_relations.py": "c71585e4b48adf677cf6705910a48d7c112b4a3af91cf694474b45676eecb5db",
+    "pycg_benchmark.py": "718f5e4d6e115ebd40b508eca0983cf017502ed74cb672a83a4a317d1fd2f090",
+    "reclassify_existing.py": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+    "scripts/analyze_project.py": "d59f9c0a6ba6592700db962a2cfa62982c3a47b1a1ba3a69375731862f9c07d5",
+    "scripts/evaluate_engine.py": "d5a6b95f782fba39763fac0338e1b335f32d1c066c58f9f6846baae52e07412e",
+    "scripts/evaluate_pycg_micro.py": "b5b0b627eb7f4d302258747b1af142bbca5d771195f86b21983dbfd285801ff8",
+    "scripts/package_extension.py": "212ce3cb9ad8d129a13363f6db1474e89bfc3f63d7de5b3f80699ebf96f09b02",
+    "symbol_builder.py": "3e526a1e5b4dc02774c47fbcf3c1a1b9f1bc859a30fbb657ad4c2be364af77e7",
+    "trace_recall.py": "6d5b553a9f6459b212e80f946dd8c162af16c88db88aecd8cb0f11a594df6261",
+    "unresolved_classifier.py": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+    "verify_c3_changes.py": "733d18513204671476d6d0253d631acf7063c708c03caa11951d73c0f836fb54",
+    "verify_object_flow.py": "5cfb9aae9ea634fc879aa8f16b19ae2bab633e552ec8ea206698124db54e861b",
+    "verify_v22.py": "46fb1d8a56cb911a1c3ddd49529979c69562068831f74d2741b8bc10d49d986f",
+    "verify_v23.py": "22fb485c54c07449d15488aa828dcccf9c8c8526cfd6b9316cf084d345606d53",
+    "verify_v231.py": "a6a29ea0e86d1b11a12dd1ac86cfe81be2cf3122aa7a02732f1420c89402ebdf",
+    "verify_v24.py": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+    "viewer_template.html": "8738edc57999e13054fbf84ebd32e57962f344202dc74dd1739b3458614292f0",
+    "vscode-extension/media/map.js": "061eee6666768d130d068a9d8c723b179c0a467d3ab76569425ff4ce81c4904b",
+    "vscode_export.py": "030e461e9448fc60c41d28e4a098cdfbb94924ba222981fd08ce411793ea06bc",
+    "vscode_history.py": "0ef6b522266957fdb6f321e33e8f4cf242bb34dc5a7b39d9ffb2dbb68d60425f"
+  },
+  "note": "Exploratory policy comparison on the same pinned public benchmark. No claim of independent generalization. Published PyCG numbers are not a rerun. Times include all exports. Call-status counters remain primary-engine-only.",
+  "selected_archive_sha256": "aaae9965e29dee8b9a6a85c6923ef2660fe02ff324f0835e45e45e9813708113",
+  "auxiliary_metric_tradeoff": "Implicit-inclusive autojump FP 14 -> 16, F1 decreases about 0.18 percentage points. Main-score and feature-preservation priorities drove selection."
+}

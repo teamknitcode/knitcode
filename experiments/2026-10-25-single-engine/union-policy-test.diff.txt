@@ -1,0 +1,32 @@
+--- baseline/test_v24.py
++++ single-engine/test_v24.py
+@@ -25,11 +25,11 @@
+         path.parent.mkdir(parents=True, exist_ok=True)
+         path.write_text(text, encoding='utf-8')
+ 
+-    def graph(self):
++    def graph(self, profile=None):
+         source = scan_repository(self.root)
+         self.assertEqual([], source['parse_errors'])
+         symbols = build_symbol_result(source)
+-        graph = annotate_call_statuses(reclassify_graph(build_graph(symbols), symbols), symbols)
++        graph = annotate_call_statuses(reclassify_graph(build_graph(symbols, profile=profile), symbols), symbols)
+         self.assertEqual(check_status(graph, symbols), 0)
+         self.assertEqual(sum(x['status']=='RESOLVED_INTERNAL' for x in graph['call_statuses']),
+                          graph['resolved_call_sites'])
+@@ -93,8 +93,14 @@
+ 
+     def test_generic_annotation_is_not_guessed(self):
+         self.write('app', 'class User:\n    def run(self): pass\ndef go(ctx: User | None):\n    ctx.run()\n')
+-        _, g = self.graph()
++        _, g = self.graph(profile='baseline')
+         self.assertEqual(self.call(g, 'ctx.run')[1], [])
++        # The unified engine explicitly supports source-backed union members.
++        # Preserve the historical contract above and check MAY_CALL, not certainty.
++        _, integrated = self.graph(profile='integrated')
++        row, edges = self.call(integrated, 'ctx.run')
++        self.assertEqual([e['target'] for e in edges], ['METHOD:sample.app.User.run'])
++        self.assertEqual(row['certainty'], 'MAY_CALL')
+ 
+     def test_unknown_type_name_not_linked_by_method_name(self):
+         self.write('app', 'class User:\n    def run(self): pass\ndef go(ctx: Unrelated):\n    ctx.run()\n')

@@ -1,0 +1,1482 @@
+{
+  "integrated_commit": "5e92661301daf94767bfa6a9aa9d7daf0b7dc1bc",
+  "sources": {
+    "greatjung-root": {
+      "path": "benchmarks/greatjung-source",
+      "commit": "c7b63ab52313117fd9828cf80bec6a4bde7d2bea",
+      "subdirectory": "."
+    },
+    "greatjung-jse": {
+      "path": "benchmarks/greatjung-source/jse",
+      "commit": "c7b63ab52313117fd9828cf80bec6a4bde7d2bea",
+      "subdirectory": "jse"
+    },
+    "jeff": {
+      "path": "benchmarks/jeff-source",
+      "commit": "e0cef3d12d31411c71925b556d5715b352ba8291",
+      "subdirectory": "."
+    },
+    "ljy-main": {
+      "path": "benchmarks/three-way-review/ljy-main",
+      "commit": "d3a9da6631c247e786946633a8f77ea69314745f",
+      "subdirectory": "."
+    }
+  },
+  "source_file_comparison": {
+    "greatjung-root": [
+      {
+        "file": "ast_parser.py",
+        "source_sha256": "4386f1d5e4aa78be1955f1203a6a453afebefaef4071e58f74ed102072e73866",
+        "integrated_sha256": "ae9fffaa77bddd850f57959192f4a34f4451fef9af4817ee8d6affd75b3bdb96",
+        "status": "modified"
+      },
+      {
+        "file": "audit_realworld_changes.py",
+        "source_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "integrated_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "status": "identical"
+      },
+      {
+        "file": "builtin_receivers.py",
+        "source_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "integrated_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "status": "identical"
+      },
+      {
+        "file": "call_status.py",
+        "source_sha256": "364b23e9d677df6f0ad571dc85df577e885858364bf6cc5ced3a7b31a231c433",
+        "integrated_sha256": "5d06bb5b711dd52f1c979bb776372998b1de5b03d77c3e577aae4f86944a9916",
+        "status": "modified"
+      },
+      {
+        "file": "compare_execution_context_stable.py",
+        "source_sha256": "6f632caf6dea0c5457c9dc9f79aa9cc7eb251b25c0df107682d4e5ae207349cd",
+        "integrated_sha256": "6f632caf6dea0c5457c9dc9f79aa9cc7eb251b25c0df107682d4e5ae207349cd",
+        "status": "identical"
+      },
+      {
+        "file": "compare_results.py",
+        "source_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "integrated_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "status": "identical"
+      },
+      {
+        "file": "dependency_analysis.py",
+        "source_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "integrated_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "status": "identical"
+      },
+      {
+        "file": "flow_analysis.py",
+        "source_sha256": "dd70011a44155e1f1dbdcc9834c6874337176518b6a2d09057239b6d9cc72825",
+        "integrated_sha256": "1261a1c93632011930a0491509888d720239d5ccf82d109ca2b030038d521977",
+        "status": "modified"
+      },
+      {
+        "file": "graph_builder.py",
+        "source_sha256": "a72c636b1d7c1857a4963ab7efea15b7da034d701307e32c235f72a64586a5c0",
+        "integrated_sha256": "3f4680a8e21f72b690d1a10d6be298056e6748b1a884e4c1154429bb9cd9fac8",
+        "status": "modified"
+      },
+      {
+        "file": "graph_report.py",
+        "source_sha256": "8423ae85a9e79ad8c200e07142b63107947db5a27635b4198abc8a7a35dbbff1",
+        "integrated_sha256": "eb9fc9d3d015ad9d5a202d8aa62b42d294943b7d1e575f59ab7cd8ea8a87e08d",
+        "status": "modified"
+      },
+      {
+        "file": "import_resolution.py",
+        "source_sha256": "3082ab252b70155e41480da612a9a524ffbd16d490719dcfaaa5d4b450da2fab",
+        "integrated_sha256": "fc159fdf2ba1f303d70b2f30b815de876b02ac2d66f40b9d90b07523ef621224",
+        "status": "modified"
+      },
+      {
+        "file": "join_origin.py",
+        "source_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "integrated_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "status": "identical"
+      },
+      {
+        "file": "main.py",
+        "source_sha256": "4ab3d3b676baca7dca1875fb510bf722de1ae82cde7a0cf72ae288b8f37ed893",
+        "integrated_sha256": "e23ced56fb612ed7799026d97b80dacb0094bbeb27107fe013f4e40441af68a7",
+        "status": "modified"
+      },
+      {
+        "file": "measure_object_flow.py",
+        "source_sha256": "3a74637314298dae78604840a34a4144c4aaeed979a8b108dd9a383c6cb8df16",
+        "integrated_sha256": "3a74637314298dae78604840a34a4144c4aaeed979a8b108dd9a383c6cb8df16",
+        "status": "identical"
+      },
+      {
+        "file": "object_flow.py",
+        "source_sha256": "3b3f75d86dc7eb194ec3d3a0459aef3968a0510f0c619980b6ca45be9d1e34ab",
+        "integrated_sha256": "87c82bcbba3ffc8d2ab213fc8474cba1b77546a843d76c7e244afea0df80de90",
+        "status": "modified"
+      },
+      {
+        "file": "reclassify_existing.py",
+        "source_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "integrated_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "status": "identical"
+      },
+      {
+        "file": "symbol_builder.py",
+        "source_sha256": "906d92d2fdedb9fba0ba606e87336fd648998cebbdbb6183bdfc51446f4420e7",
+        "integrated_sha256": "3e526a1e5b4dc02774c47fbcf3c1a1b9f1bc859a30fbb657ad4c2be364af77e7",
+        "status": "modified"
+      },
+      {
+        "file": "tests/fixtures/mini/bad_syntax.py",
+        "source_sha256": "f14a991b94d8bd34b845fd7c926a96361b62b5c7beb95ac4397628fd1cb00a0c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/subbrute/__init__.py",
+        "source_sha256": "c05a5d232fccced4163ebf6283e8b874296cc4c548100ad7e92ab4362c2b1115",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/subbrute/subbrute.py",
+        "source_sha256": "79cfc4dec404b6882b6eb500ffda80f35ecc21e32d54c62923bb8fdcfe474c14",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/sublist3r.py",
+        "source_sha256": "ba9a3e968d412c4461353cda0ca4a5e5b94a102a2c4f9aa6a2d6226d0ceb0508",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/unimported.py",
+        "source_sha256": "be8d48df9628bf2d8f05b1b0a8c2531e5780c2704d6ec89b8bf302c4a66d97f3",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_analysis.py",
+        "source_sha256": "32d9ae80e2d262617bbdd14a1956d36f17ce58f0db5bfb5e0bf7891400180456",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_bound_callable_control_flow.py",
+        "source_sha256": "ed0a9767574db332ba1c65885a6ebab9e42ce7afd943703a53742b4bfef1cf1f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_builtin_receivers.py",
+        "source_sha256": "a37914b1440fe8c16ccae0d7bb57049dcb26a288fed670a90fdd869b8dad8a63",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_c3_mro.py",
+        "source_sha256": "984af30e1da50d02b7af5e4c0ae3488c869594256f16c2eac77e63a87a59f07a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_classification.py",
+        "source_sha256": "84518078c06705b362ceb90346ca7f7d99ed72757b3b7a3ec0ceecac7a3662fd",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_context_dispatch.py",
+        "source_sha256": "8c4a15e178ec10163af500df3f9263fb7f9ac49de16c314f04700e271cd1cd29",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_dependency_analysis.py",
+        "source_sha256": "72ec9b00e3dcf77b144111391601c48fe3a1533eaa34c133e918ca5b4fda8f8c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_duplicate_function_binding.py",
+        "source_sha256": "1d07987a17a45b44c8303a84dcb185d6d028cb7ee92ea7b04376a7e7c07a6c08",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_execution_context.py",
+        "source_sha256": "8ae4304543e7631882b723d1b236b59f44335e3f7269a073bd053d2748ba42c8",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_field_flow.py",
+        "source_sha256": "ff89eaaae8e00296e2bfea9a8e7518c49c43e81dffe334a5c9c71014ec76da0f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_generic_mro.py",
+        "source_sha256": "2d451b2ebdc3a01c60a90ca3cc715dee4598603c996e4b289987dcb21aeef176",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_join_origin.py",
+        "source_sha256": "4f9bb4f6cc5541fd94409ef4dbaa81a1582616d1d7525e593ecda186574c5050",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_object_flow.py",
+        "source_sha256": "4b1dcd182b03daa51a385f96b59818dab30019d76bba7a4b1bae85dee38ad80d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_realworld_audit.py",
+        "source_sha256": "13c48c40a56a022fac350bb1f09150f68be2051dbd49fec91a2c73acf538de9b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_source_roots.py",
+        "source_sha256": "32c34de0cc1ec9c43b7b0e97240e49790f28c22ecddc85d7cb5c881b5c3ae8d2",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v22.py",
+        "source_sha256": "eae6322420a52665e54525fd95bdac96f6c4b2b260aaff100f26d71bcdfe2911",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v23.py",
+        "source_sha256": "b2379c986093f7188fd6b99ca44d5a8998137869d3a04867f8fdae5ec0879bf1",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v231.py",
+        "source_sha256": "303362bfb2d060ff7e9c19d5dad137a5b59448f8e5cbfd978ef4bcfca81ee0b0",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v24.py",
+        "source_sha256": "4815d8954e9ee5f6668973fd9493ddfcb0d7d1c69f8f147227382be90ceda965",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "unresolved_classifier.py",
+        "source_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "integrated_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "status": "identical"
+      },
+      {
+        "file": "verify_c3_changes.py",
+        "source_sha256": "733d18513204671476d6d0253d631acf7063c708c03caa11951d73c0f836fb54",
+        "integrated_sha256": "733d18513204671476d6d0253d631acf7063c708c03caa11951d73c0f836fb54",
+        "status": "identical"
+      },
+      {
+        "file": "verify_object_flow.py",
+        "source_sha256": "5cfb9aae9ea634fc879aa8f16b19ae2bab633e552ec8ea206698124db54e861b",
+        "integrated_sha256": "5cfb9aae9ea634fc879aa8f16b19ae2bab633e552ec8ea206698124db54e861b",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v22.py",
+        "source_sha256": "46fb1d8a56cb911a1c3ddd49529979c69562068831f74d2741b8bc10d49d986f",
+        "integrated_sha256": "46fb1d8a56cb911a1c3ddd49529979c69562068831f74d2741b8bc10d49d986f",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v23.py",
+        "source_sha256": "41daf37ecefd7380369032488818e69afc0f4b6bfc320f042fde9059cc0d255d",
+        "integrated_sha256": "22fb485c54c07449d15488aa828dcccf9c8c8526cfd6b9316cf084d345606d53",
+        "status": "modified"
+      },
+      {
+        "file": "verify_v231.py",
+        "source_sha256": "0bf888be55ad6dc27f46ed358a283f5b3918f44c04d5d813e6af2b407cef2b84",
+        "integrated_sha256": "a6a29ea0e86d1b11a12dd1ac86cfe81be2cf3122aa7a02732f1420c89402ebdf",
+        "status": "modified"
+      },
+      {
+        "file": "verify_v24.py",
+        "source_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "integrated_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "status": "identical"
+      }
+    ],
+    "greatjung-jse": [
+      {
+        "file": "ast_parser.py",
+        "source_sha256": "4386f1d5e4aa78be1955f1203a6a453afebefaef4071e58f74ed102072e73866",
+        "integrated_sha256": "ae9fffaa77bddd850f57959192f4a34f4451fef9af4817ee8d6affd75b3bdb96",
+        "status": "modified"
+      },
+      {
+        "file": "audit_realworld_changes.py",
+        "source_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "integrated_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "status": "identical"
+      },
+      {
+        "file": "builtin_receivers.py",
+        "source_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "integrated_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "status": "identical"
+      },
+      {
+        "file": "call_status.py",
+        "source_sha256": "364b23e9d677df6f0ad571dc85df577e885858364bf6cc5ced3a7b31a231c433",
+        "integrated_sha256": "5d06bb5b711dd52f1c979bb776372998b1de5b03d77c3e577aae4f86944a9916",
+        "status": "modified"
+      },
+      {
+        "file": "class_decorators.py",
+        "source_sha256": "d135ba69ba2b5653b18bea133e847012eea844be16b867af02ca675bd344db72",
+        "integrated_sha256": "d135ba69ba2b5653b18bea133e847012eea844be16b867af02ca675bd344db72",
+        "status": "identical"
+      },
+      {
+        "file": "compare_execution_context_stable.py",
+        "source_sha256": "6f632caf6dea0c5457c9dc9f79aa9cc7eb251b25c0df107682d4e5ae207349cd",
+        "integrated_sha256": "6f632caf6dea0c5457c9dc9f79aa9cc7eb251b25c0df107682d4e5ae207349cd",
+        "status": "identical"
+      },
+      {
+        "file": "compare_results.py",
+        "source_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "integrated_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "status": "identical"
+      },
+      {
+        "file": "dependency_analysis.py",
+        "source_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "integrated_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "status": "identical"
+      },
+      {
+        "file": "flow_analysis.py",
+        "source_sha256": "dd70011a44155e1f1dbdcc9834c6874337176518b6a2d09057239b6d9cc72825",
+        "integrated_sha256": "1261a1c93632011930a0491509888d720239d5ccf82d109ca2b030038d521977",
+        "status": "modified"
+      },
+      {
+        "file": "graph_builder.py",
+        "source_sha256": "04001a1e3b00280311f580ef82c654b19f20355f958e04963eb2797d695a8400",
+        "integrated_sha256": "3f4680a8e21f72b690d1a10d6be298056e6748b1a884e4c1154429bb9cd9fac8",
+        "status": "modified"
+      },
+      {
+        "file": "graph_report.py",
+        "source_sha256": "eb9fc9d3d015ad9d5a202d8aa62b42d294943b7d1e575f59ab7cd8ea8a87e08d",
+        "integrated_sha256": "eb9fc9d3d015ad9d5a202d8aa62b42d294943b7d1e575f59ab7cd8ea8a87e08d",
+        "status": "identical"
+      },
+      {
+        "file": "import_resolution.py",
+        "source_sha256": "3082ab252b70155e41480da612a9a524ffbd16d490719dcfaaa5d4b450da2fab",
+        "integrated_sha256": "fc159fdf2ba1f303d70b2f30b815de876b02ac2d66f40b9d90b07523ef621224",
+        "status": "modified"
+      },
+      {
+        "file": "join_origin.py",
+        "source_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "integrated_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "status": "identical"
+      },
+      {
+        "file": "main.py",
+        "source_sha256": "0b537de8a24635e3fd4b639ff7fb1053ceb76dfeea816cc3e65fed99c16588cf",
+        "integrated_sha256": "e23ced56fb612ed7799026d97b80dacb0094bbeb27107fe013f4e40441af68a7",
+        "status": "modified"
+      },
+      {
+        "file": "measure_object_flow.py",
+        "source_sha256": "3a74637314298dae78604840a34a4144c4aaeed979a8b108dd9a383c6cb8df16",
+        "integrated_sha256": "3a74637314298dae78604840a34a4144c4aaeed979a8b108dd9a383c6cb8df16",
+        "status": "identical"
+      },
+      {
+        "file": "object_flow.py",
+        "source_sha256": "f585e84d74f2baaa5f45c80e9d29da91f0ff8f6fd39ce69aebc7cbc1e59b0516",
+        "integrated_sha256": "87c82bcbba3ffc8d2ab213fc8474cba1b77546a843d76c7e244afea0df80de90",
+        "status": "modified"
+      },
+      {
+        "file": "override_relations.py",
+        "source_sha256": "c71585e4b48adf677cf6705910a48d7c112b4a3af91cf694474b45676eecb5db",
+        "integrated_sha256": "c71585e4b48adf677cf6705910a48d7c112b4a3af91cf694474b45676eecb5db",
+        "status": "identical"
+      },
+      {
+        "file": "reclassify_existing.py",
+        "source_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "integrated_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "status": "identical"
+      },
+      {
+        "file": "symbol_builder.py",
+        "source_sha256": "906d92d2fdedb9fba0ba606e87336fd648998cebbdbb6183bdfc51446f4420e7",
+        "integrated_sha256": "3e526a1e5b4dc02774c47fbcf3c1a1b9f1bc859a30fbb657ad4c2be364af77e7",
+        "status": "modified"
+      },
+      {
+        "file": "unresolved_classifier.py",
+        "source_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "integrated_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "status": "identical"
+      },
+      {
+        "file": "verify_c3_changes.py",
+        "source_sha256": "733d18513204671476d6d0253d631acf7063c708c03caa11951d73c0f836fb54",
+        "integrated_sha256": "733d18513204671476d6d0253d631acf7063c708c03caa11951d73c0f836fb54",
+        "status": "identical"
+      },
+      {
+        "file": "verify_object_flow.py",
+        "source_sha256": "5cfb9aae9ea634fc879aa8f16b19ae2bab633e552ec8ea206698124db54e861b",
+        "integrated_sha256": "5cfb9aae9ea634fc879aa8f16b19ae2bab633e552ec8ea206698124db54e861b",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v22.py",
+        "source_sha256": "46fb1d8a56cb911a1c3ddd49529979c69562068831f74d2741b8bc10d49d986f",
+        "integrated_sha256": "46fb1d8a56cb911a1c3ddd49529979c69562068831f74d2741b8bc10d49d986f",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v23.py",
+        "source_sha256": "41daf37ecefd7380369032488818e69afc0f4b6bfc320f042fde9059cc0d255d",
+        "integrated_sha256": "22fb485c54c07449d15488aa828dcccf9c8c8526cfd6b9316cf084d345606d53",
+        "status": "modified"
+      },
+      {
+        "file": "verify_v231.py",
+        "source_sha256": "0bf888be55ad6dc27f46ed358a283f5b3918f44c04d5d813e6af2b407cef2b84",
+        "integrated_sha256": "a6a29ea0e86d1b11a12dd1ac86cfe81be2cf3122aa7a02732f1420c89402ebdf",
+        "status": "modified"
+      },
+      {
+        "file": "verify_v24.py",
+        "source_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "integrated_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "status": "identical"
+      }
+    ],
+    "jeff": [
+      {
+        "file": "ast_parser.py",
+        "source_sha256": "9556b2f6e7810327d9baed989cb5f1eb14109f6f9debdf2b0d1383df1243913b",
+        "integrated_sha256": "ae9fffaa77bddd850f57959192f4a34f4451fef9af4817ee8d6affd75b3bdb96",
+        "status": "modified"
+      },
+      {
+        "file": "audit_realworld_changes.py",
+        "source_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "integrated_sha256": "dd6f2e04d9961c92b9de866f5746a02a546e53045906128447f46211c68ea404",
+        "status": "identical"
+      },
+      {
+        "file": "builtin_receivers.py",
+        "source_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "integrated_sha256": "cca3c8d4b2277c39a32c20f7e45009c0bf55ad38c5a5539f4c15b139e80e68bb",
+        "status": "identical"
+      },
+      {
+        "file": "call_status.py",
+        "source_sha256": "4bc7eca597ba003fdf85cec174ad9272c9d85c13b4d8b90eb55e62ab58695820",
+        "integrated_sha256": "5d06bb5b711dd52f1c979bb776372998b1de5b03d77c3e577aae4f86944a9916",
+        "status": "modified"
+      },
+      {
+        "file": "compare_results.py",
+        "source_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "integrated_sha256": "3d4e1c8c6dbb3dbd4e2918c249415c583d4eb9af87ef364f86336870c2be41ad",
+        "status": "identical"
+      },
+      {
+        "file": "dependency_analysis.py",
+        "source_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "integrated_sha256": "b9eaf224b06f306d38d1fdd9217bcb2ed49062712eef8706c8d98a38c973c39e",
+        "status": "identical"
+      },
+      {
+        "file": "external_calls.py",
+        "source_sha256": "fc902479d684f3b0dc20d19b0d317d3277441847e6efd3a3311d2897de4346b2",
+        "integrated_sha256": "0a1a546557d8839ca72f9fb0e82a38884b118c38b5f7671d4a952c651b3ccc45",
+        "status": "modified"
+      },
+      {
+        "file": "external_returns.py",
+        "source_sha256": "fea94354c764d1829fd15f035b7dbe17bc5b8b3897ad8fe732b4c24a231d5819",
+        "integrated_sha256": "fea94354c764d1829fd15f035b7dbe17bc5b8b3897ad8fe732b4c24a231d5819",
+        "status": "identical"
+      },
+      {
+        "file": "flow_analysis.py",
+        "source_sha256": "dd70011a44155e1f1dbdcc9834c6874337176518b6a2d09057239b6d9cc72825",
+        "integrated_sha256": "1261a1c93632011930a0491509888d720239d5ccf82d109ca2b030038d521977",
+        "status": "modified"
+      },
+      {
+        "file": "graph_builder.py",
+        "source_sha256": "2fbec6954ce8704347e39ab3c693913337530a7193d656140dafb15e8bde0b14",
+        "integrated_sha256": "3f4680a8e21f72b690d1a10d6be298056e6748b1a884e4c1154429bb9cd9fac8",
+        "status": "modified"
+      },
+      {
+        "file": "graph_report.py",
+        "source_sha256": "8423ae85a9e79ad8c200e07142b63107947db5a27635b4198abc8a7a35dbbff1",
+        "integrated_sha256": "eb9fc9d3d015ad9d5a202d8aa62b42d294943b7d1e575f59ab7cd8ea8a87e08d",
+        "status": "modified"
+      },
+      {
+        "file": "import_resolution.py",
+        "source_sha256": "3082ab252b70155e41480da612a9a524ffbd16d490719dcfaaa5d4b450da2fab",
+        "integrated_sha256": "fc159fdf2ba1f303d70b2f30b815de876b02ac2d66f40b9d90b07523ef621224",
+        "status": "modified"
+      },
+      {
+        "file": "join_origin.py",
+        "source_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "integrated_sha256": "adb355163ff734654384b29ac29f798213ad0a92affed8667261d9c73d194f25",
+        "status": "identical"
+      },
+      {
+        "file": "main.py",
+        "source_sha256": "545270bb722946c0179b8fe937798f708a02708d4f654a99013ff2c12b4b492d",
+        "integrated_sha256": "e23ced56fb612ed7799026d97b80dacb0094bbeb27107fe013f4e40441af68a7",
+        "status": "modified"
+      },
+      {
+        "file": "object_flow.py",
+        "source_sha256": "c6353252f7a6bc6f49966862699307ff2c75f2858807dcd457c295547d978c7c",
+        "integrated_sha256": "87c82bcbba3ffc8d2ab213fc8474cba1b77546a843d76c7e244afea0df80de90",
+        "status": "modified"
+      },
+      {
+        "file": "reclassify_existing.py",
+        "source_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "integrated_sha256": "9f07a7788abe537c21a2c87b82e81af1139d656967cdfc741fd709c219f4b838",
+        "status": "identical"
+      },
+      {
+        "file": "scripts/analyze_project.py",
+        "source_sha256": "d59f9c0a6ba6592700db962a2cfa62982c3a47b1a1ba3a69375731862f9c07d5",
+        "integrated_sha256": "d59f9c0a6ba6592700db962a2cfa62982c3a47b1a1ba3a69375731862f9c07d5",
+        "status": "identical"
+      },
+      {
+        "file": "scripts/compare_paper_runs.py",
+        "source_sha256": "70bfce58dcc52e1f9a6aeabf8b1c522d533018e72f277e53e91682de616e63e8",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "scripts/evaluate_engine.py",
+        "source_sha256": "d5a6b95f782fba39763fac0338e1b335f32d1c066c58f9f6846baae52e07412e",
+        "integrated_sha256": "d5a6b95f782fba39763fac0338e1b335f32d1c066c58f9f6846baae52e07412e",
+        "status": "identical"
+      },
+      {
+        "file": "scripts/evaluate_paper.py",
+        "source_sha256": "6e02c2815b908d51ba27bb67f6d0410d936e4202c984eeea4dd27c22e66386f2",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "scripts/package_extension.py",
+        "source_sha256": "8b9289c677221b27f15e76c49c1b2747c44caf73217faba88402ccdeb0b9d791",
+        "integrated_sha256": "8b9289c677221b27f15e76c49c1b2747c44caf73217faba88402ccdeb0b9d791",
+        "status": "identical"
+      },
+      {
+        "file": "scripts/reference/pycg/compare_macro_benchmark_cg.py",
+        "source_sha256": "acfc6c24eedf4cfaef5bcc76b9fa2bfc38659bfbd43c3f45238c0d4a7bc26d61",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "stdlib_mro.py",
+        "source_sha256": "4e323234488161d03af1bd58bffc6852620c48c99b5f0f93f055e29b00e7535a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "symbol_builder.py",
+        "source_sha256": "906d92d2fdedb9fba0ba606e87336fd648998cebbdbb6183bdfc51446f4420e7",
+        "integrated_sha256": "3e526a1e5b4dc02774c47fbcf3c1a1b9f1bc859a30fbb657ad4c2be364af77e7",
+        "status": "modified"
+      },
+      {
+        "file": "tests/fixtures/mini/bad_syntax.py",
+        "source_sha256": "f14a991b94d8bd34b845fd7c926a96361b62b5c7beb95ac4397628fd1cb00a0c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/subbrute/__init__.py",
+        "source_sha256": "c05a5d232fccced4163ebf6283e8b874296cc4c548100ad7e92ab4362c2b1115",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/subbrute/subbrute.py",
+        "source_sha256": "79cfc4dec404b6882b6eb500ffda80f35ecc21e32d54c62923bb8fdcfe474c14",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/sublist3r.py",
+        "source_sha256": "ba9a3e968d412c4461353cda0ca4a5e5b94a102a2c4f9aa6a2d6226d0ceb0508",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini/unimported.py",
+        "source_sha256": "be8d48df9628bf2d8f05b1b0a8c2531e5780c2704d6ec89b8bf302c4a66d97f3",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_analysis.py",
+        "source_sha256": "32d9ae80e2d262617bbdd14a1956d36f17ce58f0db5bfb5e0bf7891400180456",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_bound_callable_control_flow.py",
+        "source_sha256": "ed0a9767574db332ba1c65885a6ebab9e42ce7afd943703a53742b4bfef1cf1f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_builtin_receivers.py",
+        "source_sha256": "a37914b1440fe8c16ccae0d7bb57049dcb26a288fed670a90fdd869b8dad8a63",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_c3_mro.py",
+        "source_sha256": "984af30e1da50d02b7af5e4c0ae3488c869594256f16c2eac77e63a87a59f07a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_classification.py",
+        "source_sha256": "84518078c06705b362ceb90346ca7f7d99ed72757b3b7a3ec0ceecac7a3662fd",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_context_dispatch.py",
+        "source_sha256": "8c4a15e178ec10163af500df3f9263fb7f9ac49de16c314f04700e271cd1cd29",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_dependency_analysis.py",
+        "source_sha256": "72ec9b00e3dcf77b144111391601c48fe3a1533eaa34c133e918ca5b4fda8f8c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_duplicate_function_binding.py",
+        "source_sha256": "1d07987a17a45b44c8303a84dcb185d6d028cb7ee92ea7b04376a7e7c07a6c08",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_evaluation_improvements.py",
+        "source_sha256": "ef375418c299876ee90a7a3739a5aec10d085137a746623763c0ea796209462f",
+        "integrated_sha256": "ef375418c299876ee90a7a3739a5aec10d085137a746623763c0ea796209462f",
+        "status": "identical"
+      },
+      {
+        "file": "tests/test_execution_context.py",
+        "source_sha256": "8ae4304543e7631882b723d1b236b59f44335e3f7269a073bd053d2748ba42c8",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_external_calls.py",
+        "source_sha256": "aa34f0d944fc2d84dc02153f341b600a0a2fab21351729f2094c5b763d1d8717",
+        "integrated_sha256": "abd38d30992c279d6e17c0aba9e1aedbfb5be070224e1146bfc60f6317fecf5d",
+        "status": "modified"
+      },
+      {
+        "file": "tests/test_external_mro_callbacks.py",
+        "source_sha256": "36f8ae9933d40244610c169e0a21ec267fed37a7302f526c97c1ba98b1346744",
+        "integrated_sha256": "5d57eb255233258d8b831fda72525bce5a9e07aaa1a365f4c719004aaacc8499",
+        "status": "modified"
+      },
+      {
+        "file": "tests/test_fabric_precision.py",
+        "source_sha256": "451a34e5a4f58846ebfae93d4d3491652c1f7b9df79a15296630513b138d2def",
+        "integrated_sha256": "451a34e5a4f58846ebfae93d4d3491652c1f7b9df79a15296630513b138d2def",
+        "status": "identical"
+      },
+      {
+        "file": "tests/test_fabric_properties.py",
+        "source_sha256": "788ecc7a5b1d5978d11b70742253d382a53f567aa9c4d29671cdb8a06a63847d",
+        "integrated_sha256": "231bf09ad740260058e54d585308084e24a174af26c9d7079f4a65342df4e7eb",
+        "status": "modified"
+      },
+      {
+        "file": "tests/test_field_flow.py",
+        "source_sha256": "ff89eaaae8e00296e2bfea9a8e7518c49c43e81dffe334a5c9c71014ec76da0f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_flask_regressions.py",
+        "source_sha256": "33ad26062889e2b3aa26df67b5c4c2892c2b9f901331f32065637feb29f3e75d",
+        "integrated_sha256": "33ad26062889e2b3aa26df67b5c4c2892c2b9f901331f32065637feb29f3e75d",
+        "status": "identical"
+      },
+      {
+        "file": "tests/test_generic_mro.py",
+        "source_sha256": "2d451b2ebdc3a01c60a90ca3cc715dee4598603c996e4b289987dcb21aeef176",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_join_origin.py",
+        "source_sha256": "4f9bb4f6cc5541fd94409ef4dbaa81a1582616d1d7525e593ecda186574c5050",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_macro_defaults.py",
+        "source_sha256": "674f066922fa8e1d96a0a70dccab681567855ece3d92ab2a6437c3ccfb0e4f8c",
+        "integrated_sha256": "674f066922fa8e1d96a0a70dccab681567855ece3d92ab2a6437c3ccfb0e4f8c",
+        "status": "identical"
+      },
+      {
+        "file": "tests/test_object_flow.py",
+        "source_sha256": "4b1dcd182b03daa51a385f96b59818dab30019d76bba7a4b1bae85dee38ad80d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_paper_evaluation.py",
+        "source_sha256": "49be1cbc9fa40b1ecdfee5279d47cff9a79a9de285071399750bf99fc9f33983",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_paper_run_comparison.py",
+        "source_sha256": "dd61ceb23c0dff1420143a2df7bcd09f11f1f850c495d44f0ab9138db26f3f08",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_realworld_audit.py",
+        "source_sha256": "13c48c40a56a022fac350bb1f09150f68be2051dbd49fec91a2c73acf538de9b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_source_roots.py",
+        "source_sha256": "32c34de0cc1ec9c43b7b0e97240e49790f28c22ecddc85d7cb5c881b5c3ae8d2",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v22.py",
+        "source_sha256": "eae6322420a52665e54525fd95bdac96f6c4b2b260aaff100f26d71bcdfe2911",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v23.py",
+        "source_sha256": "b2379c986093f7188fd6b99ca44d5a8998137869d3a04867f8fdae5ec0879bf1",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v231.py",
+        "source_sha256": "303362bfb2d060ff7e9c19d5dad137a5b59448f8e5cbfd978ef4bcfca81ee0b0",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_v24.py",
+        "source_sha256": "4815d8954e9ee5f6668973fd9493ddfcb0d7d1c69f8f147227382be90ceda965",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_vscode_extension.py",
+        "source_sha256": "6899ae926eb9e52baf37d92fc05abd1da77fcffd6a703f2565e2cf2e014906c4",
+        "integrated_sha256": "6899ae926eb9e52baf37d92fc05abd1da77fcffd6a703f2565e2cf2e014906c4",
+        "status": "identical"
+      },
+      {
+        "file": "unresolved_classifier.py",
+        "source_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "integrated_sha256": "3ddcc48685f55cb08d1cd66b0ea1ed7222465a3fe93981a70316c06fa557dfe3",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v23.py",
+        "source_sha256": "22fb485c54c07449d15488aa828dcccf9c8c8526cfd6b9316cf084d345606d53",
+        "integrated_sha256": "22fb485c54c07449d15488aa828dcccf9c8c8526cfd6b9316cf084d345606d53",
+        "status": "identical"
+      },
+      {
+        "file": "verify_v231.py",
+        "source_sha256": "0bf888be55ad6dc27f46ed358a283f5b3918f44c04d5d813e6af2b407cef2b84",
+        "integrated_sha256": "a6a29ea0e86d1b11a12dd1ac86cfe81be2cf3122aa7a02732f1420c89402ebdf",
+        "status": "modified"
+      },
+      {
+        "file": "verify_v24.py",
+        "source_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "integrated_sha256": "89b151da9b4ab89a9217ebfe140953507a870a1e6bdbb6daaffe842ec5e43911",
+        "status": "identical"
+      },
+      {
+        "file": "vscode-extension/README.md",
+        "source_sha256": "73979ca6df5fe24d9c569594d19363395bb9d3a559c319d710e4f26a3d706d1d",
+        "integrated_sha256": "73979ca6df5fe24d9c569594d19363395bb9d3a559c319d710e4f26a3d706d1d",
+        "status": "identical"
+      },
+      {
+        "file": "vscode-extension/extension.js",
+        "source_sha256": "124db0ef41865ebb900434ff0acf146765e347cd71a418503096af9a3a6e5e40",
+        "integrated_sha256": "124db0ef41865ebb900434ff0acf146765e347cd71a418503096af9a3a6e5e40",
+        "status": "identical"
+      },
+      {
+        "file": "vscode-extension/media/map.css",
+        "source_sha256": "2cb7d00a8885e710e29cdee0b6f4716fca0c0845a13b6bbfbbb2e028d3bf48ab",
+        "integrated_sha256": "2cb7d00a8885e710e29cdee0b6f4716fca0c0845a13b6bbfbbb2e028d3bf48ab",
+        "status": "identical"
+      },
+      {
+        "file": "vscode-extension/media/map.js",
+        "source_sha256": "68779da2b98287ff348b5bf50319a35068f74dd90168e1c010b8c1392933fc09",
+        "integrated_sha256": "5342759f87cc1e7d9f2c2bcbfe3cfe3989fea5b5232cdde99ab47342e5f8e6bb",
+        "status": "modified"
+      },
+      {
+        "file": "vscode-extension/package.json",
+        "source_sha256": "66b615b2f99baad76e555961c2e08f4c81b1d595b4c96f28b81c721ca1c11da2",
+        "integrated_sha256": "66b615b2f99baad76e555961c2e08f4c81b1d595b4c96f28b81c721ca1c11da2",
+        "status": "identical"
+      },
+      {
+        "file": "vscode_export.py",
+        "source_sha256": "62984ce354bd7882dd64cca0b8492d761086f5ea675fe1c96fe5850a33ff96d3",
+        "integrated_sha256": "a021574721998f12ba3254b9af14569cf274294f74fab34aa9d4e518d35ecc91",
+        "status": "modified"
+      },
+      {
+        "file": "vscode_history.py",
+        "source_sha256": "0ef6b522266957fdb6f321e33e8f4cf242bb34dc5a7b39d9ffb2dbb68d60425f",
+        "integrated_sha256": "0ef6b522266957fdb6f321e33e8f4cf242bb34dc5a7b39d9ffb2dbb68d60425f",
+        "status": "identical"
+      }
+    ],
+    "ljy-main": [
+      {
+        "file": "analyze_project.py",
+        "source_sha256": "780bf02e7cbf765d6d7c73b48aac19bb9852dc7bee91f9e8b5fa69061ec17c82",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "compare_pycg.py",
+        "source_sha256": "720a4b367745c64b753503558882cd7bb181198cf1d48b4d144f74dc6931332f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "knit_viewer.py",
+        "source_sha256": "3597e7f6781432adbbc8cd9e7efc30543eec435f8f8878fc0d7aaac27b31c5bc",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "sample.py",
+        "source_sha256": "5d72769c8d943140e59991133af2db046e944df35474e13829dc708ccd53727b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/conftest.py",
+        "source_sha256": "cdc3118fd6fdf1427cad9c71d9bc98327dd2b2e5b2acc76da905b004a04ddab5",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/celery/tasks.py",
+        "source_sha256": "fa15590761a7289cc171cf63cbc8cad7acc8fec7bcce6b64fd05b2d5e1e763fa",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/alias.py",
+        "source_sha256": "4f4ba8ad7f7f4985da801fab244f4e09a85fc4f318e59b5ce72406ebfa935f2a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/models.py",
+        "source_sha256": "d4371a6f8548144e9cad970bd2510f32a12a9851a27593675c2f7113a8a4da3c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/tpkg/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/tpkg/app.py",
+        "source_sha256": "436a652e1f46061a770b13fa532a228a3fd0210e3e73f17b81ea7ce885a3a5d9",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/tpkg/globs.py",
+        "source_sha256": "f15d71a69427d7c532d7d20939d92b2e5de59b0310eee511ad87db42d94d7507",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/classvalue_project/tpkg/use.py",
+        "source_sha256": "008786fd099838b6783844e79ea70cf29b633a6319f5232e49b98b51bc7ab1d4",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/generic_project/models.py",
+        "source_sha256": "3e3c5963d5301d01dcfb67911f3d0ad3a07873f7c5806f61d3423060e7f8718c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/generic_project/use.py",
+        "source_sha256": "788ce87bf76d3aa7ba646cb3a17f01f370672a1470e0bd35897a1ce0a187fbf0",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/api/__init__.py",
+        "source_sha256": "18d8d656931e332ccb8c6cafc6cce5cd6cdf07b9609e697812e4fa80a213857b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/api/impl.py",
+        "source_sha256": "a772331f0f4f5ee428bfef8ddbc6d35e2317a6b7760369395cd092a046eeda97",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/dyn/__init__.py",
+        "source_sha256": "d5b0ed47fd2b9740ff107f9d91f91268251f3a5c492702f302499376f0e868bc",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/dyn/m.py",
+        "source_sha256": "5a418ef5621ed0b6a32c75968394274978433f2ab31eb1184f4c24ab1d3fa960",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/a.py",
+        "source_sha256": "adcaabafe03e755a9ead7c53af3902d8c422006c7faf60b7e84dfe74e809b8cd",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/b.py",
+        "source_sha256": "34615059d744d349fcac4469091bd8e97e9d9121341ff1e1c255441ab2e6a863",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/c.py",
+        "source_sha256": "2e5b393ebf7cd060dc8f505953c7adb800db36aeff6052773d5904c165962c9e",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/d.py",
+        "source_sha256": "a39bf942ffb76796f6fd99f2537df33bd35e9f34872393d01d72a7e6f655db1b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/e.py",
+        "source_sha256": "7f06e849b43eb130bd70d2cb659578287f186627886649f4ed66cafabe40e48e",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/f.py",
+        "source_sha256": "fc9d418c6272123b7c9be327d261b72f4a51f1c1bc061f8be9db22c6b09a6e8e",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/g.py",
+        "source_sha256": "b80c04869080f0a1f8e2305198e37af0a5f1f3ef5b4cf25d3976a983808b1fb1",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/imp/h.py",
+        "source_sha256": "67341175e90bb01f53bff9a0e7b7525c06da4d0e550742e75a52891d2ffbbb8f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg/__init__.py",
+        "source_sha256": "9e0034d70ed31f5e774094725b6a0aa9f2248fa396f6668d628cb52362e3b2c7",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg/__main__.py",
+        "source_sha256": "6d8b7d7846a845059d7a3107143f11131f63c5511d669b44085b15ec5e3d2279",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg/_private.py",
+        "source_sha256": "9803af9c99d275f1a87168c979286a30f9a63f4377ad1ef26baadd94f17024c8",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg/cli.py",
+        "source_sha256": "0f26980436a836643e3cc2a0cad0adb40f452872e43b7c81790cc691c330dcae",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg/core.py",
+        "source_sha256": "4cc7d2090b97422b28f69fa37b68fe90be250b174a38534f82e3cd0ade47b97a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg_a/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg_a/x.py",
+        "source_sha256": "678ebc952bdb2d33e83dbb890b6301e1f2d2f3e1ca7bcc8e804bb707d6b4ae82",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg_b/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/pkg_b/y.py",
+        "source_sha256": "a509ab43d9f4e71cc21e04ff3b48e35dbef78acee381e9619c25c67a7e4dadbb",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/setup.py",
+        "source_sha256": "7335ee90f53926d3b04af8a0a6338b6eff91b2799dcab45a95e1cdc55eb7b998",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/star/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/star/lib.py",
+        "source_sha256": "6b2c5da40871dfa9e2d1cb5a434cc1e87f11108e811fcc7cdb3bd57412173916",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/star/lib2.py",
+        "source_sha256": "0e9a6ddce5b94ad2231d2036660ec6f7480ae5b49d08facb86933f57a81efd4e",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/star/lib3.py",
+        "source_sha256": "71d57d1adfbd367d952a54cf9ec6769dd96ad0a3562210f099e496fec9bdfa43",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/star/user.py",
+        "source_sha256": "8546dcc8e4dfd6ac622459d539f3b77b917aadc132cf2f96a4f4829107a78526",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/tests/test_things.py",
+        "source_sha256": "7756f43f3c520e5e2f06e8f375735aa4a0ec09188beffbadcd9632eb4a4762e1",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/tool.py",
+        "source_sha256": "0f53509d8041e55cff85d37b2d12445bd97df93ad830d0b97d5e398aeb3baf20",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/app.py",
+        "source_sha256": "576455e1296e0160474ebfd8f711861563534ca7bbfd17aeaaa5ae2ef4eb147a",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/jobs.py",
+        "source_sha256": "891e4d1a4f998366766125ed88dc2063e6e9d9218ed295a5a360d42921c49c81",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/lookalike.py",
+        "source_sha256": "fdb2b06e278bbad203db8d0e2afb2c39a0176ad5b5d97eec92a757019689ad60",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/other.py",
+        "source_sha256": "77bd3527b72ce6b63dfe56c938448d74cf9422f50ccf439a8156066c44b9007d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web/routes.py",
+        "source_sha256": "c640a77ed16f27b34305f274fd6eea5ed60720e0f2837e153e18e0a286c98965",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/dj.py",
+        "source_sha256": "9d6ac735e77875857f762cd99c831c5f283e78b69905801f85965943f48589a6",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/factory.py",
+        "source_sha256": "4c1a0be767945cef7c63f00fb8913013de2609e0d183602cec6267ddbb70d085",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/fakes.py",
+        "source_sha256": "f59a004b4c33c717c7863c0f834fc4f70b7522e7697fb4e0cdfd0ca79f55919c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/other.py",
+        "source_sha256": "4eaf50ce8083c21e31912b1b71a5cea5ef9fd1c5830ff926f8436c7b709d8b7b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/graph_project/web2/views.py",
+        "source_sha256": "a692aa36b915e9f88cb3ad3eb4b627180847231fd5d652408266209b565dd897",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini_project/api.py",
+        "source_sha256": "12ce7521856e592202b6551d4b64bcc0728843ae59d15274fd04b40e430255d4",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini_project/base.py",
+        "source_sha256": "91b10e1a1ca563ad589a1005dedf0cd9464fb0d0f2da04237c2d648ae96663bb",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini_project/compat.py",
+        "source_sha256": "9bb27fbf84bc430b2708da48152b4238defe38738fbd2edfdafb735e0411fd4d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini_project/models.py",
+        "source_sha256": "91496cfb05d2f96f4487bd7a8bbebd1c0bb5a0078d3ee94f5438b816b8277993",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/mini_project/service.py",
+        "source_sha256": "fbd059c386688f21e4656809815624185863a5850453ae4987c376d64f8a747d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/proto_project/dyn.py",
+        "source_sha256": "8cb95f0887624c8ed22abd42f1c7f2a19f159caf6cc3e90838e3d396bd80a3f2",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/proto_project/mro.py",
+        "source_sha256": "6b98af2146451655e8670485afc812fc55af1a6b559d686ca90fdea66e3e5e67",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/proto_project/ops.py",
+        "source_sha256": "ed0ac38e5cdb2edfd654e68c26635c602624187d2ebe1631baadb901b7e790e4",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/proto_project/rets.py",
+        "source_sha256": "5a55e8bbc6666555c73312e99a99a743cca574caf486401b0c1bd8a4aca91e6c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/refs_project/app.py",
+        "source_sha256": "f50464fbc189fa27b2d4602841a03b260d15d4f0490b6b37ad63cfdef38da63d",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/refs_project/broken.py",
+        "source_sha256": "f472054bc588d4b960b668cae5003617c3ad4c5b7c40adb8df35b527077b517b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/refs_project/deco.py",
+        "source_sha256": "213e44d46ef73fead46d54e1ed99474aa60b45aa39c0af3d72f79f8863c897ca",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/shadow_project/pkg/__init__.py",
+        "source_sha256": "94bf893989e2a99cfe38b371237f9db875b9949b5ae544bd7fd6a0f962b3f267",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/shadow_project/pkg/app.py",
+        "source_sha256": "8cd0ef024f1aac8131810e396debe56baf1ffc81c2e63df8aaea330cb63856d2",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/shadow_project/pkg/json/__init__.py",
+        "source_sha256": "8f6aaaaee3a638007a9fbc5761100df254fff37fbdbd77fb9e2a1c4478f802e3",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/shadow_project/pkg/json/provider.py",
+        "source_sha256": "9a2f6d9c6c28656f2b37cdd6d4a796d12e3dc0f5d878c360f32b40177a909fcf",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/shadow_project/pkg/typing.py",
+        "source_sha256": "fb9d650e2fe967ceb9bae09f9cc5c2f0275f11efc00d2ef3ab6c1c7de90e426b",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/src/mypkg/__init__.py",
+        "source_sha256": "dfbc9d7f1b2c9ce9b5875bff7c65c132d1b9d3116bfb2a89c54920d855b75946",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/src/mypkg/api.py",
+        "source_sha256": "f93e2bd77b99617acaeac889037a7a5f4a487f1f81b04f7810a714cca1fd97c8",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/src/mypkg/models.py",
+        "source_sha256": "78d580e190040ad93c750b5f034487cab150b26aa3372c52ef04b6b002757f84",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/src/mypkg/utils.py",
+        "source_sha256": "07dbf66c3451eb0c6b7224f4de88be8f42d1330db64bd427406e4749f8d56a6e",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/tests/__init__.py",
+        "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/src_layout_project/tests/usage_api.py",
+        "source_sha256": "6f82fa2c158402e841e0e73022036b85413e47d3a10391ea0515ccaba933b7ab",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/trace_project/app.py",
+        "source_sha256": "8629d2a94943d856ffeb033e8fc5ee635a00e9e44c1e56bce1016580ef3d827c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/trace_project/core.py",
+        "source_sha256": "9b753e319996647d1a916d745824d7f7f2ce6dd1a64175fde073270a13b34cdd",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/typed_project/models.py",
+        "source_sha256": "d33b2dba5c90ed97b2205a263f9645829e90001a1be852786c95ed00ef3db282",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/fixtures/typed_project/use.py",
+        "source_sha256": "7ae7a777c765cc88f819beb442b901b0523cc398b114a4a7bf29795c0ab33a3c",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_analyzer.py",
+        "source_sha256": "2012880bfca513b883aab1ecb90ce3655c1098a0943899290e07669eaf539799",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_trace.py",
+        "source_sha256": "6c8aba6c0127635bc4ab1c4c66eee13af83ac3c7ea58ace4549f7519d4256f9f",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "tests/test_viewer.py",
+        "source_sha256": "01f1b349ba15314ff79b502187af9ecb87ae80e1c068f1355d296d5bda911689",
+        "integrated_sha256": null,
+        "status": "not_present"
+      },
+      {
+        "file": "trace_recall.py",
+        "source_sha256": "43c99c40b9bca8b13d63589cf7cf4f24782ae44c35fadeb69d26cee8e6bf18f4",
+        "integrated_sha256": "6d5b553a9f6459b212e80f946dd8c162af16c88db88aecd8cb0f11a594df6261",
+        "status": "modified"
+      }
+    ]
+  },
+  "note": "Compared with current working tree, including previous null-name guard and benchmark/report additions. Original tests are copied into isolated audit snapshots, never installed into the production tests directory.",
+  "suites": {
+    "greatjung-original": {
+      "passed": 265,
+      "failed": 0,
+      "subtests_passed": 2
+    },
+    "greatjung-jse-engine-original-tests": {
+      "passed": 265,
+      "failed": 0,
+      "subtests_passed": 2
+    },
+    "greatjung-tests-integrated-only-runtime": {
+      "passed": 265,
+      "failed": 0,
+      "subtests_passed": 2
+    },
+    "jeff-original": {
+      "passed": 403,
+      "failed": 0,
+      "subtests_passed": 24
+    },
+    "jeff-tests-integrated-only-runtime": {
+      "collection_errors": 2,
+      "missing_modules": [
+        "scripts.evaluate_paper",
+        "scripts.compare_paper_runs"
+      ]
+    },
+    "jeff-runtime-tests-unmodified": {
+      "passed": 392,
+      "failed": 6,
+      "subtests_passed": 24,
+      "excluded_test_modules": [
+        "test_paper_evaluation.py",
+        "test_paper_run_comparison.py"
+      ]
+    },
+    "jeff-runtime-tests-schema-adapted": {
+      "passed": 398,
+      "failed": 0,
+      "subtests_passed": 24,
+      "excluded_test_modules": [
+        "test_paper_evaluation.py",
+        "test_paper_run_comparison.py"
+      ]
+    },
+    "jeff-all-tests-original-evaluation-tools-retained-schema-adapted": {
+      "passed": 403,
+      "failed": 0,
+      "subtests_passed": 24,
+      "limitation": "Original evaluation scripts retained; this does not prove they are included in the integration."
+    },
+    "ljy-main-original": {
+      "passed": 59,
+      "failed": 0,
+      "skipped": 7,
+      "limitation": "Six real-project baseline tests and optional browser rendering test skipped. Original analyze_project API differs from the modular engine; no claim that this suite passes against integration."
+    },
+    "integrated-own-suite": {
+      "passed": 163,
+      "failed": 1,
+      "subtests_passed": 25,
+      "failure": "TraceRecallTests.test_record_with_pytest"
+    }
+  },
+  "probe_runner_sha256": "4fe8ea3d33e89b909d91cfcab44bead86db7ed248dafa6f7e247d6a75b3602e6"
+}

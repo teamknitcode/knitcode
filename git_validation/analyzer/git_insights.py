@@ -116,10 +116,14 @@ def changed_files(repo, sha, parent):
     return files
 
 
-def blob(repo, revision, path, limit):
+def check_blob_size(repo, revision, path, limit):
     size = int(git(repo, 'cat-file', '-s', f'{revision}:{path}'))
     if size > limit:
         raise ValueError(f'소스 크기 제한 초과: {size} > {limit} bytes')
+
+
+def blob(repo, revision, path, limit):
+    check_blob_size(repo, revision, path, limit)
     return git(repo, 'show', f'{revision}:{path}', raw=True)
 
 
@@ -131,7 +135,10 @@ def analyze(repo, *, revision='HEAD', max_commits=500, pair_limit=40,
     # Resolve before using user input in any Git command accepting options.
     head = git(repo, 'rev-parse', '--verify', '--end-of-options', revision + '^{commit}').strip()
     aliases = {k.lower(): v for k, v in (aliases or {}).items()}
-    shas = git(repo, 'rev-list', '--topo-order', head).splitlines()
+    # Read every commit's metadata in one git call; one `git show` per commit took minutes on long histories.
+    fields = git(repo, 'log', '--topo-order', '-z', '--format=%H%x00%P%x00%aN%x00%aE%x00%aI%x00%B', head).split('\0')
+    records = [fields[i:i + 6] for i in range(0, len(fields) - 5, 6)]
+    shas = [r[0] for r in records]
     commits, warnings = [], []
     shallow = git(repo, 'rev-parse', '--is-shallow-repository').strip() == 'true'
     if shallow:
@@ -144,9 +151,7 @@ def analyze(repo, *, revision='HEAD', max_commits=500, pair_limit=40,
         p = Path(shallow_path)
         shallow_ids = set((p if p.is_absolute() else repo / p).read_text().splitlines())
     candidates = 0
-    for sha in shas:
-        raw = git(repo, 'show', '-s', '--format=%P%x00%aN%x00%aE%x00%aI%x00%B', sha)
-        parents, name, email, date, message = raw.split('\0', 4)
+    for sha, parents, name, email, date, message in records:
         if since and date[:10] < since or until and date[:10] > until:
             continue
         candidates += 1
@@ -173,19 +178,25 @@ def analyze(repo, *, revision='HEAD', max_commits=500, pair_limit=40,
                 c['pair_eligible'] = True
             for f in c['files']:
                 status, path, old_path = f['status'][0], f['path'], f['old_path']
+                within_limit = set()  # (revision, path) already read below source_limit
                 if path.endswith('.py') or old_path.endswith('.py'):
                     try:
-                        before = blob(repo, parent, old_path, source_limit) if parent and status != 'A' and old_path.endswith('.py') else b''
-                        after = blob(repo, sha, path, source_limit) if status != 'D' and path.endswith('.py') else b''
+                        before = after = b''
+                        if parent and status != 'A' and old_path.endswith('.py'):
+                            before = blob(repo, parent, old_path, source_limit)
+                            within_limit.add((parent, old_path))
+                        if status != 'D' and path.endswith('.py'):
+                            after = blob(repo, sha, path, source_limit)
+                            within_limit.add((sha, path))
                         f['functions'] = function_changes(before, after)
                     except (SyntaxError, UnicodeError, LookupError, ValueError, RecursionError) as exc:
                         f['diagnostics'].append(f'함수 비교 불가: {exc}')
                 # Bound source reads before requesting potentially enormous patches.
                 try:
-                    if parent and status != 'A':
-                        blob(repo, parent, old_path, source_limit)
-                    if status != 'D':
-                        blob(repo, sha, path, source_limit)
+                    if parent and status != 'A' and (parent, old_path) not in within_limit:
+                        check_blob_size(repo, parent, old_path, source_limit)
+                    if status != 'D' and (sha, path) not in within_limit:
+                        check_blob_size(repo, sha, path, source_limit)
                     args = ['diff', '--no-ext-diff', '--no-textconv', '--no-color', '--unified=3', parent, sha] if parent else [
                         'show', '--format=', '--no-ext-diff', '--no-textconv', '--no-color', '--unified=3', sha]
                     patch = git(repo, *args, '--', old_path, path)

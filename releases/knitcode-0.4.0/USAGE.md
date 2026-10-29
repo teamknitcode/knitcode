@@ -82,7 +82,7 @@ VS Code 설정에서 `knitcodeStatic`을 검색합니다.
 
 ## 배포 및 검증
 
-이 폴더는 VSIX와 사용 안내를 묶은 배포 폴더입니다. 전체 개발 소스 동기화 커밋은 포함하지 않습니다.
+이 폴더는 VSIX와 사용 안내를 묶은 배포 폴더입니다. 개발 소스는 저장소의 원래 경로에 함께 반영되어 있습니다.
 
 - 버전: 0.4.0
 - 전체 검사: 462개 실행, 460개 통과, 2개 건너뜀.
@@ -90,3 +90,36 @@ VS Code 설정에서 `knitcodeStatic`을 검색합니다.
 - UI 동작 검사: 작성자 필터, 핫스팟·호출자 소스 이동, 탭 전환, 패널 접기·너비 조절.
 - 실제 VS Code GUI에서 신규 기능의 클릭·시각 검증은 별도로 수행하지 않았습니다.
 - SHA-256: `7a5f5f9c3a94e18d363b4d96ed896e84df8dc1dfee0133e2c073a9cb3dddc452`
+
+## 팀원용 수정·빌드 안내
+
+전체 저장소를 clone한 뒤 저장소 최상위에서 실행합니다.
+
+```bash
+code --extensionDevelopmentPath="$PWD/vscode-extension" .
+python3 scripts/package_extension.py
+python3 -m unittest discover -s tests
+```
+
+첫 명령으로 연 개발 창에서 `knitcode: Open Call Flow`를 실행합니다. 화면 파일 수정 후 개발 창을 다시 로드하고 명령을 다시 실행하세요. Python 파일 수정 후에는 저장하고 재분석합니다. 빌드 결과는 `dist/knitcode-static-0.4.0.vsix`이며 새 버전 배포 시 `package.json`의 version을 올립니다.
+
+| 수정 대상 | 파일 |
+|---|---|
+| 화면 구성·VS Code 연결 | `vscode-extension/extension.js` |
+| 시각화·탭·필터·패널 동작 | `vscode-extension/media/map.js` |
+| 여백·색상·글자·반응형 배치 | `vscode-extension/media/map.css` |
+| 이름·버전·명령·설정 | `vscode-extension/package.json` |
+| 확장 설명 | `vscode-extension/README.md` |
+| 분석 결과 변환 | `vscode_export.py` |
+| 미커밋 변경·직접 호출자 후보 | `vscode_changes.py` |
+| 기존 Git 이력 | `vscode_history.py` |
+| 작성자·함수 변경 JSON | `git_validation/vscode_json_cli.py` |
+| Git 분석 및 보고서 모듈 | `git_validation/analyzer/` |
+| 통합 보고서 실행 | `git_validation/integrated_cli.py` |
+| VSIX 빌드 | `scripts/package_extension.py` |
+| 화면 동작 검사 | `tests/flow_webview_smoke.js`, `tests/test_vscode_extension.py` |
+| 미커밋 변경·번들 검사 | `tests/test_vscode_changes.py`, `tests/test_git_validation_package.py` |
+
+`tests/test_v24.py`는 최신 엔진의 Optional 타입 후보·불확실성 표시와 맞춘 회귀 기대값을 포함합니다. JavaScriptCore가 없는 환경에서는 화면 동작 검사가 건너뛰어지므로 실제 VS Code 개발 창에서도 확인하세요. 분석 엔진과 Git 보고서는 저장소의 다른 Python 모듈과 HTML 템플릿에도 의존합니다.
+
+개발 소스 업로드 시 원격 저장소 기준 재검증: 209개 실행, 207개 통과, 2개 건너뜀. 재빌드한 VSIX의 모든 파일 내용이 배포본과 동일함을 확인했습니다. 기존 배포본에 포함된 호환 보조 파일 `stdlib_mro.py`도 반영했습니다.

@@ -3,6 +3,7 @@ const api = acquireVsCodeApi();
 const $ = id => document.getElementById(id);
 let data, selected, depth = 1, tab = 'cochange', trail = [];
 let gitValidation;
+let authorFilter = '';
 let index = new Map(), calls = [];
 const IMPLICIT = {callback: '조건부 콜백 후보', property_get: 'property 읽기 후보', property_set: 'property 쓰기 후보',
   property_delete: 'property 삭제 후보'};
@@ -165,8 +166,8 @@ function commits(hashes, parent) {
 function history() {
   const node = index.get(selected), box = $('history'); box.replaceChildren();
   $('history-file').textContent = node.file;
-  $('cochange-tab').setAttribute('aria-pressed', String(tab === 'cochange'));
-  $('history-tab').setAttribute('aria-pressed', String(tab === 'history'));
+  updateGitTabs();
+  if (tab === 'insights') return;
   const h = data.history;
   if (!h.available) { el('p', 'Git 이력을 사용할 수 없습니다.', box); el('small', h.error || '', box); return; }
   el('p', `${node.changes}회 변경 · 최근 ${h.days}일 / 최대 ${h.limit}개 비병합 커밋`, box);
@@ -198,7 +199,7 @@ function render() {
   $('depth').textContent = `${depth}단계`;
   $('less').disabled = depth <= 1; $('more').disabled = depth >= 3;
   $('back').disabled = !trail.length;
-  tree(); flow(); evidence(); history(); renderGitValidation();
+  tree(); flow(); evidence(); history(); renderGitValidation(); renderWorkingChanges();
 }
 
 // KnitCode Git Validation UI PATCH v1. Render source-derived text, never HTML.
@@ -224,10 +225,32 @@ function renderGitValidation() {
   el('summary', `수정 작성자 ${record.authors.length}명 보기`, authors);
   record.authors.forEach(a => el('p', `${a.name} · ${a.count}개 커밋`, authors));
   const kinds = Object.entries(record.types).map(([kind, count]) => `${kind}: ${count}`).join(' / ');
-  el('p', `수정 유형(커밋 메시지 추정): ${kinds || '없음'}`, box);
+  el('p', `수정 유형(전체 작성자·커밋 메시지 추정): ${kinds || '없음'}`, box);
+  const label = el('label', '작성자별 함수·커밋 보기', box);
+  const filter = el('select', undefined, label);
+  filter.setAttribute('aria-label', '작성자 필터');
+  const all = el('option', '모든 작성자', filter); all.value = '';
+  const availableAuthors = [...new Set((record.events || []).map(e => e.author))];
+  if (!availableAuthors.includes(authorFilter)) authorFilter = '';
+  for (const author of availableAuthors) { const option = el('option', author, filter); option.value = author; }
+  filter.value = authorFilter;
+  filter.addEventListener('change', () => { authorFilter = filter.value; renderGitValidation(); });
+  const events = (record.events || []).filter(e => !authorFilter || e.author === authorFilter);
+  el('p', `선택 범위: ${events.length}개 커밋`, box);
+  const hot = new Map();
+  for (const event of events) for (const name of event.functions) hot.set(name, (hot.get(name) || 0) + 1);
+  const hotspots = [...hot].sort((a,b) => b[1] - a[1]).map(([name,count]) => ({name,count}));
   const fn = el('details', undefined, box);
-  el('summary', `변경된 함수 핫스팟 ${record.functions.length}개`, fn);
-  record.functions.forEach(f => el('p', `${f.name} · ${f.count}회`, fn));
+  el('summary', `변경된 함수 핫스팟 ${hotspots.length}개`, fn);
+  hotspots.forEach(f => {
+    const matches = data.nodes.filter(n => n.file === node.file && ['function','method'].includes(n.type)
+      && (n.name === f.name || n.name.endsWith('.' + f.name)));
+    if (matches.length === 1) el('button', `${f.name} · ${f.count}회 ↗`, fn, () => { choose(matches[0].id); open(matches[0]); }).className = 'commit';
+    else el('p', `${f.name} · ${f.count}회 · 현재 소스에서 위치 확인 불가`, fn);
+  });
+  const eventList = el('details', undefined, box);
+  el('summary', '선택 작성자의 커밋', eventList);
+  events.forEach(event => el('p', `${event.sha.slice(0,8)} · ${event.author} · ${event.type}`, eventList));
   const joint = el('details', undefined, box);
   el('summary', `동시 수정 파일 ${record.cochanges.length}개`, joint);
   record.cochanges.forEach(f => el('p', `${f.file} · ${f.count}회 (관측 비율 ${(f.confidence*100).toFixed(0)}%)`, joint));
@@ -248,6 +271,43 @@ function renderGitValidation() {
   }
   el('small', gitValidation.note, box);
 }
+function renderWorkingChanges() {
+  const box = $('working-changes'); box.replaceChildren();
+  el('h3', '미커밋 변경 영향 후보', box);
+  const changes = data?.working_changes;
+  if (!changes?.available) { el('p', changes?.error || 'Git 변경 정보를 사용할 수 없습니다.', box); return; }
+  el('small', changes.basis, box);
+  if (!changes.files.length) el('p', '저장된 Python 변경이 없습니다.', box);
+  for (const warning of changes.warnings) el('p', warning, box);
+  for (const file of changes.files) {
+    const group = el('details', undefined, box);
+    el('summary', `${file.file} · ${file.functions.length}개 함수 변경`, group);
+    if (file.error) el('p', `분석 제외: ${file.error}`, group);
+    if (!file.error && !file.functions.length) el('p', '함수 AST 변경 없음. 주석·공백·모듈 수준 변경일 수 있습니다.', group);
+    for (const fn of file.functions) {
+      const node = index.get(fn.node_id);
+      const kind = {added:'추가', modified:'수정', deleted:'삭제'}[fn.kind];
+      if (node) el('button', `${fn.name} · ${kind} ↗`, group, () => { choose(node.id); open(node); }).className = 'commit';
+      else el('p', `${fn.name} · ${kind} · 현재 위치 연결 불가`, group);
+      el('small', fn.facts.join(' · '), group);
+      if (!node) el('p', '삭제·이름 변경 함수의 이전 호출자는 현재 그래프로 확인할 수 없습니다.', group);
+      else if (!fn.callers.length) el('p', '현재 그래프에서 확인된 직접 호출자 없음', group);
+      for (const id of fn.callers) {
+        const caller = index.get(id);
+        if (caller) el('button', `호출자: ${caller.name} ↗`, group, () => { choose(id); open(caller); }).className = 'commit';
+      }
+    }
+    const pairs = data.history.pairs.filter(p => p.source === file.file || p.target === file.file);
+    if (pairs.length) el('p', '함께 검토할 공동 변경 파일', group);
+    for (const pair of pairs) {
+      const other = pair.source === file.file ? pair.target : pair.source;
+      const node = data.nodes.find(n => n.type === 'file' && n.file === other);
+      if (node) el('button', `${other} · ${pair.commits.length}회`, group, () => choose(node.id)).className = 'commit';
+      else el('p', other, group);
+    }
+  }
+  el('small', '직접 호출자와 공동 변경은 검토 후보입니다. 실행 영향·전이 영향·삭제 전 호출 관계를 보장하지 않습니다. 저장 후 재분석하세요.', box);
+}
 $('git-validation-run').addEventListener('click', () => api.postMessage({type:'gitValidationRun'}));
 $('git-validation-report').addEventListener('click', () => api.postMessage({type:'gitValidationReport'}));
 $('search').addEventListener('input', () => { if (data) tree(); });
@@ -255,8 +315,95 @@ $('more').addEventListener('click', () => { if (data && depth < 3) { depth++; re
 $('less').addEventListener('click', () => { if (data && depth > 1) { depth--; render(); } });
 $('back').addEventListener('click', () => { if (trail.length) choose(trail.pop(), false); });
 $('refresh').addEventListener('click', () => api.postMessage({type:'refresh'}));
-$('cochange-tab').addEventListener('click', () => { tab='cochange'; if(selected)history(); });
-$('history-tab').addEventListener('click', () => { tab='history'; if(selected)history(); });
+const gitTabs = ['cochange', 'history', 'insights'];
+function updateGitTabs() {
+  for (const name of gitTabs) {
+    const button = $(name + '-tab');
+    button.setAttribute('aria-selected', String(tab === name));
+    button.tabIndex = tab === name ? 0 : -1;
+  }
+  $('history').hidden = tab === 'insights';
+  $('git-insights').hidden = tab !== 'insights';
+  $('history').setAttribute('aria-labelledby', tab + '-tab');
+}
+function selectGitTab(name) {
+  tab = name;
+  updateGitTabs();
+  if (selected) history();
+  saveLayout();
+}
+for (const [i, name] of gitTabs.entries()) {
+  const button = $(name + '-tab');
+  button.addEventListener('click', () => selectGitTab(name));
+  button.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowRight') next = (i + 1) % gitTabs.length;
+    if (event.key === 'ArrowLeft') next = (i + gitTabs.length - 1) % gitTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = gitTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault(); selectGitTab(gitTabs[next]);
+    $(gitTabs[next] + '-tab').focus();
+  });
+}
+
+// Remember panel widths and visibility for this webview across reloads.
+const savedLayout = api.getState?.() || {};
+let browserWidth = Number.isFinite(savedLayout.browserWidth) ? savedLayout.browserWidth : 224;
+let historyWidth = Number.isFinite(savedLayout.historyWidth) ? savedLayout.historyWidth : 320;
+let historyCollapsed = savedLayout.historyCollapsed === true;
+if (gitTabs.includes(savedLayout.tab)) tab = savedLayout.tab;
+function saveLayout() {
+  api.setState?.({browserWidth, historyWidth, historyCollapsed, tab});
+}
+function applyLayout() {
+  const layout = $('layout');
+  layout.style.setProperty('--browser-width', `${browserWidth}px`);
+  layout.style.setProperty('--history-width', `${historyWidth}px`);
+  layout.classList.toggle('history-collapsed', historyCollapsed);
+  $('git-sidebar').hidden = historyCollapsed;
+  $('history-resize').hidden = historyCollapsed;
+  $('toggle-history').textContent = historyCollapsed ? 'Git 패널 열기' : 'Git 패널 접기';
+  $('toggle-history').setAttribute('aria-expanded', String(!historyCollapsed));
+  for (const [id, width, min, max] of [
+    ['browser-resize', browserWidth, 150, 360], ['history-resize', historyWidth, 240, 480]]) {
+    $(id).setAttribute('aria-valuenow', String(width));
+    $(id).setAttribute('aria-valuemin', String(min));
+    $(id).setAttribute('aria-valuemax', String(max));
+  }
+  requestAnimationFrame(wires);
+}
+function resizePanel(side, value) {
+  if (side === 'browser') browserWidth = Math.max(150, Math.min(360, value));
+  else historyWidth = Math.max(240, Math.min(480, value));
+  applyLayout(); saveLayout();
+}
+$('toggle-history').addEventListener('click', () => {
+  historyCollapsed = !historyCollapsed; applyLayout(); saveLayout();
+});
+for (const side of ['browser', 'history']) {
+  const handle = $(side + '-resize');
+  let drag;
+  handle.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    drag = {x: event.clientX, width: side === 'browser' ? browserWidth : historyWidth};
+    handle.setPointerCapture(event.pointerId); event.preventDefault();
+  });
+  handle.addEventListener('pointermove', event => {
+    if (drag) resizePanel(side, drag.width + (event.clientX - drag.x) * (side === 'browser' ? 1 : -1));
+  });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+    handle.addEventListener(type, () => { drag = undefined; });
+  }
+  handle.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const width = side === 'browser' ? browserWidth : historyWidth;
+    const direction = (event.key === 'ArrowRight' ? 1 : -1) * (side === 'browser' ? 1 : -1);
+    resizePanel(side, event.key === 'Home' ? 0 : event.key === 'End' ? 10000 : width + direction * 20);
+  });
+}
+applyLayout(); updateGitTabs();
 window.addEventListener('message', ({data:message}) => {
   if (message.type === 'gitValidationStatus') $('git-validation-status').textContent = message.text;
   if (message.type === 'gitValidation') { gitValidation = message.data;

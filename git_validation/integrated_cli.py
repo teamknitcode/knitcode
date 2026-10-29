@@ -9,6 +9,9 @@ import subprocess
 import sys
 import tempfile
 
+# Support the installed VSIX entrypoint in Python isolated mode.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from analyzer.extensions import enrich
 from analyzer.git_insights import analyze, git
 from analyzer.github_api import enrich_github

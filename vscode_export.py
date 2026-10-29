@@ -12,6 +12,7 @@ from graph_builder import build_graph
 from unresolved_classifier import reclassify_graph
 from call_status import annotate_call_statuses
 from vscode_history import read_history
+from vscode_changes import read_changes
 
 
 def export_project(root, days=90, limit=300, *, analysis_profile=None, call_policy=None):
@@ -51,6 +52,7 @@ def export_project(root, days=90, limit=300, *, analysis_profile=None, call_poli
         node['callers'] = len(callers.get(node['id'], set()))
         node['changes'] = history['changes'].get(node['file'], 0)
     return dict(nodes=nodes, edges=edges, history=history,
+                working_changes=read_changes(root, nodes, edges),
                 summary=dict(files=len(files), resolved=graph['resolved_call_sites'],
                              unresolved=graph['unresolved_call_sites']),
                 status_summary=graph['status_summary'],

@@ -118,4 +118,3 @@ if __name__ == '__main__':
         if not 1 <= args.git_commits <= 300:
             parser.error('--git-commits는 1~300 범위여야 합니다.')
         generate(args.repo, args.output_dir, results[1], results[2], commits=args.git_commits)
-

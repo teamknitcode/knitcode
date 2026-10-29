@@ -9,7 +9,7 @@ function activate(context) {
   context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.open', async () => {
     if (!vscode.workspace.isTrusted) return;
     if ((vscode.workspace.workspaceFolders || []).some(f => f.uri.scheme !== 'file')) {
-      vscode.window.showErrorMessage('KnitCode Static은 로컬 파일 시스템 프로젝트가 필요합니다.'); return;
+      vscode.window.showErrorMessage('knitcode는 로컬 파일 시스템 프로젝트가 필요합니다.'); return;
     }
     const folders = vscode.workspace.workspaceFolders || [];
     const folder = folders.length === 1 ? folders[0] : await vscode.window.showWorkspaceFolderPick();
@@ -18,16 +18,17 @@ function activate(context) {
     const activeFile = vscode.window.activeTextEditor?.document.uri;
     const initialFile = activeFile?.scheme === 'file' ? path.relative(root, activeFile.fsPath).split(path.sep).join('/') : undefined;
     const media = vscode.Uri.joinPath(context.extensionUri, 'media');
-    const panel = vscode.window.createWebviewPanel('knitcodeStatic.map', `KnitCode Static Flow · ${folder.name}`, vscode.ViewColumn.Beside,
+    const panel = vscode.window.createWebviewPanel('knitcodeStatic.map', `knitcode · ${folder.name}`, vscode.ViewColumn.Beside,
       { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
     const nonce = crypto.randomBytes(16).toString('hex');
     const resource = name => panel.webview.asWebviewUri(vscode.Uri.joinPath(media, name));
     panel.webview.html = `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${panel.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${resource('map.css')}"></head><body>
-      <header><div><b>KnitCode <em>Flow</em></b><span>함수에서 시작하는 코드 탐색</span></div><button id="refresh">재분석</button></header>
+      <header><div><b>knitcode</b><span>함수에서 시작하는 코드 탐색</span></div><div class="header-actions"><button id="toggle-history" aria-controls="git-sidebar" aria-expanded="true">Git 패널 접기</button><button id="refresh">재분석</button></div></header>
       <p id="status" role="status">분석 준비 중…</p>
-      <main><aside class="browser"><input id="search" placeholder="파일·함수 검색" aria-label="파일·함수 검색"><div id="tree"></div></aside>
-      <section class="workspace"><div id="focus"></div><nav><div><button id="back">← 이전 선택</button><button id="less">− 단계</button><span id="depth"></span><button id="more">+ 단계</button></div><small>호출자를 왼쪽으로 · 호출 대상을 오른쪽으로</small></nav><div id="flow" aria-label="함수 중심 호출 흐름"></div><section id="evidence"></section></section>
-      <aside class="history"><h2>파일의 변경 맥락</h2><p id="history-file"></p><div role="group" aria-label="Git 보기"><button id="cochange-tab">함께 변경</button><button id="history-tab">변경 이력</button></div><div id="history"></div><section class="git-validation-section" style="border-top:1px solid #8b97a655;margin-top:12px;padding-top:12px"><h2>GitHub 심층 분석</h2><p style="font-size:12px;opacity:.75">작성자별 변경 · 함수 핫스팟 · Co-change</p><button id="git-validation-run">Git 상세 분석 다시 실행</button> <button id="git-validation-report">정적분석 + Git 통합 보고서 ↗</button><p id="git-validation-status" role="status">분석 대기 중</p><div id="git-validation-panel"></div></section></aside></main><script nonce="${nonce}" src="${resource('map.js')}"></script></body></html>`;
+      <main id="layout"><aside class="browser" id="code-browser"><span class="panel-label">코드 탐색</span><input id="search" placeholder="파일·함수 검색" aria-label="파일·함수 검색"><div id="tree"></div></aside>
+      <div id="browser-resize" class="panel-resize" role="separator" tabindex="0" aria-orientation="vertical" aria-label="파일 탐색 너비" aria-controls="code-browser"></div><section class="workspace"><div id="focus"></div><nav><div><button id="back">← 이전 선택</button><button id="less">− 단계</button><span id="depth"></span><button id="more">+ 단계</button></div><small>호출자를 왼쪽으로 · 호출 대상을 오른쪽으로</small></nav><div id="flow" aria-label="함수 중심 호출 흐름"></div><section id="evidence"></section></section>
+      <div id="history-resize" class="panel-resize" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Git 패널 너비" aria-controls="git-sidebar"></div>
+      <aside class="history" id="git-sidebar"><h2>파일의 변경 맥락</h2><p id="history-file"></p><div class="git-tabs" role="tablist" aria-label="Git 보기"><button id="cochange-tab" role="tab" aria-controls="history" aria-selected="true">함께 변경</button><button id="history-tab" role="tab" aria-controls="history" aria-selected="false" tabindex="-1">변경 이력</button><button id="insights-tab" role="tab" aria-controls="git-insights" aria-selected="false" tabindex="-1">심층 분석</button></div><div id="history" role="tabpanel" aria-labelledby="cochange-tab"></div><section id="git-insights" class="git-validation-section" role="tabpanel" aria-labelledby="insights-tab" hidden><section id="working-changes"></section><p>작성자별 변경 · 함수 핫스팟 · 공동 변경</p><button id="git-validation-run">Git 상세 분석 다시 실행</button> <button id="git-validation-report">정적분석 + Git 통합 보고서 ↗</button><p id="git-validation-status" role="status">분석 대기 중</p><div id="git-validation-panel"></div></section></aside></main><script nonce="${nonce}" src="${resource('map.js')}"></script></body></html>`;
     let child, gitChild, reportChild, disposed = false, data, busy = false;
     panel.onDidDispose(() => { disposed = true; if (child) child.kill(); if (gitChild) gitChild.kill(); if (reportChild) reportChild.kill(); });
     async function analyze() {
@@ -85,7 +86,7 @@ function activate(context) {
       const python = config.get('pythonPath') || (process.platform === 'win32' ? 'python' : 'python3');
       const out = fs.mkdtempSync(path.join(os.tmpdir(), 'knitcode-git-report-'));
       panel.webview.postMessage({type:'gitValidationStatus', text:'동일 커밋의 정적분석 + Git 통합 보고서 생성 중…'});
-      reportChild = execFile(python, ['-B', script, root, '--commits', String(config.get('gitValidationCommitLimit', 50)), '--output', out],
+      reportChild = execFile(python, ['-I', '-B', script, root, '--commits', String(config.get('gitValidationCommitLimit', 50)), '--output', out],
         {cwd: engine, env: {...process.env, PYTHONDONTWRITEBYTECODE: '1', GIT_TERMINAL_PROMPT: '0'}, maxBuffer: 16 * 1024 * 1024, timeout: 600000},
         async (error, stdout, stderr) => {
           reportChild = undefined;
@@ -129,7 +130,7 @@ function activate(context) {
             await vscode.window.showTextDocument(doc, vscode.ViewColumn.One);
           });
         }
-      } catch (error) { vscode.window.showErrorMessage(`KnitCode: ${error.message}`); }
+      } catch (error) { vscode.window.showErrorMessage(`knitcode: ${error.message}`); }
     });
   }));
 }

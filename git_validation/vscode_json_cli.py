@@ -26,12 +26,15 @@ def summarize(root, limit=50):
         report = analyze(top, max_commits=limit)
     except (OSError, ValueError) as exc:
         return {'available': False, 'error': str(exc), 'files': {}, 'authors': [], 'head': None}
-    file_rows = defaultdict(lambda: {'commits': 0, 'authors': Counter(), 'types': Counter(), 'functions': Counter(), 'cochanges': []})
+    file_rows = defaultdict(lambda: {'commits': 0, 'authors': Counter(), 'types': Counter(), 'functions': Counter(), 'cochanges': [], 'events': []})
     for commit in report['commits']:
         for entry in commit['files']:
             name = entry['path']
             row = file_rows[name]
             row['commits'] += 1
+            row['events'].append({'author': commit['author'], 'sha': commit['sha'],
+                                  'type': commit['classification']['type'],
+                                  'functions': [f['name'] for f in entry['functions']]})
             row['authors'][commit['author']] += 1
             row['types'][commit['classification']['type']] += 1
             for change in entry['functions']:
@@ -45,6 +48,7 @@ def summarize(root, limit=50):
     for name, row in file_rows.items():
         files[name] = {
             'commits': row['commits'],
+            'events': row['events'],
             'authors': [{'name': k, 'count': v} for k,v in row['authors'].most_common(8)],
             'types': dict(row['types']),
             'functions': [{'name': k, 'count': v} for k,v in row['functions'].most_common(12)],

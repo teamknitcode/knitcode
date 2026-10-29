@@ -1,8 +1,8 @@
 {
   "name": "knitcode-static",
-  "displayName": "KnitCode Static Flow",
+  "displayName": "knitcode",
   "description": "Explore Python callers, callees, static evidence and Git history with the current KnitCode engine.",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "publisher": "knitcode-local",
   "engines": {
     "vscode": "^1.85.0"
@@ -26,11 +26,11 @@
     "commands": [
       {
         "command": "knitcodeStatic.open",
-        "title": "KnitCode Static Flow: Open Call Flow"
+        "title": "knitcode: Open Call Flow"
       }
     ],
     "configuration": {
-      "title": "KnitCode Static Flow",
+      "title": "knitcode",
       "properties": {
         "knitcodeStatic.pythonPath": {
           "type": "string",

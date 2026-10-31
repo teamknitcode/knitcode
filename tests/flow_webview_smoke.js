@@ -67,6 +67,7 @@ listeners.message({data:{type:'gitValidation',data:{available:true,analyzed_comm
   events:[{author:'alice',sha:'aaaaaaaa',type:'feature',functions:[target.name]},
           {author:'bob',sha:'bbbbbbbb',type:'feature',functions:[caller.name]}]
 }}}}});
+assert(text(elements.get('flow')).includes('변경 1회'),'flow cards show function change counts');
 const authorSelect=find(elements.get('git-validation-panel'),n=>n.tag==='select');
 authorSelect.value='alice'; authorSelect.events.change();
 assert(text(elements.get('git-validation-panel')).includes('선택 범위: 1개 커밋'),'author filters event count');

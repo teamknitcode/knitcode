@@ -118,3 +118,8 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hotspot.unmatched .hotspot-bar { opacity: .45; }
 .hotspot-count { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
 #git-validation-panel .hotspot-more { border-top: 0; padding: 4px 0 0; }
+
+:root { --heat: var(--vscode-charts-orange, #d18616); }
+.card.changed { border-left: 4px solid color-mix(in srgb, var(--heat) calc(var(--heat-level, 1) * 100%), transparent); }
+.change-badge { float: right; font-size: 10px; font-weight: 600; line-height: 1.6; padding: 1px 8px; border-radius: 10px; color: var(--heat); background: color-mix(in srgb, var(--heat) 14%, transparent); }
+.change-legend { display: block; margin-top: 4px; }

@@ -56,10 +56,36 @@ function tree() {
     }
   }
 }
+// node id -> commits that changed that function, from Git Validation. Rebuilt when either input reloads.
+let changeCounts;
+function functionChanges() {
+  if (changeCounts || !gitValidation?.available || !data) return changeCounts;
+  changeCounts = new Map();
+  for (const [file, record] of Object.entries(gitValidation.files)) {
+    const counts = new Map();
+    for (const event of record.events || []) for (const name of event.functions) counts.set(name, (counts.get(name) || 0) + 1);
+    const members = data.nodes.filter(n => n.file === file && ['function','method'].includes(n.type));
+    for (const [name, count] of counts) {
+      // Same rule as the hotspot list: only a unique match is linked to a card.
+      const matches = members.filter(n => n.name === name || n.name.endsWith('.' + name));
+      if (matches.length === 1) changeCounts.set(matches[0].id, count);
+    }
+  }
+  return changeCounts;
+}
 function card(id, parent, center = false) {
   const node = index.get(id);
   const box = el('article', undefined, parent); box.className = 'card' + (center ? ' center' : ''); box.dataset.nodeId = id;
   el('small', node.type.toUpperCase(), box);
+  const changes = functionChanges()?.get(id);
+  if (changes) {
+    box.className += ' changed';
+    // Fixed steps (1, 2, 3+ commits) keep the same meaning while navigating.
+    box.style.setProperty('--heat-level', String(Math.min(changes, 3) / 3));
+    const badge = el('span', `변경 ${changes}회`, box);
+    badge.className = 'change-badge';
+    badge.title = `최근 ${gitValidation.analyzed_commits}개 커밋 중 이 함수를 바꾼 커밋 수`;
+  }
   el('button', node.class_name ? `${node.class_name}.${node.name}` : node.name, box, () => choose(id)).className = 'node-name';
   el('p', `${node.file}:${node.lineno || 1}`, box);
   const actions = el('div', undefined, box); actions.className = 'actions';
@@ -93,8 +119,9 @@ function flow() {
   for (let i = depth - 1; i >= 0; i--) lane(incoming[i], `${i + 1}단계 호출자 →`);
   lane([selected], '선택한 코드', true);
   for (let i = 0; i < depth; i++) lane(outgoing[i], `${i + 1}단계 호출 대상`);
-  requestAnimationFrame(wires);
-  lanes.addEventListener('toggle', () => requestAnimationFrame(wires), true);
+    requestAnimationFrame(wires);
+    lanes.addEventListener('toggle', () => requestAnimationFrame(wires), true);
+    if (functionChanges()?.size) el('small', `주황 테두리·배지: 최근 ${gitValidation.analyzed_commits}개 커밋에서 함수가 바뀐 횟수 (연함 1회 · 중간 2회 · 진함 3회 이상)`, box).className = 'change-legend';
 }
 
 function wires() {
@@ -425,12 +452,12 @@ for (const side of ['browser', 'history']) {
 applyLayout(); updateGitTabs();
 window.addEventListener('message', ({data:message}) => {
   if (message.type === 'gitValidationStatus') $('git-validation-status').textContent = message.text;
-  if (message.type === 'gitValidation') { gitValidation = message.data;
+  if (message.type === 'gitValidation') { gitValidation = message.data; changeCounts = undefined;
     $('git-validation-status').textContent = gitValidation.available ? 'Git 분석 완료' : 'Git 이력 없음';
-    renderGitValidation(); return; }
+    renderGitValidation(); if (index.has(selected)) flow(); return; }
   if (message.type === 'status') $('status').textContent = message.text;
   if (message.type !== 'data') return;
-  data = message.data;
+  data = message.data; changeCounts = undefined;
   index = new Map(data.nodes.map(n => [n.id,n]));
   calls = data.edges.filter(e => ['calls','calls_override','instantiates','calls_implicit'].includes(e.type));
   const s = data.summary;

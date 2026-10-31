@@ -70,7 +70,7 @@ listeners.message({data:{type:'gitValidation',data:{available:true,analyzed_comm
 const authorSelect=find(elements.get('git-validation-panel'),n=>n.tag==='select');
 authorSelect.value='alice'; authorSelect.events.change();
 assert(text(elements.get('git-validation-panel')).includes('선택 범위: 1개 커밋'),'author filters event count');
-const hotspot=find(elements.get('git-validation-panel'),n=>n.tag==='button'&&n.textContent.includes(target.name));
+const hotspot=find(elements.get('git-validation-panel'),n=>n.tag==='button'&&text(n).includes(target.name));
 assert(hotspot,'hotspot links to current function'); hotspot.events.click();
 assert(messages.at(-1).type==='open'&&messages.at(-1).id===target.id,'hotspot opens source');
 data.working_changes={available:true,basis:'HEAD',warnings:[],files:[{file:target.file,functions:[{

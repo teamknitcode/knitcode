@@ -241,13 +241,32 @@ function renderGitValidation() {
   for (const event of events) for (const name of event.functions) hot.set(name, (hot.get(name) || 0) + 1);
   const hotspots = [...hot].sort((a,b) => b[1] - a[1]).map(([name,count]) => ({name,count}));
   const fn = el('details', undefined, box);
+  fn.open = true;
   el('summary', `변경된 함수 핫스팟 ${hotspots.length}개`, fn);
-  hotspots.forEach(f => {
+    // One scale for every author filter: the file's most-changed function across all authors.
+  const allCounts = new Map();
+  for (const event of record.events || []) for (const name of event.functions) allCounts.set(name, (allCounts.get(name) || 0) + 1);
+  const most = Math.max(1, ...allCounts.values());
+  const hotspotRow = (f, parent) => {
     const matches = data.nodes.filter(n => n.file === node.file && ['function','method'].includes(n.type)
       && (n.name === f.name || n.name.endsWith('.' + f.name)));
-    if (matches.length === 1) el('button', `${f.name} · ${f.count}회 ↗`, fn, () => { choose(matches[0].id); open(matches[0]); }).className = 'commit';
-    else el('p', `${f.name} · ${f.count}회 · 현재 소스에서 위치 확인 불가`, fn);
-  });
+    const linked = matches.length === 1;
+    const row = el(linked ? 'button' : 'div', undefined, parent, linked ? () => { choose(matches[0].id); open(matches[0]); } : undefined);
+    row.className = 'hotspot' + (linked ? '' : ' unmatched');
+    row.title = linked ? '호출 흐름 중심으로 선택하고 코드 열기' : '현재 소스에서 위치 확인 불가';
+    el('span', f.name, row).className = 'hotspot-name';
+    const bar = el('span', undefined, row);
+    bar.className = 'hotspot-bar';
+    bar.style.setProperty('--ratio', String(f.count / most));
+    el('span', `${f.count}회`, row).className = 'hotspot-count';
+  };
+  hotspots.slice(0, 10).forEach(f => hotspotRow(f, fn));
+  if (hotspots.length > 10) {
+    const more = el('details', undefined, fn);
+    more.className = 'hotspot-more';
+    el('summary', `나머지 ${hotspots.length - 10}개 펼치기`, more);
+    hotspots.slice(10).forEach(f => hotspotRow(f, more));
+  }
   const eventList = el('details', undefined, box);
   el('summary', '선택 작성자의 커밋', eventList);
   events.forEach(event => el('p', `${event.sha.slice(0,8)} · ${event.author} · ${event.type}`, eventList));

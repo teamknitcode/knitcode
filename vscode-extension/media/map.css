@@ -110,3 +110,11 @@ progress { width: 65%; height: 5px; accent-color: var(--accent); }
 #git-validation-panel label { display: block; margin: 24px 0 12px; color: var(--muted); }
 select { display: block; width: 100%; margin-top: 8px; padding: 10px; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.hotspot { display: grid; grid-template-columns: minmax(0, 1fr) 72px 36px; align-items: center; gap: 10px; width: 100%; margin: 4px 0; padding: 8px 10px; text-align: left; font-size: 12px; border: 1px solid transparent; border-radius: 8px; }
+.hotspot.unmatched { color: var(--muted); }
+.hotspot-name { overflow-wrap: anywhere; }
+.hotspot-bar { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--accent) calc(var(--ratio, 0) * 100%), var(--line) 0); }
+.hotspot.unmatched .hotspot-bar { opacity: .45; }
+.hotspot-count { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+#git-validation-panel .hotspot-more { border-top: 0; padding: 4px 0 0; }

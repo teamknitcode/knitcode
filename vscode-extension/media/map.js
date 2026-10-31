@@ -22,7 +22,9 @@ function choose(id, remember = true) {
   render();
 }
 // Breadth-first distances on each directed side; cycles never expand indefinitely.
-function layers(id, incoming, limit) {
+// pytest-style discovery: tests/ or test/ folders, test_*.py or *_test.py files.
+const isTest = node => /(^|\/)tests?\//.test(node.file) || /(^|\/)(test_[^/]*|[^/]*_test)\.py$/.test(node.file);
+function layers(id, incoming, limit, skip) {
   const seen = new Set([id]), result = [];
   let frontier = [id];
   for (let step = 0; step < limit; step++) {
@@ -30,7 +32,7 @@ function layers(id, incoming, limit) {
     for (const edge of calls) {
       const from = incoming ? edge.target : edge.source;
       const to = incoming ? edge.source : edge.target;
-      if (frontier.includes(from) && !seen.has(to) && index.has(to)) next.add(to);
+      if (frontier.includes(from) && !seen.has(to) && index.has(to) && !skip?.(index.get(to))) next.add(to);
     }
     const ids = [...next].sort();
     ids.forEach(n => seen.add(n));
@@ -103,20 +105,33 @@ function flow() {
     if (!members.length) el('p', '이 파일에는 분석된 함수·클래스가 없습니다.', box);
     return;
   }
-  const incoming = layers(selected, true, depth), outgoing = layers(selected, false, depth);
+  // Tests calling the focus are listed apart so they do not crowd the program flow.
+  const skip = isTest(node) ? undefined : isTest;
+  const incoming = layers(selected, true, depth, skip), outgoing = layers(selected, false, depth);
+  const testCallers = skip ? [...new Set(calls.filter(e => e.target === selected && index.has(e.source)
+    && isTest(index.get(e.source))).map(e => e.source))].sort() : [];
   const lanes = el('div', undefined, box); lanes.className = 'lanes';
-  function lane(ids, title, center = false) {
+  function lane(ids, title, center = false, tests = []) {
     const col = el('section', undefined, lanes); col.className = 'lane';
     el('h3', title, col);
-    if (!ids.length) el('p', '확인된 내부 호출 없음', col).className = 'empty';
+    if (!ids.length) el('p', tests.length ? '테스트 외 내부 호출자 없음' : '확인된 내부 호출 없음', col).className = 'empty';
     ids.slice(0, 20).forEach(id => card(id, col, center));
     if (ids.length > 20) {
       const extra = el('details', undefined, col);
       el('summary', `나머지 ${ids.length - 20}개 펼치기`, extra);
       ids.slice(20).forEach(id => card(id, extra));
     }
+    if (tests.length) {
+      const group = el('details', undefined, col); group.className = 'test-callers';
+      el('summary', `🧪 이 함수를 직접 호출하는 테스트 ${tests.length}개`, group);
+      tests.forEach(id => {
+        const test = index.get(id);
+        const button = el('button', `${test.name} ↗`, group, () => open(test));
+        button.className = 'test-caller'; button.title = `${test.file}:${test.lineno || 1}`;
+      });
+    }
   }
-  for (let i = depth - 1; i >= 0; i--) lane(incoming[i], `${i + 1}단계 호출자 →`);
+  for (let i = depth - 1; i >= 0; i--) lane(incoming[i], `${i + 1}단계 호출자 →`, false, i === 0 ? testCallers : []);
   lane([selected], '선택한 코드', true);
   for (let i = 0; i < depth; i++) lane(outgoing[i], `${i + 1}단계 호출 대상`);
     requestAnimationFrame(wires);
@@ -222,7 +237,10 @@ function render() {
   $('focus').replaceChildren();
   el('small', 'CURRENT FOCUS', $('focus'));
   el('h1', node.class_name ? `${node.class_name}.${node.name}` : node.name, $('focus'));
-  el('p', `${node.file}:${node.lineno || 1} · 서로 다른 호출자 ${node.callers}개 · 저장된 소스 기준`, $('focus'));
+  // Same edge types as node.callers (calls, instantiates), so the test share never exceeds the total.
+  const testCallerCount = isTest(node) ? 0 : new Set(calls.filter(e => e.target === node.id && ['calls','instantiates'].includes(e.type)
+    && index.has(e.source) && isTest(index.get(e.source))).map(e => e.source)).size;
+  el('p', `${node.file}:${node.lineno || 1} · 서로 다른 호출자 ${node.callers}개${testCallerCount ? ` (테스트 ${testCallerCount}개)` : ''} · 저장된 소스 기준`, $('focus'));
   $('depth').textContent = `${depth}단계`;
   $('less').disabled = depth <= 1; $('more').disabled = depth >= 3;
   $('back').disabled = !trail.length;

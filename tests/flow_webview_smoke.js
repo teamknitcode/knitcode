@@ -25,6 +25,7 @@ const caller=payload.nodes.find(n=>n.name.endsWith('.caller') || n.name==='calle
 listeners.message({data:{type:'data',data:payload,initialFile:target.file}});
 choose(target.id);
 assert(layers(target.id,true,1)[0].includes(caller.id),'directed caller expansion');
+assert(isTest({file:'tests/test_x.py'})&&isTest({file:'pkg/a_test.py'})&&!isTest({file:'main.py'})&&!isTest({file:'src/contest.py'}),'test file detection');
 assert(text(elements.get('flow')).includes('코드 ↗'),'source actions');
 elements.get('more').events.click();
 assert(text(elements.get('depth')).includes('2단계'),'depth control');

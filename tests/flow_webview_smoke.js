@@ -72,6 +72,7 @@ assert(text(elements.get('flow')).includes('변경 1회'),'flow cards show funct
 const authorSelect=find(elements.get('git-validation-panel'),n=>n.tag==='select');
 authorSelect.value='alice'; authorSelect.events.change();
 assert(text(elements.get('git-validation-panel')).includes('선택 범위: 1개 커밋'),'author filters event count');
+assert(text(elements.get('git-validation-panel')).includes('기능 추가 1'),'commit types follow author filter');
 const hotspot=find(elements.get('git-validation-panel'),n=>n.tag==='button'&&text(n).includes(target.name));
 assert(hotspot,'hotspot links to current function'); hotspot.events.click();
 assert(messages.at(-1).type==='open'&&messages.at(-1).id===target.id,'hotspot opens source');

@@ -5,6 +5,7 @@ let data, selected, depth = 1, tab = 'cochange', trail = [];
 let gitValidation;
 let authorFilter = '';
 let index = new Map(), calls = [];
+const COMMIT_TYPES = {feature: '기능 추가', bugfix: '버그 수정', refactor: '리팩터링', test: '테스트', docs: '문서', chore: '빌드·설정', unknown: '분류 안 됨'};
 const IMPLICIT = {callback: '조건부 콜백 후보', property_get: 'property 읽기 후보', property_set: 'property 쓰기 후보',
   property_delete: 'property 삭제 후보'};
 function el(tag, text, parent, action) {
@@ -269,8 +270,6 @@ function renderGitValidation() {
   const authors = el('details', undefined, box);
   el('summary', `수정 작성자 ${record.authors.length}명 보기`, authors);
   record.authors.forEach(a => el('p', `${a.name} · ${a.count}개 커밋`, authors));
-  const kinds = Object.entries(record.types).map(([kind, count]) => `${kind}: ${count}`).join(' / ');
-  el('p', `수정 유형(전체 작성자·커밋 메시지 추정): ${kinds || '없음'}`, box);
   const label = el('label', '작성자별 함수·커밋 보기', box);
   const filter = el('select', undefined, label);
   filter.setAttribute('aria-label', '작성자 필터');
@@ -282,12 +281,21 @@ function renderGitValidation() {
   filter.addEventListener('change', () => { authorFilter = filter.value; renderGitValidation(); });
   const events = (record.events || []).filter(e => !authorFilter || e.author === authorFilter);
   el('p', `선택 범위: ${events.length}개 커밋`, box);
+  // Estimated from commit-message rules; follows the author filter like the hotspots below.
+  const typeCounts = new Map();
+  for (const event of events) typeCounts.set(event.type, (typeCounts.get(event.type) || 0) + 1);
+  el('small', '수정 유형 (커밋 메시지로 추정)', box);
+  const types = el('div', undefined, box); types.className = 'type-chips';
+  [...typeCounts].sort((a, b) => (a[0] === 'unknown') - (b[0] === 'unknown') || b[1] - a[1]).forEach(([kind, count]) => {
+    el('span', `${COMMIT_TYPES[kind] || kind} ${count}`, types).className = 'type-chip' + (kind === 'unknown' ? ' muted' : '');
+  });
   const hot = new Map();
   for (const event of events) for (const name of event.functions) hot.set(name, (hot.get(name) || 0) + 1);
   const hotspots = [...hot].sort((a,b) => b[1] - a[1]).map(([name,count]) => ({name,count}));
   const fn = el('details', undefined, box);
   fn.open = true;
   el('summary', `변경된 함수 핫스팟 ${hotspots.length}개`, fn);
+  if (!hotspots.length) el('p', '선택한 커밋에서 바뀐 함수가 없습니다. 모듈 수준 코드나 주석·공백만 바뀐 커밋일 수 있습니다.', fn).className = 'empty';
     // One scale for every author filter: the file's most-changed function across all authors.
   const allCounts = new Map();
   for (const event of record.events || []) for (const name of event.functions) allCounts.set(name, (allCounts.get(name) || 0) + 1);
@@ -314,9 +322,9 @@ function renderGitValidation() {
   }
   const eventList = el('details', undefined, box);
   el('summary', '선택 작성자의 커밋', eventList);
-  events.forEach(event => el('p', `${event.sha.slice(0,8)} · ${event.author} · ${event.type}`, eventList));
+  events.forEach(event => el('p', `${event.sha.slice(0,8)} · ${event.author} · ${COMMIT_TYPES[event.type] || event.type}`, eventList));
   const joint = el('details', undefined, box);
-  el('summary', `동시 수정 파일 ${record.cochanges.length}개`, joint);
+  el('summary', `동시 수정 파일 ${record.cochanges.length}개 (전체 작성자 기준)`, joint);
   record.cochanges.forEach(f => el('p', `${f.file} · ${f.count}회 (관측 비율 ${(f.confidence*100).toFixed(0)}%)`, joint));
   // Cross-reference the team's call graph with Git co-change evidence.
   const structural = new Set();
@@ -330,7 +338,7 @@ function renderGitValidation() {
   const overlap = record.cochanges.filter(f => structural.has(f.file));
   if (overlap.length) {
     const both = el('details', undefined, box);
-    el('summary', `호출 관계 + 공동변경 근거가 모두 있는 파일 ${overlap.length}개`, both);
+    el('summary', `호출 관계 + 공동변경 근거가 모두 있는 파일 ${overlap.length}개 (전체 작성자 기준)`, both);
     overlap.forEach(f => el('p', `${f.file} · 공동변경 ${f.count}회 · 정적 호출 경로 관측`, both));
   }
   el('small', gitValidation.note, box);

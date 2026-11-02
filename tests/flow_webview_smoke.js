@@ -10,6 +10,7 @@ const elements=new Map(), listeners={}, messages=[];
 const document={
   getElementById(id) { if(!elements.has(id)) elements.set(id,new MockElement('div')); return elements.get(id); },
   createElement(tag) { return new MockElement(tag); },
+  createElementNS(ns, tag) { return new MockElement(tag); },
   querySelector() { return null; }
 };
 const window={addEventListener(type,callback){listeners[type]=callback;}};
@@ -23,6 +24,9 @@ const payload=JSON.parse(readFile(arguments[0]));
 const target=payload.nodes.find(n=>n.name.endsWith('.target') || n.name==='target');
 const caller=payload.nodes.find(n=>n.name.endsWith('.caller') || n.name==='caller');
 listeners.message({data:{type:'data',data:payload,initialFile:target.file}});
+const mapFile=find(elements.get('project-map'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('map-file'));
+assert(mapFile,'project map draws files'); mapFile.events.click();
+assert(selected==='file:'+target.file,'map opens the file view');
 choose(target.id);
 assert(layers(target.id,true,1)[0].includes(caller.id),'directed caller expansion');
 assert(isTest({file:'tests/test_x.py'})&&isTest({file:'pkg/a_test.py'})&&!isTest({file:'main.py'})&&!isTest({file:'src/contest.py'}),'test file detection');

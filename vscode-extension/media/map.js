@@ -100,8 +100,12 @@ function flow() {
   const node = index.get(selected);
   if (node.type === 'file') {
     el('h2', '이 파일의 함수에서 시작하세요', box);
+    // Coming from the map, the question is which functions changed: those come first (stable sort keeps file order otherwise).
+    const changes = functionChanges();
+    if (changes?.size) el('small', '최근 커밋에서 자주 바뀐 함수가 먼저 나옵니다.', box);
     const list = el('div', undefined, box); list.className = 'file-symbols';
-    const members = data.nodes.filter(n => n.file === node.file && n.type !== 'file');
+    const members = data.nodes.filter(n => n.file === node.file && n.type !== 'file')
+      .sort((a, b) => (changes?.get(b.id) || 0) - (changes?.get(a.id) || 0));
     members.forEach(n => card(n.id, list));
     if (!members.length) el('p', '이 파일에는 분석된 함수·클래스가 없습니다.', box);
     return;
@@ -387,6 +391,172 @@ $('more').addEventListener('click', () => { if (data && depth < 3) { depth++; re
 $('less').addEventListener('click', () => { if (data && depth > 1) { depth--; render(); } });
 $('back').addEventListener('click', () => { if (trail.length) choose(trail.pop(), false); });
 $('refresh').addEventListener('click', () => api.postMessage({type:'refresh'}));
+
+// Step 1 of the overview: the project map is the first screen; a file opens the existing function view.
+let mapMode = true;
+function showMap(on) {
+  mapMode = on;
+  for (const id of ['focus', 'flow-controls', 'flow', 'evidence']) $(id).hidden = on;
+  $('project-map').hidden = !on;
+  $('toggle-map').textContent = on ? '함수 화면 보기' : '프로젝트 지도';
+  $('toggle-map').setAttribute('aria-pressed', String(on));
+  if (on) renderMap();
+}
+// Step 2 of the overview: aggregate the function-level analysis into one record per file.
+const OTHER_FILE = /^(docs?|examples?|scripts?|benchmarks?)\/|^setup\.py$/;
+const CALL_TYPES = ['calls', 'calls_override', 'instantiates', 'calls_implicit'];
+const LINK_TYPES = [...CALL_TYPES, 'imports', 'inherits', 'references'];
+function buildProjectMap(limit) {
+  const files = new Map();
+  for (const n of data.nodes) if (n.type === 'file') files.set(n.file, {
+    id: n.id, path: n.file, name: n.file.split('/').pop(), changes: data.history.changes?.[n.file] || 0, funcs: 0,
+    group: isTest(n) ? 'test' : OTHER_FILE.test(n.file) ? 'other' : 'code', depth: null, rank: null, entry: []});
+  for (const n of data.nodes) if (['function', 'method'].includes(n.type) && files.has(n.file)) files.get(n.file).funcs++;
+  const moduleFile = new Map(data.nodes.filter(n => n.type === 'module').map(n => [n.id, n.file]));
+  for (const m of data.reading_order?.modules || []) {
+    const f = files.get(moduleFile.get(m.id));
+    if (f) Object.assign(f, {depth: m.min_depth ?? null, rank: m.rank ?? null, entry: m.entry || []});
+  }
+  // Calls keep direction (a -> b); "linked" is any code relation either way, used to spot hidden coupling.
+  const fileOf = new Map(data.nodes.map(n => [n.id, n.file]));
+  const calls = new Map(), linked = new Set();
+  for (const e of data.edges) {
+    const a = fileOf.get(e.source), b = fileOf.get(e.target);
+    if (!a || !b || a === b) continue;
+    if (CALL_TYPES.includes(e.type)) calls.set(a + '\n' + b, (calls.get(a + '\n' + b) || 0) + 1);
+    if (LINK_TYPES.includes(e.type)) linked.add([a, b].sort().join('\n'));
+  }
+  // Co-change counts only commits touching 2..limit files; bulk commits (type hints, moves) add noise.
+  const pairs = new Map();
+  for (const c of data.history.commits || []) {
+    if (c.files.length < 2 || c.files.length > limit) continue;
+    for (let x = 0; x < c.files.length; x++) for (let y = x + 1; y < c.files.length; y++) {
+      const key = [c.files[x], c.files[y]].sort().join('\n');
+      pairs.set(key, (pairs.get(key) || 0) + 1);
+    }
+  }
+  const cochange = [...pairs].filter(([, n]) => n >= 2).map(([key, n]) => {
+    const [a, b] = key.split('\n');
+    return {a, b, count: n, hidden: !linked.has(key)};
+  });
+  return {files, calls: [...calls].map(([key, n]) => { const [a, b] = key.split('\n'); return {a, b, count: n}; }), cochange};
+}
+// Step 3: one column per distance from the entry points; colour = how often the file changed.
+// Test and other files get their own columns, shown only on request.
+const MAP_COLUMNS = [
+  ['진입점', '공개 API · 실행 시작', f => f.group === 'code' && f.depth === 0],
+  ['1걸음', '진입점이 바로 호출', f => f.group === 'code' && f.depth === 1],
+  ['2걸음', '', f => f.group === 'code' && f.depth === 2],
+  ['3걸음 이상', '', f => f.group === 'code' && f.depth >= 3],
+  ['호출로 닿지 않음', '설정·버전·호환 코드', f => f.group === 'code' && f.depth == null],
+  ['테스트', '', f => f.group === 'test', true],
+  ['기타', 'docs · setup', f => f.group === 'other', true],
+];
+let mapShowTests = false, mapLimit = 6;
+const HEAT = [[0, 0, '0'], [1, 2, '1–2'], [3, 5, '3–5'], [6, 10, '6–10'], [11, Infinity, '11+']];
+const heatOf = n => HEAT.findIndex(([lo, hi]) => n >= lo && n <= hi);
+const MW = 156, MH = 48, MCOL = 204, MROW = 62, MTOP = 56;
+function svgEl(tag, attrs, parent, text) {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+  if (text !== undefined) node.textContent = text;
+  parent.append(node);
+  return node;
+}
+// Step 4: a curve between two files, leaving the side that faces the other file.
+function mapEdgePath(p, q) {
+  const ay = p.y + MH / 2, by = q.y + MH / 2;
+  if (p.x === q.x) {
+    const bend = 26 + Math.abs(ay - by) * .18;
+    return `M ${p.x + MW} ${ay} C ${p.x + MW + bend} ${ay}, ${p.x + MW + bend} ${by}, ${p.x + MW} ${by}`;
+  }
+  const [l, r, ly, ry] = p.x < q.x ? [p, q, ay, by] : [q, p, by, ay];
+  const x1 = l.x + MW, x2 = r.x, mid = (x2 - x1) / 2;
+  return `M ${x1} ${ly} C ${x1 + mid} ${ly}, ${x2 - mid} ${ry}, ${x2} ${ry}`;
+}
+let mapEdges = [], mapNodes = new Map();
+// Hovering a file keeps only its own lines and neighbours bright; only classes change, nothing is redrawn.
+function focusMap(path) {
+  const near = new Set(path ? [path] : []);
+  for (const e of mapEdges) {
+    const touches = !!path && (e.a === path || e.b === path);
+    if (touches) { near.add(e.a); near.add(e.b); }
+    e.node.classList.toggle('near', touches);
+  }
+  for (const [p, g] of mapNodes) g.classList.toggle('near', near.has(p));
+  document.querySelector('.project-map')?.classList.toggle('dim', !!path);
+}
+function renderMap() {
+  const box = $('project-map'); box.replaceChildren();
+  if (!data) { el('p', '분석이 끝나면 지도가 나타납니다.', box); return; }
+  const map = buildProjectMap(mapLimit);
+  el('h2', '프로젝트 지도', box);
+  el('p', '왼쪽 열일수록 진입점에 가깝고, 칸이 진할수록 자주 바뀐 파일입니다. 파일에 마우스를 올리면 연결된 파일만 남고, 누르면 그 파일의 함수 화면으로 들어갑니다.', box).className = 'map-lede';
+  // Step 5: options that change what the map counts or shows.
+  const options = el('div', undefined, box); options.className = 'map-options';
+  const testsLabel = el('label', undefined, options);
+  const tests = el('input', undefined, testsLabel); tests.type = 'checkbox'; tests.checked = mapShowTests;
+  el('span', '테스트·기타 파일', testsLabel);
+  tests.addEventListener('change', () => { mapShowTests = tests.checked; renderMap(); });
+  const limitLabel = el('label', '함께 변경 집계 ', options);
+  const limit = el('select', undefined, limitLabel);
+  for (const [value, text] of [[6, '작은 커밋만 (파일 6개 이하)'], [50, '함께 변경 탭과 같은 기준 (파일 50개 이하)']]) {
+    const option = el('option', text, limit); option.value = String(value);
+  }
+  limit.value = String(mapLimit);
+  limit.addEventListener('change', () => { mapLimit = Number(limit.value); renderMap(); });
+  const cols = MAP_COLUMNS.filter(([, , , extra]) => mapShowTests || !extra).map(([title, sub, test]) => ({title, sub,
+    files: [...map.files.values()].filter(test).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99) || b.changes - a.changes)}));
+  const shown = cols.flatMap(c => c.files);
+  const pos = new Map();
+  cols.forEach((col, c) => col.files.forEach((f, r) => pos.set(f.path, {x: c * MCOL, y: MTOP + r * MROW})));
+  const rows = Math.max(1, ...cols.map(c => c.files.length));
+  const width = (cols.length - 1) * MCOL + MW + 40, height = MTOP + rows * MROW;
+  const scroll = el('div', undefined, box); scroll.className = 'map-scroll';
+  const svg = svgEl('svg', {class: 'project-map', width, height, viewBox: `0 0 ${width} ${height}`,
+    role: 'group', 'aria-label': '파일 단위 프로젝트 지도'}, scroll);
+  const marker = svgEl('marker', {id: 'map-arrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto'}, svgEl('defs', {}, svg));
+  svgEl('path', {d: 'M0 0 L10 5 L0 10 z', class: 'map-arrow'}, marker);
+  cols.forEach((col, c) => {
+    svgEl('text', {x: c * MCOL, y: 16, class: 'map-col'}, svg, `${col.title} ${col.files.length}`);
+    if (col.sub) svgEl('text', {x: c * MCOL, y: 34, class: 'map-sub'}, svg, col.sub);
+  });
+  // Lines first so the file boxes stay on top of them.
+  const lines = svgEl('g', {}, svg);
+  mapEdges = [];
+  for (const e of map.calls) if (pos.has(e.a) && pos.has(e.b)) mapEdges.push({...e, node: svgEl('path', {d: mapEdgePath(pos.get(e.a), pos.get(e.b)),
+    class: 'map-edge call', 'stroke-width': Math.min(1 + Math.log2(e.count) * .55, 4), 'marker-end': 'url(#map-arrow)'}, lines)});
+  for (const e of map.cochange) if (pos.has(e.a) && pos.has(e.b)) mapEdges.push({...e, node: svgEl('path', {d: mapEdgePath(pos.get(e.a), pos.get(e.b)),
+    class: 'map-edge co' + (e.hidden ? ' hidden-link' : ''), 'stroke-width': Math.min(1.2 + (e.count - 2) * .6, 4)}, lines)});
+  mapNodes = new Map();
+  for (const f of shown) {
+    const {x, y} = pos.get(f.path);
+    const g = svgEl('g', {class: `map-file heat-${heatOf(f.changes)}`, transform: `translate(${x} ${y})`,
+      tabindex: 0, role: 'button', 'aria-label': `${f.path}, 변경 ${f.changes}회, 함수 ${f.funcs}개`}, svg);
+    svgEl('title', {}, g, `${f.path}\n변경 ${f.changes}회 · 함수 ${f.funcs}개`);
+    svgEl('rect', {width: MW, height: MH, rx: 6}, g);
+    svgEl('text', {x: 10, y: 20, class: 'map-name'}, g, f.name.length > 19 ? f.name.slice(0, 18) + '…' : f.name);
+    svgEl('text', {x: 10, y: 37, class: 'map-meta'}, g, `변경 ${f.changes}회 · 함수 ${f.funcs}`);
+    if (f.entry.length) svgEl('text', {x: MW - 8, y: 18, class: 'map-entry', 'text-anchor': 'end'}, g, '★');
+    g.addEventListener('pointerenter', () => focusMap(f.path));
+    g.addEventListener('pointerleave', () => focusMap(null));
+    g.addEventListener('focus', () => focusMap(f.path));
+    g.addEventListener('blur', () => focusMap(null));
+    // A file opens the existing file view (its functions), and from there the call flow.
+    const enter = () => { if (!index.has(f.id)) return; showMap(false); choose(f.id); };
+    g.addEventListener('click', enter);
+    g.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); enter(); } });
+    mapNodes.set(f.path, g);
+  }
+  const legend = el('div', undefined, box); legend.className = 'map-legend';
+  el('span', '칸 색 = 관찰 기간 변경 횟수', legend);
+  HEAT.forEach(([, , label], level) => { el('span', label, legend).className = `map-bin heat-${level}`; });
+  el('span', '★ 진입점', legend);
+  el('span', '── 호출 (화살표 = 방향)', legend).className = 'map-key call';
+  el('span', `- - 함께 변경 (파일 ${mapLimit}개 이하 커밋, 2회 이상)`, legend).className = 'map-key co';
+  el('span', '··· 코드 연결 없이 함께 변경', legend).className = 'map-key co';
+}
+$('toggle-map').addEventListener('click', () => { if (data) showMap(!mapMode); });
 const gitTabs = ['cochange', 'history', 'insights'];
 function updateGitTabs() {
   for (const name of gitTabs) {
@@ -492,7 +662,8 @@ window.addEventListener('message', ({data:message}) => {
   $('status').textContent = `${s.files} Python 파일 · 내부 호출 ${counts.RESOLVED_INTERNAL || 0} · 외부·내장 ${counts.KNOWN_NON_INTERNAL || 0} · 미확정 ${counts.UNKNOWN || 0} · 저장된 소스의 정적 후보${data.warnings.length ? ' · 파싱 제외: '+data.warnings.join('; ') : ''}${cutoffs ? ` · 재귀·계산 한도에서 보수적 처리 ${cutoffs}회` : ''}`;
   const initial = data.nodes.find(n => n.file === message.initialFile && ['function','method'].includes(n.type)) || data.nodes.find(n => ['function','method'].includes(n.type)) || data.nodes[0];
   trail = trail.filter(id => index.has(id));
-  if (initial) choose(index.has(selected) ? selected : initial.id, false);
+    if (initial) { choose(index.has(selected) ? selected : initial.id, false);
+    showMap(mapMode); }
   else {
     selected = undefined; tree();
     for (const id of ['focus','flow','evidence','history','history-file']) $(id).replaceChildren();

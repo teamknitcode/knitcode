@@ -475,6 +475,47 @@ function mapEdgePath(p, q) {
   return `M ${x1} ${ly} C ${x1 + mid} ${ly}, ${x2 - mid} ${ry}, ${x2} ${ry}`;
 }
 let mapEdges = [], mapNodes = new Map();
+// Pan and zoom: the view survives re-renders, so changing an option does not jump the map.
+let mapView = null, mapDragged = false;
+function setupMapZoom(svg, view, width, height, controls) {
+  const apply = () => view.setAttribute('transform', `translate(${mapView.x} ${mapView.y}) scale(${mapView.k})`);
+  const fit = () => {
+    const w = svg.clientWidth, h = svg.clientHeight;
+    const k = w && h ? Math.min(w / (width + 20), h / (height + 20), 1.5) : 1;
+    mapView = {k, x: 10, y: 10}; apply();
+  };
+  // Zoom around a point (the cursor or the centre) so that point stays where it is.
+  const zoomAt = (factor, cx, cy) => {
+    const k = Math.min(3, Math.max(.3, mapView.k * factor));
+    mapView = {k, x: cx - (cx - mapView.x) * k / mapView.k, y: cy - (cy - mapView.y) * k / mapView.k}; apply();
+  };
+  if (mapView) apply(); else fit();
+  svg.addEventListener('wheel', event => {
+    event.preventDefault();
+    const box = svg.getBoundingClientRect();
+    zoomAt(event.deltaY < 0 ? 1.15 : 1 / 1.15, event.clientX - box.left, event.clientY - box.top);
+  }, {passive: false});
+  let drag = null;
+  svg.addEventListener('pointerdown', event => {
+    mapDragged = false;
+    if (event.button === 0) drag = {x: event.clientX, y: event.clientY, vx: mapView.x, vy: mapView.y, moved: false};
+  });
+  svg.addEventListener('pointermove', event => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+    if (!drag.moved) { drag.moved = true; svg.setPointerCapture(event.pointerId); svg.classList.toggle('panning', true); }
+    mapView = {...mapView, x: drag.vx + dx, y: drag.vy + dy}; apply();
+  });
+  // A drag that started on a file must not also open it.
+  const end = () => { if (drag?.moved) mapDragged = true; drag = null; svg.classList.toggle('panning', false); };
+  svg.addEventListener('pointerup', end);
+  svg.addEventListener('pointercancel', end);
+  const center = () => [svg.clientWidth / 2, svg.clientHeight / 2];
+  controls.zoomIn.addEventListener('click', () => zoomAt(1.25, ...center()));
+  controls.zoomOut.addEventListener('click', () => zoomAt(1 / 1.25, ...center()));
+  controls.fit.addEventListener('click', fit);
+}
 // Hovering a file keeps only its own lines and neighbours bright; only classes change, nothing is redrawn.
 function focusMap(path) {
   const near = new Set(path ? [path] : []);
@@ -505,6 +546,9 @@ function renderMap() {
   }
   limit.value = String(mapLimit);
   limit.addEventListener('change', () => { mapLimit = Number(limit.value); renderMap(); });
+  const zoom = el('span', undefined, options); zoom.className = 'map-zoom';
+  const controls = {zoomOut: el('button', '−', zoom), zoomIn: el('button', '+', zoom), fit: el('button', '전체 보기', zoom)};
+  controls.zoomOut.setAttribute('aria-label', '축소'); controls.zoomIn.setAttribute('aria-label', '확대');
   const cols = MAP_COLUMNS.filter(([, , , extra]) => mapShowTests || !extra).map(([title, sub, test]) => ({title, sub,
     files: [...map.files.values()].filter(test).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99) || b.changes - a.changes)}));
   const shown = cols.flatMap(c => c.files);
@@ -512,17 +556,17 @@ function renderMap() {
   cols.forEach((col, c) => col.files.forEach((f, r) => pos.set(f.path, {x: c * MCOL, y: MTOP + r * MROW})));
   const rows = Math.max(1, ...cols.map(c => c.files.length));
   const width = (cols.length - 1) * MCOL + MW + 40, height = MTOP + rows * MROW;
-  const scroll = el('div', undefined, box); scroll.className = 'map-scroll';
-  const svg = svgEl('svg', {class: 'project-map', width, height, viewBox: `0 0 ${width} ${height}`,
-    role: 'group', 'aria-label': '파일 단위 프로젝트 지도'}, scroll);
+  const svg = svgEl('svg', {class: 'project-map', role: 'group', 'aria-label': '파일 단위 프로젝트 지도'}, box);
   const marker = svgEl('marker', {id: 'map-arrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto'}, svgEl('defs', {}, svg));
   svgEl('path', {d: 'M0 0 L10 5 L0 10 z', class: 'map-arrow'}, marker);
+  // Everything drawn goes into one group, so pan and zoom move it as a whole.
+  const view = svgEl('g', {class: 'map-viewport'}, svg);
   cols.forEach((col, c) => {
-    svgEl('text', {x: c * MCOL, y: 16, class: 'map-col'}, svg, `${col.title} ${col.files.length}`);
-    if (col.sub) svgEl('text', {x: c * MCOL, y: 34, class: 'map-sub'}, svg, col.sub);
+    svgEl('text', {x: c * MCOL, y: 16, class: 'map-col'}, view, `${col.title} ${col.files.length}`);
+    if (col.sub) svgEl('text', {x: c * MCOL, y: 34, class: 'map-sub'}, view, col.sub);
   });
   // Lines first so the file boxes stay on top of them.
-  const lines = svgEl('g', {}, svg);
+  const lines = svgEl('g', {}, view);
   mapEdges = [];
   for (const e of map.calls) if (pos.has(e.a) && pos.has(e.b)) mapEdges.push({...e, node: svgEl('path', {d: mapEdgePath(pos.get(e.a), pos.get(e.b)),
     class: 'map-edge call', 'stroke-width': Math.min(1 + Math.log2(e.count) * .55, 4), 'marker-end': 'url(#map-arrow)'}, lines)});
@@ -532,7 +576,7 @@ function renderMap() {
   for (const f of shown) {
     const {x, y} = pos.get(f.path);
     const g = svgEl('g', {class: `map-file heat-${heatOf(f.changes)}`, transform: `translate(${x} ${y})`,
-      tabindex: 0, role: 'button', 'aria-label': `${f.path}, 변경 ${f.changes}회, 함수 ${f.funcs}개`}, svg);
+      tabindex: 0, role: 'button', 'aria-label': `${f.path}, 변경 ${f.changes}회, 함수 ${f.funcs}개`}, view);
     svgEl('title', {}, g, `${f.path}\n변경 ${f.changes}회 · 함수 ${f.funcs}개`);
     svgEl('rect', {width: MW, height: MH, rx: 6}, g);
     svgEl('text', {x: 10, y: 20, class: 'map-name'}, g, f.name.length > 19 ? f.name.slice(0, 18) + '…' : f.name);
@@ -543,11 +587,12 @@ function renderMap() {
     g.addEventListener('focus', () => focusMap(f.path));
     g.addEventListener('blur', () => focusMap(null));
     // A file opens the existing file view (its functions), and from there the call flow.
-    const enter = () => { if (!index.has(f.id)) return; showMap(false); choose(f.id); };
+    const enter = () => { if (mapDragged || !index.has(f.id)) return; showMap(false); choose(f.id); };
     g.addEventListener('click', enter);
     g.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); enter(); } });
     mapNodes.set(f.path, g);
   }
+  setupMapZoom(svg, view, width, height, controls);
   const legend = el('div', undefined, box); legend.className = 'map-legend';
   el('span', '칸 색 = 관찰 기간 변경 횟수', legend);
   HEAT.forEach(([, , label], level) => { el('span', label, legend).className = `map-bin heat-${level}`; });

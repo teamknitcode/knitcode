@@ -36,6 +36,7 @@ elements.get('more').events.click();
 assert(text(elements.get('depth')).includes('2단계'),'depth control');
 choose(caller.id);
 assert(text(elements.get('evidence')).includes('미확정'),'unknown call visible');
+assert(text(elements.get('evidence')).includes('넘기는 값')||text(elements.get('evidence')).includes('전달값'),'call arguments paired with parameters');
 assert(text(elements.get('evidence')).includes('조건부 콜백 후보'),'callbacks distinguished');
 assert(!text(elements.get('status')).includes('반복 한도 도달'),'no fabricated convergence warning');
 const link=find(elements.get('evidence'),n=>n.tag==='button'&&n.textContent.includes('unknown'));

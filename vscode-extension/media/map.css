@@ -198,3 +198,11 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .graph-badge { font-size: 10px; font-weight: 600; fill: var(--heat); }
 .map-edge.implicit { stroke-dasharray: 4 3; }
 .project-map.dim .graph-node:not(.near) { opacity: .3; }
+
+.args { flex-basis: 100%; display: grid; gap: 4px; margin-top: 4px; padding: 8px 12px; border-left: 2px solid var(--line); }
+.args-title { font-size: 11px; }
+.args-row { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-size: 12px; }
+.args-row code { font-family: var(--vscode-editor-font-family, monospace); overflow-wrap: anywhere; }
+.args-row > span { color: var(--muted); }
+.args-row.warn small { color: var(--heat); }
+.args-none { flex-basis: 100%; }

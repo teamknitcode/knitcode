@@ -167,6 +167,118 @@ function wires() {
     }
   }
 }
+// Step C: pair the arguments written at a call site with the callee's parameters (declared hints only).
+// Split on top-level commas, ignoring commas inside brackets and strings.
+function splitTop(text) {
+  const parts = []; let depth = 0, quote = null, start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quote) { if (ch === '\\') i++; else if (ch === quote) quote = null; continue; }
+    if (ch === '"' || ch === "'") quote = ch;
+    else if ('([{'.includes(ch)) depth++;
+    else if (')]}'.includes(ch)) depth--;
+    else if (ch === ',' && depth === 0) { parts.push(text.slice(start, i)); start = i + 1; }
+  }
+  parts.push(text.slice(start));
+  return parts.map(p => p.trim()).filter(Boolean);
+}
+// Text between the first "(" and its matching ")", or null.
+function insideParens(text) {
+  const open = text.indexOf('(');
+  if (open < 0) return null;
+  let depth = 0, quote = null;
+  for (let i = open; i < text.length; i++) {
+    const ch = text[i];
+    if (quote) { if (ch === '\\') i++; else if (ch === quote) quote = null; continue; }
+    if (ch === '"' || ch === "'") quote = ch;
+    else if (ch === '(') depth++;
+    else if (ch === ')' && --depth === 0) return text.slice(open + 1, i);
+  }
+  return null;
+}
+function parseParams(signature) {
+  const inner = insideParens(signature || '');
+  if (inner == null) return null;
+  return splitTop(inner).map(p => {
+    const star = p.match(/^\*{0,2}/)[0];
+    const [head, def] = splitDefault(p.slice(star.length));
+    const colon = head.indexOf(':');
+    return {star, name: (colon < 0 ? head : head.slice(0, colon)).trim(),
+            hint: colon < 0 ? '' : head.slice(colon + 1).trim(), default: def};
+  });
+}
+// "x: int=3" -> ["x: int", "3"]; an "=" inside brackets of the hint does not count.
+function splitDefault(text) {
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    if ('([{'.includes(text[i])) depth++;
+    else if (')]}'.includes(text[i])) depth--;
+    else if (text[i] === '=' && depth === 0 && text[i + 1] !== '=') return [text.slice(0, i).trim(), text.slice(i + 1).trim()];
+  }
+  return [text.trim(), null];
+}
+// Arguments of the call that the edge points at: the last call in a chain such as a(x).b(y) is b(y).
+function callArguments(source) {
+  const text = source.trimEnd();
+  if (!text.endsWith(')')) return insideParens(text);
+  let depth = 0, quote = null;
+  for (let i = text.length - 1; i >= 0; i--) {
+    const ch = text[i];
+    if (quote) { if (ch === quote && text[i - 1] !== '\\') quote = null; continue; }
+    if (ch === '"' || ch === "'") quote = ch;
+    else if (ch === ')') depth++;
+    else if (ch === '(' && --depth === 0) return text.slice(i + 1, -1);
+  }
+  return null;
+}
+// Returns rows {arg, param, hint, note}; null when the call text or signature cannot be read.
+function bindArguments(edge, callee) {
+  let target = callee;
+  if (edge.type === 'instantiates') target = index.get(callee.id.replace(/^CLASS:/, 'METHOD:') + '.__init__');
+  const meta = target?.navigation_metadata || {};
+  const params = parseParams(meta.signature), argText = callArguments(edge.evidence?.source || '');
+  if (!params || argText == null) return null;
+  // A method reached through an instance or class receives self/cls implicitly.
+  if (target.type === 'method' && ['instance', 'class'].includes(meta.kind) && !params[0]?.star) params.shift();
+  const visible = params.filter(p => p.name && p.name !== '/' && !(p.star === '*' && !p.name));
+  const rows = [], used = new Set();
+  const positional = params.filter(p => !p.star).slice(0, params.findIndex(p => p.star) >= 0 ? params.findIndex(p => p.star) : undefined);
+  const varargs = params.find(p => p.star === '*' && p.name), kwargs = params.find(p => p.star === '**');
+  let at = 0;
+  const args = splitTop(argText), unpacked = args.some(a => a.startsWith('*'));
+  for (const arg of args) {
+    if (arg.startsWith('**') || (arg.startsWith('*') && !arg.startsWith('**'))) { rows.push({arg, param: '', hint: '', note: '펼쳐서 전달 · 매개변수 대응 불확실'}); continue; }
+    const kw = arg.match(/^([A-Za-z_]\w*)\s*=(?!=)\s*([\s\S]*)$/);
+    if (kw) {
+      const p = visible.find(x => x.name === kw[1] && !x.star);
+      if (p) { used.add(p); rows.push({arg: kw[2], param: p.name, hint: p.hint, note: '키워드'}); }
+      else rows.push({arg: kw[2], param: kwargs ? `**${kwargs.name}` : kw[1], hint: '', note: kwargs ? '키워드 → 나머지 키워드 인자' : '맞는 매개변수 없음'});
+      continue;
+    }
+    const p = positional[at++];
+    if (p) { used.add(p); rows.push({arg, param: p.name, hint: p.hint, note: ''}); }
+    else rows.push({arg, param: varargs ? `*${varargs.name}` : '?', hint: '', note: varargs ? '나머지 위치 인자' : '매개변수보다 인자가 많음'});
+  }
+  for (const p of visible) if (!used.has(p) && !p.star && p.default != null) rows.push({arg: '', param: p.name, hint: p.hint, note: `기본값 ${p.default}`});
+  for (const p of visible) if (!used.has(p) && !p.star && p.default == null)
+    rows.push({arg: '', param: p.name, hint: p.hint, note: unpacked ? '펼친 인자에서 올 수 있음' : '값이 넘어오지 않음 · 확인 필요'});
+  return rows;
+}
+function argumentTable(edge, callee, parent) {
+  const rows = bindArguments(edge, callee);
+  if (!rows) { el('small', '전달값: 받는 함수의 시그니처를 읽을 수 없습니다.', parent).className = 'args-none'; return; }
+  const box = el('div', undefined, parent); box.className = 'args';
+  if (!rows.length) { el('small', '전달값 없음 (인자 없이 호출)', box); return; }
+  el('small', '넘기는 값 → 받는 매개변수 (타입은 선언된 힌트)', box).className = 'args-title';
+  for (const r of rows) {
+    const line = el('div', undefined, box);
+    line.className = 'args-row' + (/불확실|확인 필요|없음|많음/.test(r.note) ? ' warn' : '');
+    el('code', r.arg || '—', line);
+    el('span', '→', line);
+    el('code', r.param + (r.hint ? `: ${r.hint}` : ''), line);
+    if (r.note) el('small', r.note, line);
+  }
+}
 function evidence() {
   const box = $('evidence'); box.replaceChildren();
   el('h3', '선택한 코드의 호출 후보와 근거', box);
@@ -182,6 +294,7 @@ function evidence() {
     el('small', edge.type === 'calls_implicit' ? (IMPLICIT[proof.implicit_kind] || '암묵 호출 후보')
       : edge.type === 'instantiates' ? '생성자 후보' : '호출 후보', row);
     el('small', [proof.rule, proof.certainty].filter(Boolean).join(' · '), row);
+    if (['calls', 'instantiates'].includes(edge.type)) argumentTable(edge, target, row);
   }
   const node = index.get(selected);
   const sites = (data.call_statuses || []).filter(c => node.type === 'file' ? c.file === node.file : c.caller_id === selected);

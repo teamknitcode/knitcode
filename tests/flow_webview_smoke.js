@@ -27,6 +27,7 @@ listeners.message({data:{type:'data',data:payload,initialFile:target.file}});
 const mapFile=find(elements.get('project-map'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('map-file'));
 assert(mapFile,'project map draws files'); mapFile.events.click();
 assert(selected==='file:'+target.file,'map opens the file view');
+assert(find(elements.get('flow'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('graph-node')),'file view draws the function graph');
 choose(target.id);
 assert(layers(target.id,true,1)[0].includes(caller.id),'directed caller expansion');
 assert(isTest({file:'tests/test_x.py'})&&isTest({file:'pkg/a_test.py'})&&!isTest({file:'main.py'})&&!isTest({file:'src/contest.py'}),'test file detection');

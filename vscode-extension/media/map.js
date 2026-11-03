@@ -564,7 +564,6 @@ const MAP_COLUMNS = [
 let mapShowTests = false, mapLimit = 6;
 const HEAT = [[0, 0, '0'], [1, 2, '1–2'], [3, 5, '3–5'], [6, 10, '6–10'], [11, Infinity, '11+']];
 const heatOf = n => HEAT.findIndex(([lo, hi]) => n >= lo && n <= hi);
-const MW = 156, MH = 48, MCOL = 204, MROW = 62, MTOP = 56;
 function svgEl(tag, attrs, parent, text) {
   const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
   for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
@@ -572,25 +571,14 @@ function svgEl(tag, attrs, parent, text) {
   parent.append(node);
   return node;
 }
-// Step 4: a curve between two files, leaving the side that faces the other file.
-function mapEdgePath(p, q) {
-  const ay = p.y + MH / 2, by = q.y + MH / 2;
-  if (p.x === q.x) {
-    const bend = 26 + Math.abs(ay - by) * .18;
-    return `M ${p.x + MW} ${ay} C ${p.x + MW + bend} ${ay}, ${p.x + MW + bend} ${by}, ${p.x + MW} ${by}`;
-  }
-  const [l, r, ly, ry] = p.x < q.x ? [p, q, ay, by] : [q, p, by, ay];
-  const x1 = l.x + MW, x2 = r.x, mid = (x2 - x1) / 2;
-  return `M ${x1} ${ly} C ${x1 + mid} ${ly}, ${x2 - mid} ${ry}, ${x2} ${ry}`;
-}
-let mapEdges = [], mapNodes = new Map();
 // Pan and zoom shared by the project map and the file graph; each keeps its own state object.
-const mapZoom = {view: null, dragged: false}, fileZoom = {view: null, dragged: false, file: null};
+const mapZoom = {view: null, dragged: false, startWide: true}, fileZoom = {view: null, dragged: false, file: null};
 function setupZoom(zoom, svg, view, width, height, controls) {
-  const apply = () => view.setAttribute('transform', `translate(${zoom.view.x} ${zoom.view.y}) scale(${zoom.view.k})`);
-  const fit = () => {
+  const apply = () => { view.setAttribute('transform', `translate(${zoom.view.x} ${zoom.view.y}) scale(${zoom.view.k})`); zoom.onZoom?.(zoom.view.k); };
+  // "whole" fits everything; otherwise only the width, so a tall map opens readable at the top.
+  const fit = (whole = true) => {
     const w = svg.clientWidth, h = svg.clientHeight;
-    const k = w && h ? Math.min(w / (width + 20), h / (height + 20), 1.5) : 1;
+    const k = w && h ? Math.min(w / (width + 20), whole ? h / (height + 20) : Infinity, 1.5) : 1;
     zoom.view = {k, x: 10, y: 10}; apply();
   };
   // Zoom around a point (the cursor or the centre) so that point stays where it is.
@@ -598,7 +586,7 @@ function setupZoom(zoom, svg, view, width, height, controls) {
     const v = zoom.view, k = Math.min(3, Math.max(.3, v.k * factor));
     zoom.view = {k, x: cx - (cx - v.x) * k / v.k, y: cy - (cy - v.y) * k / v.k}; apply();
   };
-  if (zoom.view) apply(); else fit();
+  if (zoom.view) apply(); else fit(!zoom.startWide);
   svg.addEventListener('wheel', event => {
     event.preventDefault();
     const box = svg.getBoundingClientRect();
@@ -623,7 +611,7 @@ function setupZoom(zoom, svg, view, width, height, controls) {
   const center = () => [svg.clientWidth / 2, svg.clientHeight / 2];
   controls.zoomIn.addEventListener('click', () => zoomAt(1.25, ...center()));
   controls.zoomOut.addEventListener('click', () => zoomAt(1 / 1.25, ...center()));
-  controls.fit.addEventListener('click', fit);
+  controls.fit.addEventListener('click', () => fit(true));
 }
 function zoomControls(parent) {
   const zoom = el('span', undefined, parent); zoom.className = 'map-zoom';
@@ -631,24 +619,27 @@ function zoomControls(parent) {
   controls.zoomOut.setAttribute('aria-label', '축소'); controls.zoomIn.setAttribute('aria-label', '확대');
   return controls;
 }
-// Hovering a file keeps only its own lines and neighbours bright; only classes change, nothing is redrawn.
-function focusMap(path) {
-  const near = new Set(path ? [path] : []);
-  for (const e of mapEdges) {
-    const touches = !!path && (e.a === path || e.b === path);
-    if (touches) { near.add(e.a); near.add(e.b); }
-    e.node.classList.toggle('near', touches);
+
+// Project map, function level: every function is a node, drawn inside the box of the file it belongs to.
+// Boxes keep the column layout (distance from entry points); zooming out hides names and shows file-level lines.
+const BW = 230, BCOL = 290, BHEAD = 40, BROW = 22, BPAD = 8, BGAP = 18, BTOP = 52, FAR = .6;
+let mapItems = new Map(), mapLines = [];
+function mapFocus(id) {
+  const near = new Set(id ? [id] : []);
+  for (const line of mapLines) {
+    const on = !!id && (line.a === id || line.b === id);
+    if (on) { near.add(line.a); near.add(line.b); }
+    line.node.classList.toggle('near', on);
   }
-  for (const [p, g] of mapNodes) g.classList.toggle('near', near.has(p));
-  document.querySelector('.project-map')?.classList.toggle('dim', !!path);
+  for (const [key, g] of mapItems) g.classList.toggle('near', near.has(key));
+  document.querySelector('.project-map')?.classList.toggle('dim', !!id);
 }
 function renderMap() {
   const box = $('project-map'); box.replaceChildren();
   if (!data) { el('p', '분석이 끝나면 지도가 나타납니다.', box); return; }
-  const map = buildProjectMap(mapLimit);
+  const map = buildProjectMap(mapLimit), changes = functionChanges();
   el('h2', '프로젝트 지도', box);
-  el('p', '왼쪽 열일수록 진입점에 가깝고, 칸이 진할수록 자주 바뀐 파일입니다. 파일에 마우스를 올리면 연결된 파일만 남고, 누르면 그 파일의 함수 화면으로 들어갑니다.', box).className = 'map-lede';
-  // Step 5: options that change what the map counts or shows.
+  el('p', '상자 안의 줄 하나가 함수 하나이고, 상자는 그 함수가 속한 파일입니다. 왼쪽 열일수록 진입점에 가깝고, 상자 머리 색이 진할수록 자주 바뀐 파일입니다. 확대하면 함수 이름과 함수 간 호출이, 축소하면 파일 간 관계가 보입니다.', box).className = 'map-lede';
   const options = el('div', undefined, box); options.className = 'map-options';
   const testsLabel = el('label', undefined, options);
   const tests = el('input', undefined, testsLabel); tests.type = 'checkbox'; tests.checked = mapShowTests;
@@ -662,57 +653,121 @@ function renderMap() {
   limit.value = String(mapLimit);
   limit.addEventListener('change', () => { mapLimit = Number(limit.value); renderMap(); });
   const controls = zoomControls(options);
+
   const cols = MAP_COLUMNS.filter(([, , , extra]) => mapShowTests || !extra).map(([title, sub, test]) => ({title, sub,
     files: [...map.files.values()].filter(test).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99) || b.changes - a.changes)}));
-  const shown = cols.flatMap(c => c.files);
-  const pos = new Map();
-  cols.forEach((col, c) => col.files.forEach((f, r) => pos.set(f.path, {x: c * MCOL, y: MTOP + r * MROW})));
-  const rows = Math.max(1, ...cols.map(c => c.files.length));
-  const width = (cols.length - 1) * MCOL + MW + 40, height = MTOP + rows * MROW;
-  const svg = svgEl('svg', {class: 'project-map', role: 'group', 'aria-label': '파일 단위 프로젝트 지도'}, box);
+  const shownFiles = new Set(cols.flatMap(c => c.files.map(f => f.path)));
+  // Function nodes: functions, methods and classes of the shown files that take part in at least one call.
+  const fnCalls = calls.filter(e => index.has(e.source) && index.has(e.target) && e.source !== e.target
+    && shownFiles.has(index.get(e.source).file) && shownFiles.has(index.get(e.target).file)
+    && ['function', 'method', 'class'].includes(index.get(e.source).type) && ['function', 'method', 'class'].includes(index.get(e.target).type));
+  const linked = new Set(fnCalls.flatMap(e => [e.source, e.target]));
+  const fnsOf = path => data.nodes.filter(n => n.file === path && ['function', 'method', 'class'].includes(n.type));
+
+  // Layout: boxes stacked per column; rows are the linked functions, most changed first, then source order.
+  const pos = new Map(), boxes = [];
+  let bottom = 0;
+  cols.forEach((col, c) => {
+    let y = BTOP;
+    for (const f of col.files) {
+      const all = fnsOf(f.path), rows = all.filter(n => linked.has(n.id))
+        .sort((a, b) => (changes?.get(b.id) || 0) - (changes?.get(a.id) || 0) || (a.lineno || 0) - (b.lineno || 0));
+      const rest = all.length - rows.length, height = BHEAD + rows.length * BROW + (rest ? BROW : 0) + BPAD;
+      boxes.push({f, x: c * BCOL, y, height, rows, rest});
+      pos.set(f.path, {x: c * BCOL, y, height});
+      rows.forEach((n, r) => pos.set(n.id, {x: c * BCOL, y: y + BHEAD + r * BROW + BROW / 2, file: f.path}));
+      y += height + BGAP;
+    }
+    bottom = Math.max(bottom, y);
+  });
+  const width = (cols.length - 1) * BCOL + BW + 60, height = bottom;
+
+  const svg = svgEl('svg', {class: 'project-map', role: 'group', 'aria-label': '함수 단위 프로젝트 지도'}, box);
   const marker = svgEl('marker', {id: 'map-arrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto'}, svgEl('defs', {}, svg));
   svgEl('path', {d: 'M0 0 L10 5 L0 10 z', class: 'map-arrow'}, marker);
-  // Everything drawn goes into one group, so pan and zoom move it as a whole.
   const view = svgEl('g', {class: 'map-viewport'}, svg);
   cols.forEach((col, c) => {
-    svgEl('text', {x: c * MCOL, y: 16, class: 'map-col'}, view, `${col.title} ${col.files.length}`);
-    if (col.sub) svgEl('text', {x: c * MCOL, y: 34, class: 'map-sub'}, view, col.sub);
+    svgEl('text', {x: c * BCOL, y: 16, class: 'map-col'}, view, `${col.title} ${col.files.length}`);
+    if (col.sub) svgEl('text', {x: c * BCOL, y: 34, class: 'map-sub'}, view, col.sub);
   });
-  // Lines first so the file boxes stay on top of them.
+  // A line leaves the right side of its start and enters the left side of its end;
+  // when the end is not further right, it bends around the right side instead.
+  const curve = (x1, y1, x2, y2) => {
+    if (x2 > x1) { const a = x1 + BW, mid = (x2 - a) / 2; return `M ${a} ${y1} C ${a + mid} ${y1}, ${x2 - mid} ${y2}, ${x2} ${y2}`; }
+    const right = Math.max(x1, x2) + BW, bend = 24 + Math.min(Math.abs(y1 - y2) * .12, 60);
+    return `M ${x1 + BW} ${y1} C ${right + bend} ${y1}, ${right + bend} ${y2}, ${x2 + BW} ${y2}`;
+  };
   const lines = svgEl('g', {}, view);
-  mapEdges = [];
-  for (const e of map.calls) if (pos.has(e.a) && pos.has(e.b)) mapEdges.push({...e, node: svgEl('path', {d: mapEdgePath(pos.get(e.a), pos.get(e.b)),
-    class: 'map-edge call', 'stroke-width': Math.min(1 + Math.log2(e.count) * .55, 4), 'marker-end': 'url(#map-arrow)'}, lines)});
-  for (const e of map.cochange) if (pos.has(e.a) && pos.has(e.b)) mapEdges.push({...e, node: svgEl('path', {d: mapEdgePath(pos.get(e.a), pos.get(e.b)),
-    class: 'map-edge co' + (e.hidden ? ' hidden-link' : ''), 'stroke-width': Math.min(1.2 + (e.count - 2) * .6, 4)}, lines)});
-  mapNodes = new Map();
-  for (const f of shown) {
-    const {x, y} = pos.get(f.path);
-    const g = svgEl('g', {class: `map-file heat-${heatOf(f.changes)}`, transform: `translate(${x} ${y})`,
-      tabindex: 0, role: 'button', 'aria-label': `${f.path}, 변경 ${f.changes}회, 함수 ${f.funcs}개`}, view);
-    svgEl('title', {}, g, `${f.path}\n변경 ${f.changes}회 · 함수 ${f.funcs}개`);
-    svgEl('rect', {width: MW, height: MH, rx: 6}, g);
-    svgEl('text', {x: 10, y: 20, class: 'map-name'}, g, f.name.length > 19 ? f.name.slice(0, 18) + '…' : f.name);
-    svgEl('text', {x: 10, y: 37, class: 'map-meta'}, g, `변경 ${f.changes}회 · 함수 ${f.funcs}`);
-    if (f.entry.length) svgEl('text', {x: MW - 8, y: 18, class: 'map-entry', 'text-anchor': 'end'}, g, '★');
-    g.addEventListener('pointerenter', () => focusMap(f.path));
-    g.addEventListener('pointerleave', () => focusMap(null));
-    g.addEventListener('focus', () => focusMap(f.path));
-    g.addEventListener('blur', () => focusMap(null));
-    // A file opens the existing file view (its functions), and from there the call flow.
-    const enter = () => { if (mapZoom.dragged || !index.has(f.id)) return; showMap(false); choose(f.id); };
-    g.addEventListener('click', enter);
-    g.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); enter(); } });
-    mapNodes.set(f.path, g);
+  mapLines = [];
+  const seen = new Set();
+  for (const e of fnCalls) {
+    const p = pos.get(e.source), q = pos.get(e.target), key = e.source + '>' + e.target;
+    if (!p || !q || seen.has(key)) continue;
+    seen.add(key);
+    // Calls inside one file only show up when one of their ends is in focus.
+    mapLines.push({a: e.source, b: e.target, node: svgEl('path', {d: curve(p.x, p.y, q.x, q.y),
+      class: 'map-edge call fn' + (p.file === q.file ? ' inner' : ''), 'marker-end': 'url(#map-arrow)'}, lines)});
   }
+  // Zoomed out: file-level calls and co-change between box headers.
+  const head = path => ({x: pos.get(path).x, y: pos.get(path).y + BHEAD / 2});
+  for (const e of map.calls) if (shownFiles.has(e.a) && shownFiles.has(e.b)) {
+    const p = head(e.a), q = head(e.b);
+    mapLines.push({a: 'file:' + e.a, b: 'file:' + e.b, node: svgEl('path', {d: curve(p.x, p.y, q.x, q.y),
+      class: 'map-edge call file-level', 'stroke-width': Math.min(1 + Math.log2(e.count) * .55, 4), 'marker-end': 'url(#map-arrow)'}, lines)});
+  }
+  for (const e of map.cochange) if (shownFiles.has(e.a) && shownFiles.has(e.b)) {
+    const p = head(e.a), q = head(e.b);
+    mapLines.push({a: 'file:' + e.a, b: 'file:' + e.b, node: svgEl('path', {d: curve(p.x, p.y, q.x, q.y),
+      class: 'map-edge co' + (e.hidden ? ' hidden-link' : ''), 'stroke-width': Math.min(1.2 + (e.count - 2) * .6, 4)}, lines)});
+  }
+
+  mapItems = new Map();
+  const opener = (g, id, label, action) => {
+    g.setAttribute('tabindex', 0); g.setAttribute('role', 'button'); g.setAttribute('aria-label', label);
+    g.addEventListener('pointerenter', () => mapFocus(id));
+    g.addEventListener('pointerleave', () => mapFocus(null));
+    g.addEventListener('focus', () => mapFocus(id));
+    g.addEventListener('blur', () => mapFocus(null));
+    const go = () => { if (!mapZoom.dragged) action(); };
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); go(); } });
+    mapItems.set(id, g);
+  };
+  for (const {f, x, y, height: h, rows, rest} of boxes) {
+    const group = svgEl('g', {class: 'map-box', transform: `translate(${x} ${y})`}, view);
+    svgEl('rect', {class: 'map-box-frame', width: BW, height: h, rx: 7}, group);
+    // Header = the file: colour by change count, a click opens the file graph.
+    const header = svgEl('g', {class: `map-box-head heat-${heatOf(f.changes)}`}, group);
+    svgEl('title', {}, header, `${f.path}\n변경 ${f.changes}회 · 함수 ${f.funcs}개`);
+    svgEl('rect', {width: BW, height: BHEAD - 6, rx: 7}, header);
+    svgEl('text', {x: 10, y: 16, class: 'map-name'}, header, f.name.length > 24 ? f.name.slice(0, 23) + '…' : f.name);
+    svgEl('text', {x: 10, y: 29, class: 'map-meta'}, header, `변경 ${f.changes}회 · 함수 ${f.funcs}`);
+    if (f.entry.length) svgEl('text', {x: BW - 9, y: 17, class: 'map-entry', 'text-anchor': 'end'}, header, '★');
+    opener(header, 'file:' + f.path, `${f.path}, 변경 ${f.changes}회, 함수 ${f.funcs}개`, () => { if (index.has(f.id)) { showMap(false); choose(f.id); } });
+    // Rows = the functions; a click opens that function's call flow.
+    rows.forEach((n, r) => {
+      const count = changes?.get(n.id) || 0;
+      const row = svgEl('g', {class: 'map-fn' + (count ? ' changed' : ''), transform: `translate(0 ${BHEAD + r * BROW})`}, group);
+      svgEl('title', {}, row, `${n.name}\n${n.file}:${n.lineno || 1}`);
+      svgEl('rect', {x: 4, y: 1, width: BW - 8, height: BROW - 2, rx: 4}, row);
+      const label = n.name.split('.').slice(n.type === 'method' ? -2 : -1).join('.');
+      svgEl('text', {x: 12, y: BROW / 2 + 4, class: 'map-fn-name'}, row, label.length > 26 ? label.slice(0, 25) + '…' : label);
+      if (count) svgEl('text', {x: BW - 10, y: BROW / 2 + 4, class: 'map-fn-badge', 'text-anchor': 'end'}, row, `변경 ${count}`);
+      opener(row, n.id, `${n.name}, ${f.path}`, () => { showMap(false); choose(n.id); });
+    });
+    if (rest) svgEl('text', {x: 12, y: BHEAD + rows.length * BROW + BROW / 2 + 4, class: 'map-sub'}, group, `+ 호출 관계 없는 함수 ${rest}개`);
+  }
+  // Semantic zoom: below FAR the names are unreadable, so the map switches to its file-level picture.
+  mapZoom.onZoom = k => svg.classList.toggle('far', k < FAR);
   setupZoom(mapZoom, svg, view, width, height, controls);
+
   const legend = el('div', undefined, box); legend.className = 'map-legend';
-  el('span', '칸 색 = 관찰 기간 변경 횟수', legend);
+  el('span', '상자 머리 색 = 파일 변경 횟수', legend);
   HEAT.forEach(([, , label], level) => { el('span', label, legend).className = `map-bin heat-${level}`; });
   el('span', '★ 진입점', legend);
-  el('span', '── 호출 (화살표 = 방향)', legend).className = 'map-key call';
+  el('span', '── 함수 호출 (확대 시) · 파일 간 호출 (축소 시)', legend).className = 'map-key call';
   el('span', `- - 함께 변경 (파일 ${mapLimit}개 이하 커밋, 2회 이상)`, legend).className = 'map-key co';
-  el('span', '··· 코드 연결 없이 함께 변경', legend).className = 'map-key co';
+  el('span', '같은 파일 안 호출은 함수에 마우스를 올렸을 때만', legend);
 }
 // File graph: the functions of one file as nodes, ordered by the calls between them (left calls right),
 // with the functions of other files that call in (far left) or are called (far right).
@@ -908,7 +963,7 @@ window.addEventListener('message', ({data:message}) => {
   if (message.type === 'gitValidationStatus') $('git-validation-status').textContent = message.text;
   if (message.type === 'gitValidation') { gitValidation = message.data; changeCounts = undefined;
     $('git-validation-status').textContent = gitValidation.available ? 'Git 분석 완료' : 'Git 이력 없음';
-    renderGitValidation(); if (index.has(selected)) flow(); return; }
+    renderGitValidation(); if (index.has(selected)) flow(); if (mapMode) renderMap(); return; }
   if (message.type === 'status') $('status').textContent = message.text;
   if (message.type !== 'data') return;
   data = message.data; changeCounts = undefined;

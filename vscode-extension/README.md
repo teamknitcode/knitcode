@@ -3,6 +3,7 @@
 처음 보는 Python 프로젝트의 구조와 함수 호출 관계, Git 변경 맥락을 탐색하는 VS Code 확장입니다. 분석할 프로젝트를 열고 **`knitcode: Open Call Flow`**를 실행하세요.
 
 - **[화면과 함께 보는 팀원 사용 안내](USER_GUIDE_KO.md)** — 설치, 전체 기능, 조작법, 결과 해석, 검증 순서
+- **[노션 가져오기용 사용 안내](USER_GUIDE_NOTION_KO.md)** · [노션용 개발 안내](VISUALIZATION_NOTION_KO.md) — 사진·문서 링크를 공개 절대 주소로 연결한 Markdown. 파일을 다운로드해 노션에 가져오세요.
 - **[개발 안내](VISUALIZATION_KO.md)** — 코드 구조, 데이터 계약, 테스트, 다음 과제
 - **[0.4.12 설치 파일](../releases/knitcode-0.4.12/knitcode-static-0.4.12.vsix)** — GitHub에서 Download raw file로 다운로드
 

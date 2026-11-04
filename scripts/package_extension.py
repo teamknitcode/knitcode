@@ -18,14 +18,16 @@ def package(output=None):
 <Metadata><Identity Language="en-US" Id="{manifest['name']}" Version="{version}" Publisher="knitcode-local"/><DisplayName>{manifest['displayName']}</DisplayName><Description xml:space="preserve">Python code relationships and Git evidence</Description><Tags>python,visualization</Tags><Categories>Visualization</Categories><GalleryFlags>Public</GalleryFlags><Properties><Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.85.0"/><Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/></Properties></Metadata>
 <Installation><InstallationTarget Id="Microsoft.VisualStudio.Code"/></Installation>
 <Dependencies/><Assets><Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true"/></Assets></PackageManifest>'''
-    content_types = '''<?xml version="1.0" encoding="utf-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="json" ContentType="application/json"/><Default Extension="js" ContentType="application/javascript"/><Default Extension="css" ContentType="text/css"/><Default Extension="py" ContentType="text/plain"/><Default Extension="md" ContentType="text/markdown"/><Default Extension="vsixmanifest" ContentType="text/xml"/></Types>'''
+    content_types = '''<?xml version="1.0" encoding="utf-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="json" ContentType="application/json"/><Default Extension="js" ContentType="application/javascript"/><Default Extension="css" ContentType="text/css"/><Default Extension="py" ContentType="text/plain"/><Default Extension="md" ContentType="text/markdown"/><Default Extension="png" ContentType="image/png"/><Default Extension="vsixmanifest" ContentType="text/xml"/></Types>'''
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(output, 'w', ZIP_DEFLATED) as archive:
         archive.writestr('extension.vsixmanifest', vsix_manifest)
         archive.writestr('[Content_Types].xml', content_types)
-        for relative in ['package.json', 'extension.js', 'README.md', 'media/map.js', 'media/map.css']:
+        for relative in ['package.json', 'extension.js', 'README.md', 'USER_GUIDE_KO.md', 'VISUALIZATION_KO.md', 'media/map.js', 'media/map.css']:
             archive.write(source / relative, 'extension/' + relative)
+        for file in sorted((source / 'docs' / 'images').glob('*.png')):
+            archive.write(file, 'extension/' + file.relative_to(source).as_posix())
         for file in sorted(ROOT.glob('*.py')):
             archive.write(file, 'extension/vendor/' + file.name)
         archive.write(ROOT / 'viewer_template.html', 'extension/vendor/viewer_template.html')

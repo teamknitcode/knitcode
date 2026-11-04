@@ -2,7 +2,7 @@
   "name": "knitcode-static",
   "displayName": "knitcode",
   "description": "Explore Python callers, callees, static evidence and Git history with the current KnitCode engine.",
-  "version": "0.4.0",
+  "version": "0.4.12",
   "publisher": "knitcode-local",
   "engines": {
     "vscode": "^1.85.0"

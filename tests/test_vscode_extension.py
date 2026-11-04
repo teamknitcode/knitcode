@@ -32,6 +32,8 @@ class ExtensionTests(unittest.TestCase):
                 self.assertIsNone(z.testzip())
                 manifest = json.loads(z.read('extension/package.json'))
                 self.assertEqual(manifest['name'], 'knitcode-static')
+                self.assertIn('extension/USER_GUIDE_KO.md', z.namelist())
+                self.assertIn('extension/docs/images/02-selected-map.png', z.namelist())
                 z.extractall(base / 'unpacked')
             bundled = base / 'unpacked/extension/vendor/vscode_export.py'
             result = subprocess.run([sys.executable, '-I', '-B', str(bundled),

@@ -1,190 +1,94 @@
-# knitcode 시각화 작업 정리 (2026-11)
+# knitcode 시각화 개발 안내 — 0.4.12
 
-VS Code 확장의 시각화 작업을 이어서 개발하는 분을 위한 안내입니다.
-교수님 중간 발표 전 피드백 중 **함수 노드 그래프, 줌인·줌아웃, 함수 간 전달값**을 반영한 상태까지 정리했습니다.
+사용 순서와 화면별 기능은 **[팀원 사용 안내](USER_GUIDE_KO.md)**를 참고하세요. 이 문서는 후속 개발을 위한 구조·데이터 계약·검증 방법입니다.
 
-## 1. 브랜치
+## 1. 작업 기준
 
-모든 작업은 아래 브랜치에 차례로 쌓여 있습니다. **`feat/function-map` 하나에 전부 들어 있습니다.**
+- 팀원 시각화 PR #2는 merge commit `4235ee2`로 합쳐졌습니다. 함수 노드 프로젝트 지도, 파일 그래프, 줌·이동, 인자 대응, Git 차트가 기반입니다.
+- 이번 후속 작업은 `feat/visualization-next`에서 진행했습니다. 프로젝트 소개와 후보 근거, 선택 범위, 탐색 경로, 전체 함수 정보, 스크롤 유지와 배치 개선을 포함합니다.
+- [PR #2 당시 안내 원본](https://github.com/teamknitcode/knitcode/blob/fd9ee694ed34d2456b8f38e42c54451f08dc5419/vscode-extension/VISUALIZATION_KO.md)은 해당 커밋에 보존됩니다.
+- 이어서 작업할 때는 병합된 main을 갱신하고 새 브랜치를 만듭니다. 후속 PR은 최종적으로 검토·병합된 상태인지 GitHub에서 확인하세요.
 
-```
-main
- └ feat/hotspot-chart     함수 핫스팟 막대 차트
-   └ feat/card-change-heat  호출 흐름 카드에 변경 횟수
-     └ feat/test-callers      테스트 호출자 분리
-       └ feat/type-chips        수정 유형 칩
-         └ feat/project-map       프로젝트 지도 (첫 화면)
-           └ feat/map-zoom          줌·이동
-             └ feat/file-graph        파일 화면을 함수 그래프로
-               └ feat/call-args         함수 간 전달값 표시
-                 └ feat/function-map      첫 화면을 함수 노드 지도로   ← 이어받을 브랜치
-```
+## 2. 코드 구조
 
-`main`에는 Git 심층 분석 속도 개선(627초 → 38.5초, PR #1)만 반영되어 있습니다.
-
-## 2. 이번에 바뀐 것과 교수님 피드백
-
-| 교수님 피드백 | 반영 내용 | 상태 |
-|---|---|---|
-| 함수를 노드로, 파일명은 함께 표시 | **첫 화면부터** 함수가 노드이고, 함수는 자기가 속한 파일 상자 안에 표시. 파일 그래프에서도 다른 파일 함수에 파일명 표시 | 완료 |
-| 함수 간 흐름 | 파일 안 호출 순서대로 왼쪽→오른쪽 배치, 양옆에 이 파일을 부르는/이 파일이 부르는 다른 파일 함수 | 완료 |
-| 줌인·줌아웃 (가독성 = HCI 문제) | 휠 확대·축소, 끌어서 이동, `− + 전체 보기`. 지도는 **배율에 따라 보여 주는 정보가 바뀜**(확대 = 함수 이름과 함수 간 선, 축소 = 파일 간 선) | 완료 |
-| 함수 간 어떤 값을 전달받는지 | 호출 근거 목록에 "넘기는 값 → 받는 매개변수(선언된 타입 힌트)" 표 | 1차 완료 (선언 타입만) |
-| data flow, 타입이 알맞게 넘어가는지 | - | 다음 과제 |
-| 메모리 효율 | - | 다음 과제 (측정부터) |
-| 자연어 설명 (프롬프트 엔지니어링) | - | 다음 과제 |
-| REA | 약자 의미 확인 필요 | 확인 필요 |
-
-## 3. 화면 구조
-
-```
-① 프로젝트 지도 (첫 화면)
-   상자 안의 줄 = 함수(노드), 상자 = 그 함수가 속한 파일, 열 = 진입점에서의 거리
-   상자 머리 색 = 파일 변경 빈도, 함수 줄의 "변경 N" = 함수 변경 횟수 (자주 바뀐 함수가 위)
-   확대(배율 0.6 이상): 함수 이름 + 함수 간 호출 선 (같은 파일 안 호출은 마우스를 올렸을 때만)
-   축소(배율 0.6 미만): 함수는 막대(주황 = 자주 바뀜), 선은 파일 간 호출로 합쳐짐
-   주황 파선 = 함께 변경, 주황 점선 = 코드 연결 없이 함께 변경
-        │ 상자 머리(파일) 클릭                    │ 함수 줄 클릭 → ③으로 바로
-        ▼
-② 파일 그래프
-   노드 = 함수, 가운데 = 이 파일의 함수(파일 안 호출 순서), 양옆 = 다른 파일 함수(점선, 파일명 표시)
-   주황 테두리 + "변경 N회" = 최근 50커밋에서 자주 바뀐 함수
-        │ 함수 클릭
-        ▼
-③ 호출 흐름 (기존 화면)
-   호출자 ← 함수 → 호출 대상, 1~3단계
-   아래 "호출 후보와 근거"에 넘기는 값 → 받는 매개변수 표
-```
-
-상단 `프로젝트 지도` / `함수 화면 보기` 버튼으로 ①과 ②③을 오갑니다.
-
-## 4. 코드 지도
-
-### `vscode-extension/extension.js`
-
-| 바뀐 곳 | 내용 |
+| 파일/함수 | 역할 |
 |---|---|
-| 상단 버튼 | `#toggle-map` (지도 ↔ 함수 화면) |
-| 가운데 영역 | `<section id="project-map">` 추가, 단계 버튼 줄에 `id="flow-controls"` |
+| `extension.js` | 명령 등록, Webview HTML/CSP, Python 분석 실행, Git 추가 분석, 소스·커밋 이동, HTML 보고서 |
+| `../vscode_export.py` | 통합 엔진 결과를 Webview JSON으로 변환 |
+| `../project_intro.py` | 제한된 크기의 README에서 제목·소개·출처 발췌. 외부 symlink는 읽지 않음 |
+| `media/map.js` / `renderIntroduction`, `entryReason` | 설명 접기, 탐색 후보 분류·근거, 최대 5개 함수의 정적 호출 한 갈래 |
+| `buildProjectMap`, `renderMap`, `mapFocus` | 파일 집계·배치, 함수 상자, 경로·호버 강조 |
+| `expandedFiles`, `onlySelection`, `selectionScope`, `selectedCallEdges` | 파일별 펼침 상태와 선택 범위. 필터는 지도·파일·함수·근거에 공통 적용 |
+| `setupZoom`, `zoomControls`, `GESTURE_SPEEDS` | 이동·핀치·Ctrl+휠, 배율 표시, 전체 보기, 조작 감도 |
+| `renderBreadcrumbs`, `renderFunctionInfo` | 지도·파일·함수 위치와 전체 이름·시그니처·정의 이동 |
+| `tree` | 검색, 파란 함수 테두리, 파일 목록 내부 자동 스크롤 |
+| `renderFileGraph`, `flow`, `layers`, `anchorFlowFocus` | 파일 그래프, 호출 1~3단계, 선택 카드 위치 유지 |
+| `bindArguments`, `parseParams`, `callArguments`, `argumentTable` | 선언 시그니처와 호출 문자열의 인자 대응 |
+| `renderGitValidation`, `functionChanges`, `renderWorkingChanges` | 작성자 필터·차트, 함수 변경 횟수, 저장된 미커밋 영향 후보 |
+| `media/map.css` | 테마, 패널 배치, 독립 스크롤, 파일 그룹 제목 고정, 좁은 창 배치 |
+| `tests/flow_webview_smoke.js` | JavaScriptCore 가짜 DOM 기반 동작 검사. 실제 레이아웃 검사는 아님 |
 
-### `vscode-extension/media/map.js`
+프로젝트 데이터는 `textContent`로 표시합니다. README·파일명·함수명·Git 메시지를 HTML로 삽입하거나 분석 대상 스크립트를 실행하지 마세요.
 
-**① 지도**
+## 3. 데이터 계약
 
-| 이름 | 역할 |
+| JSON 필드 | 사용 위치 |
 |---|---|
-| `mapMode`, `showMap(on)` | 지도 ↔ 함수 화면 전환. 분석 직후 지도가 먼저 보임 |
-| `buildProjectMap(limit)` | 파일 단위 정보: 파일별 변경·함수 수·열(depth)·순서(rank), 파일 간 호출(축소 시 선), 함께 변경 쌍, 숨은 결합 여부 |
-| `OTHER_FILE`, `CALL_TYPES`, `LINK_TYPES` | 기타 파일 판별, 호출로 셀 간선 종류, "코드 연결"로 셀 간선 종류 |
-| `MAP_COLUMNS` | 열 정의 `[제목, 부제, 조건, 선택 표시 여부]`. 열을 바꾸려면 여기만 수정 |
-| `HEAT`, `heatOf(n)` | 변경 횟수 5단계 색 구간 |
-| `renderMap()` | 함수 노드 지도 그리기. 열마다 파일 상자를 쌓고, 상자 안에 호출 관계가 있는 함수를 줄로 배치. 설정(테스트·기타 파일, 함께 변경 집계 6/50) |
-| `BW`, `BCOL`, `BHEAD`, `BROW`, `FAR` | 상자 너비, 열 간격, 상자 머리 높이, 함수 줄 높이, 확대/축소 모습이 바뀌는 배율(0.6) |
-| `mapFocus(id)`, `mapItems`, `mapLines` | 함수나 파일에 마우스를 올리면 연결된 것만 남김 (class만 바꾸고 다시 그리지 않음) |
-| 선의 class | `fn` 함수 간, `inner` 같은 파일 안(평소 숨김), `file-level` 파일 간(축소 시), `co` 함께 변경 |
+| `project.name, description, source, line` | README 소개. 과거 JSON에서 없으면 안내로 대체 |
+| `nodes[].id, type, file, name, lineno` | 검색·선택·배치·코드 이동 |
+| `nodes[].navigation_metadata.signature, kind` | 시그니처와 staticmethod/instance/class 구분 |
+| `edges[].type, source, target, evidence.source` | 호출·관계·전달값 |
+| `entry_points[].id, kind, detail, confidence` | 탐색 후보와 선정 이유. 실행 보장과 구분 |
+| `reading_order.modules[].id, min_depth, rank, entry` | 지도 열·정렬. 전체 후보 집합 기준 |
+| `history.changes, commits[].files, pairs` | 파일 색, 공동 변경, 커밋 이력 |
+| `working_changes` | HEAD 대비 저장된 Python 변경과 직접 호출자 후보 |
+| Git 심층 결과 `files[path].events[].functions, author, type` | 함수 변경 수·핫스팟·작성자별 커밋 |
 
-**줌**
+`certain`은 근거가 되는 코드 표기를 찾았다는 뜻입니다. 실행 관측 결과나 분석의 완전성을 뜻하지 않습니다. `public_api`의 명시적 `__all__`와 `__init__.py` 노출 추정을 같은 설명으로 합치지 마세요.
 
-| 이름 | 역할 |
-|---|---|
-| `setupZoom(zoom, svg, view, width, height, controls)` | 휠 확대(커서 기준), 끌기 이동, 버튼. 상태는 넘겨받은 객체에 저장. 배율이 바뀌면 `zoom.onZoom(k)` 호출 |
-| `mapZoom`, `fileZoom` | 지도용, 파일 그래프용 줌 상태. `dragged`로 끌기 후 클릭 무시. 지도는 `startWide`로 **너비에만 맞춰** 시작(함수 이름이 읽히는 크기) |
-| `zoomControls(parent)` | `− + 전체 보기` 버튼 생성. **반드시 `parent`에 붙임** |
+소개 경로는 일반 명시 호출을 따라가는 휴리스틱입니다. 같은 이름, 비공개가 아닌 이름, 후속 호출 수를 우선하며 최대 5개 노드와 순환 방지를 적용합니다. 생성자·특수 메서드는 제외합니다. 다형성 후보가 실제 실행 대상과 다를 수 있습니다.
 
-**② 파일 그래프**
+## 4. 스크롤·상태를 바꿀 때 지킬 점
 
-| 이름 | 역할 |
-|---|---|
-| `renderFileGraph(file, box)` | 파일의 함수 그래프. `flow()`에서 선택이 파일일 때 호출 |
-| 열 계산 | 파일 안에서 아무도 안 부르는 함수 = 0단계, 거기서 너비 우선 탐색으로 단계 (최대 5) |
-| 열 안 순서 | 자기를 부르는 함수들의 평균 위치 (선 꼬임 감소) |
-| `GMAX` | 양옆 다른 파일 함수 최대 개수 (기본 12) |
+- 바깥 본문 대신 `#tree`, `.workspace`, `.history`가 각자 스크롤합니다. 검색창은 파일 목록 스크롤과 분리하고 파일 그룹 제목은 목록 안에서만 고정합니다.
+- 지도 화면의 필터 줄은 지도 제목 옆에 둡니다. 상세 화면 탐색 경로는 고정하지 않습니다.
+- `renderMap()`은 DOM을 다시 그린 뒤 본문 스크롤을 복원합니다. 파일 접기를 문서 맨 위로 이동시키는 동작으로 바꾸지 마세요.
+- `anchorFlowFocus()`는 호출 단계 변경 뒤 선택 카드의 가로 위치를 유지합니다. `scrollIntoView()`로 본문과 다른 패널까지 움직이지 않도록 주의하세요.
+- 트랙패드 일반 wheel은 이동, 핀치/Ctrl+wheel은 커서 중심 확대입니다. deltaMode 정규화·배율 상하한·프레임 단위 반영을 유지합니다. 드래그는 손가락/포인터 이동과 일대일 대응합니다.
+- 경로 강조 토글은 선택 함수와 필터 범위를 바꾸지 않습니다. 호버 강조는 별도입니다.
+- Webview 상태로 패널 너비·상세 패널 접힘·Git 탭·감도·선택 흐름 필터·소개 접힘을 보관합니다. 모든 탐색 상태가 VS Code 재시작 뒤 복구되는 것은 아닙니다.
 
-**③ 전달값**
-
-| 이름 | 역할 |
-|---|---|
-| `bindArguments(edge, callee)` | 호출 원문의 인자와 받는 함수의 매개변수를 짝지음 |
-| `callArguments` | 연쇄 호출 `a(x).b(y)`에서 **마지막 호출** `y`를 읽음 |
-| `parseParams`, `splitDefault`, `splitTop`, `insideParens` | 시그니처·인자 문자열 파싱 |
-| `argumentTable` | `evidence()`의 각 호출 아래에 표 그리기 |
-
-짝짓기 규칙: 위치 인자는 순서대로, 키워드는 이름으로. 메서드(instance/class)는 `self`/`cls` 제외, **staticmethod는 제외 안 함**. 클래스 생성은 `__init__` 시그니처 사용. `*args`/`**kwargs`로 펼쳐 넘기면 "불확실"로 표시.
-
-**이전 작업 (같은 파일)**
-
-| 이름 | 역할 |
-|---|---|
-| `functionChanges()`, `changeCounts` | 함수 → 최근 50커밋 변경 횟수 표 (카드 배지, 그래프 주황 테두리) |
-| `isTest(node)` | 테스트 파일 판별 (pytest 관례: `tests/`, `test_*.py`, `*_test.py`) |
-| `layers(id, incoming, limit, skip)` | ③ 호출 흐름 단계 계산, `skip`으로 테스트 탐색 제외 |
-| `COMMIT_TYPES` | 수정 유형 한국어 라벨 |
-
-### `vscode-extension/media/map.css`
-
-맨 아래에 작업 순서대로 추가했습니다. 색은 모두 VS Code 테마 변수(`--vscode-charts-blue`, `--vscode-charts-orange` 등)를 써서 라이트·다크 테마 모두 대응합니다. `--heat`(주황) = Git 변경, `--heat-0` ~ `--heat-4`(파랑 단계) = 지도 칸 색입니다.
-
-### `tests/flow_webview_smoke.js`
-
-지도 그리기, 파일 클릭 → 파일 그래프, 전달값 표, 테스트 판별, 카드 변경 배지 확인을 추가했습니다. 가짜 DOM에 `createElementNS`를 추가했습니다.
-**이 테스트는 JavaScriptCore가 있는 Mac에서만 실행됩니다** (Windows에서는 skipped). Mac에서 한 번 확인 부탁드립니다.
-
-## 5. 사용하는 데이터 필드
-
-Python 쪽(`vscode_export.py`, 분석 엔진)을 고칠 때 아래 필드가 바뀌면 화면이 깨집니다.
-
-| 필드 | 쓰는 곳 |
-|---|---|
-| `nodes[].id, type, file, name, lineno` | 전체 |
-| `nodes[].navigation_metadata.signature`, `.kind` | 전달값 (시그니처, staticmethod 구분) |
-| `edges[].type, source, target` | 호출 관계 (`calls`, `instantiates`, `calls_implicit`, `calls_override`, `imports`, `inherits`, `references`) |
-| `edges[].evidence.source` | 전달값 (호출 원문) |
-| `history.changes` | 파일 변경 횟수 (칸 색) |
-| `history.commits[].files` | 함께 변경 집계 |
-| `reading_order.modules[].id, min_depth, rank, entry` | 지도 열·순서·진입점 ★ |
-| (Git 심층 분석) `files[path].events[].functions, type, author` | 함수 변경 횟수, 핫스팟, 수정 유형 |
-
-## 6. 실행과 확인
+## 5. 실행과 검증
 
 ```bash
-code --extensionDevelopmentPath="<knitcode 경로>/vscode-extension" <분석할 프로젝트 경로>
+# 프로젝트 루트: Python 3.10 이상
+python3 scripts/package_extension.py
+python3 -m unittest discover -s tests -v
+
+# 개발용 VS Code 창
+code --extensionDevelopmentPath="$PWD/vscode-extension" /path/to/requests
 ```
 
-- 확인용 프로젝트는 `psf/requests`를 추천합니다 (파일 37개, 커밋 이력 풍부).
-- 설정: `knitcodeStatic.pythonPath` = Python 3.10 이상, `knitcodeStatic.historyDays` = 3650
-- `map.js`·`map.css` 수정 후에는 **Developer: Reload Window**, `extension.js` 수정 후에는 개발 창을 닫고 다시 열기
-- 화면이 "분석 준비 중…"에서 멈추면 `map.js` 문법 오류입니다. **Developer: Open Webview Developer Tools** → Console의 빨간 줄(`map.js:줄번호`)을 확인하세요.
+`map.js`·`map.css` 수정 후 개발 창에서 `Developer: Reload Window`를 실행합니다. `extension.js`의 HTML 구조 변경은 개발 창을 닫고 다시 열어 확인하세요.
 
-```bash
-python -m unittest discover -s tests
-```
+최종 macOS/Python 3.12 검사 결과는 212 tests, OK입니다. `test_flow_webview_behavior`가 skipped가 아니라 실행됐는지 확인하세요. Windows 등에서 JavaScriptCore가 없으면 이 검사만 건너뛸 수 있습니다.
 
-**requests 기준 기대값** (확인용)
+Chrome 미리보기로 레이아웃·제스처·스크롤을 검증했지만 VS Code 내부의 전체 GUI 검증을 대신하지는 않습니다. 팀 환경에서 [사용 안내 9장](USER_GUIDE_KO.md#9-팀원이-확인할-순서와-검증-범위)을 따라 확인하세요.
 
-| 화면 | 기대값 |
+requests `3c7baaa`의 참고 수치: Python 파일 37개, 기본 지도 파일 상자 19개. 모두 펼치면 함수·클래스 노드 232개. `models.py` 기본 파일 그래프는 노드 63개·선 79개, 미연결 9개·테스트 호출자 119개 분리. `get`의 소개 경로만 표시하면 파일 상자는 3개입니다. 기본은 상자가 접혀 있으므로 함수 노드 232개가 처음부터 나타나지는 않습니다. 저장소 버전·선택·필터에 따라 달라집니다.
+
+## 6. 남은 과제
+
+| 우선 검토 | 현재 한계 |
 |---|---|
-| ① 지도 | 파일 상자 19개, 함수 노드 232개, 열 `진입점 6 / 1걸음 4 / 2걸음 2 / 3걸음 이상 2 / 호출로 닿지 않음 5` |
-| ① 첫 화면 / `전체 보기` | 배율 약 0.75(함수 이름 보임) / 약 0.23(파일 모습) |
-| ① `models.py` 상자 맨 위 | `_encode_files`, `prepare_body` (변경 2) — Git 분석 완료 후 |
-| ② `models.py` | 노드 63개, 선 79개, 연결 없는 함수 9개, 테스트 119개 제외 |
-| ② `api.py` | `get/post/...` → `api.request` → `Session.request` 흐름 (발표 예시로 좋음) |
-| ③ `prepare_body` → `_encode_files` | `raw_data → data: _t.RawDataType \| None` |
-| 전달값 짝짓기 | 호출 1,361개 중 1,297개(95.3%) 성공, 64개는 시그니처 없음 |
+| 다른 호출 갈래 선택 | 소개 경로는 자동 선택한 한 갈래이며 사용자가 중간 분기를 직접 고르지는 못함 |
+| TypedDict/Unpack | `**kwargs`의 선언을 따라 개별 키의 타입을 펼치지 않음 |
+| 데이터 흐름·타입 적합성 | 인자 문자열과 선언 타입의 대응만 제공. 실제 값 추적·타입 검사 아님 |
+| 큰 프로젝트 성능 | JSON 크기·메모리·전체 펼침의 DOM 비용 측정, 캐시·지연 렌더링 검토 필요 |
+| 폴더 단위 지도 | 파일이 아주 많으면 상자 수가 많아짐. 폴더 접기 미구현 |
+| 공동 변경 기준 | 지도 기본 6파일/커밋, Git 패널 50파일/커밋. 통일 여부는 팀 결정 필요 |
+| Git 자동 분석 | 최초 분석과 별도로 심층 분석 시간 소요. 환경·커밋 수에 따라 달라짐 |
+| 테스트 판별 | pytest 파일명·폴더 관례 기준. 비표준 구조에서는 누락 가능 |
+| 자연어 설명·REA | README 발췌 외 LLM 설명은 미구현. REA의 요구 의미는 팀 확인 필요 |
 
-## 7. 다음 과제 (우선순위 순)
-
-1. **가독성**: 함수가 많은 파일(`models.py`, `cookies.py`)은 상자가 매우 길어 `전체 보기`가 좁고 길쭉함. 예: 상자 접기·펼치기, 상자를 여러 단으로 나누기. 파일 그래프(`models.py` 선 79개)도 기본은 파일 안 선만, 다른 파일로 가는 선은 마우스를 올렸을 때만 표시하는 방안
-2. **`**kwargs` 타입 펼치기**: `Unpack[_t.RequestKwargs]` 같은 TypedDict를 따라가 `data`, `json`의 실제 선언 타입 표시
-3. **data flow / 타입 검사** (교수님 피드백): 지금은 선언된 힌트만 보여 줌. "타입이 알맞게 넘어가는지"는 엔진의 객체 흐름(ObjectFlow) 확장 필요
-4. **메모리** (교수님 피드백): requests(파일 37개) 분석 결과 JSON이 약 4.5MB. 큰 프로젝트(click, rich)에서 크기와 확장 메모리부터 측정. `evidence.source`, `trace` 등 중복 필드 축소, 파일별 지연 로딩 검토
-5. **자연어 설명** (교수님 피드백): 선택한 함수의 호출 흐름 + 전달값 + 변경 이력을 프롬프트로 만들어 LLM이 설명하는 데모
-6. **큰 프로젝트 지도**: 함수 수천 개에서는 첫 화면 상자가 너무 많아짐. 폴더 단위로 묶었다가 펼치기, 진입점부터 따라가는 흐름 모드 검토
-7. 작은 정리: ③ 카드와 근거 목록의 긴 이름을 짧게(모듈 이름 생략), 파일 화면 상단의 "서로 다른 호출자 0개" 숨기기
-
-## 8. 알려진 한계와 팀 결정 대기
-
-- **함께 변경 집계 기준**: 지도 기본값은 파일 6개 이하 커밋, Git 패널 "함께 변경" 탭은 50개 이하. 통일 여부는 팀 결정 필요 (requests에서 대량 커밋 4개가 함께 변경 쌍 대부분을 만듦)
-- **테스트 판별**은 pytest 관례 기준이라, 관례를 따르지 않는 프로젝트에서는 놓칠 수 있음
-- **함수 변경 횟수**는 Git 심층 분석(최근 50커밋)이 끝난 뒤(약 40초) 반영됨
-- **전달값**은 정적 분석 결과라 실제 실행 시 값과 다를 수 있음. 펼쳐 넘기는 인자는 "불확실"로 표시
-- 작성자는 이메일로 표시 (이름 표시는 하지 않기로 결정)
+다음 수정은 기능과 표시 의미를 먼저 합의한 뒤 작은 단위로 진행하고, 공용 데이터 필드 변경 시 패키지 외부 실행 검사도 함께 확인하세요.

@@ -1,5 +1,12 @@
 # KnitCode — Static Call Graph Prototype (v2.9 + JSE 2026-10-22 + Jeff_Park 통합)
 
+## VS Code 시각화 0.4.12
+
+프로젝트 소개 → 프로젝트 지도 → 파일 그래프 → 함수 호출·전달값 → Git 변경 맥락을 탐색합니다.
+
+**[화면과 함께 보는 팀원 사용 안내](vscode-extension/USER_GUIDE_KO.md)** · [개발 안내](vscode-extension/VISUALIZATION_KO.md) · [설치 파일](releases/knitcode-0.4.12/knitcode-static-0.4.12.vsix)
+
+
 ## 2026-10-25 — 기본 분석 경로를 단일 엔진으로 통합
 
 **기본 실행은 이제 `Resolver/ObjectFlow` 하나를 사용한다.** 이정연 분석기의 별도 실행을 제거하고, 타입 컨테이너·클래스 값 factory·진리값/포맷 암묵 호출을 같은 객체 흐름으로 옮겼다. 참조·진입점·계층·읽는 순서·순환 정보와 기존 HTML도 같은 통합 결과에서 만든다. 보존된 `analyze_project.py`는 원본 API 재현용이며 기본 CLI·VS Code 경로에서 실행하지 않는다.

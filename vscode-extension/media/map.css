@@ -110,3 +110,121 @@ progress { width: 65%; height: 5px; accent-color: var(--accent); }
 #git-validation-panel label { display: block; margin: 24px 0 12px; color: var(--muted); }
 select { display: block; width: 100%; margin-top: 8px; padding: 10px; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.hotspot { display: grid; grid-template-columns: minmax(0, 1fr) 72px 36px; align-items: center; gap: 10px; width: 100%; margin: 4px 0; padding: 8px 10px; text-align: left; font-size: 12px; border: 1px solid transparent; border-radius: 8px; }
+.hotspot.unmatched { color: var(--muted); }
+.hotspot-name { overflow-wrap: anywhere; }
+.hotspot-bar { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--accent) calc(var(--ratio, 0) * 100%), var(--line) 0); }
+.hotspot.unmatched .hotspot-bar { opacity: .45; }
+.hotspot-count { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+#git-validation-panel .hotspot-more { border-top: 0; padding: 4px 0 0; }
+
+:root { --heat: var(--vscode-charts-orange, #d18616); }
+.card.changed { border-left: 4px solid color-mix(in srgb, var(--heat) calc(var(--heat-level, 1) * 100%), transparent); }
+.change-badge { float: right; font-size: 10px; font-weight: 600; line-height: 1.6; padding: 1px 8px; border-radius: 10px; color: var(--heat); background: color-mix(in srgb, var(--heat) 14%, transparent); }
+.change-legend { display: block; margin-top: 4px; }
+
+.test-callers { margin: 8px 0 0; padding-top: 12px; border-top: 1px dashed var(--line); }
+.test-callers summary { font-size: 12px; color: var(--muted); }
+.test-caller { display: block; width: 100%; margin: 4px 0; padding: 6px 10px; text-align: left; font-size: 11px; color: var(--muted); border-color: transparent; overflow-wrap: anywhere; }
+.test-caller:hover { color: var(--text); }
+
+.type-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 14px; }
+.type-chip { padding: 2px 10px; border: 1px solid transparent; border-radius: 999px; font-size: 11px; background: color-mix(in srgb, var(--text) 8%, transparent); font-variant-numeric: tabular-nums; }
+.type-chip.muted { color: var(--muted); background: transparent; border: 1px dashed var(--line); }
+
+#project-map { padding: 32px; min-height: 60vh; }
+#project-map h2 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+#toggle-map[aria-pressed="true"] { border-color: var(--accent); }
+
+:root {
+  --heat-base: var(--vscode-charts-blue, #3794ff);
+  --heat-0: color-mix(in srgb, var(--text) 7%, transparent);
+  --heat-1: color-mix(in srgb, var(--heat-base) 30%, var(--canvas));
+  --heat-2: color-mix(in srgb, var(--heat-base) 55%, var(--canvas));
+  --heat-3: color-mix(in srgb, var(--heat-base) 72%, var(--canvas));
+  --heat-4: var(--heat-base);
+}
+.map-lede { color: var(--muted); font-size: 12px; margin: 0 0 16px; }
+.map-scroll { overflow-x: auto; padding-bottom: 8px; }
+.project-map { display: block; }
+.map-col { font-size: 12px; font-weight: 600; fill: var(--text); }
+.map-sub { font-size: 11px; fill: var(--muted); }
+.map-file rect { stroke: var(--canvas); stroke-width: 2; }
+.map-file text { fill: var(--text); }
+.map-name { font: 500 12px var(--vscode-editor-font-family, monospace); }
+.map-meta { font-size: 10.5px; }
+.heat-0 rect, .map-bin.heat-0 { fill: var(--heat-0); background: var(--heat-0); }
+.heat-1 rect, .map-bin.heat-1 { fill: var(--heat-1); background: var(--heat-1); }
+.heat-2 rect, .map-bin.heat-2 { fill: var(--heat-2); background: var(--heat-2); }
+.heat-3 rect, .map-bin.heat-3 { fill: var(--heat-3); background: var(--heat-3); }
+.heat-4 rect, .map-bin.heat-4 { fill: var(--heat-4); background: var(--heat-4); }
+.map-file.heat-3 text, .map-file.heat-4 text, .map-bin.heat-3, .map-bin.heat-4 { fill: var(--canvas); color: var(--canvas); }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-top: 12px; font-size: 12px; color: var(--muted); }
+.map-bin { min-width: 38px; padding: 1px 6px; border-radius: 4px; text-align: center; color: var(--text); font-variant-numeric: tabular-nums; }
+
+.map-file { cursor: pointer; }
+.map-file, .map-edge { transition: opacity .15s; }
+.map-edge { fill: none; }
+.map-edge.call { stroke: var(--muted); opacity: .45; }
+.map-edge.co { stroke: var(--heat); stroke-dasharray: 5 4; opacity: .85; }
+.map-edge.co.hidden-link { stroke-dasharray: 2 4; stroke-linecap: round; }
+.map-arrow { fill: var(--muted); }
+.project-map.dim .map-file:not(.near) { opacity: .3; }
+.project-map.dim .map-edge:not(.near) { opacity: .05; }
+.project-map.dim .map-edge.call.near { opacity: .9; }
+.map-key.co { color: var(--heat); }
+@media (prefers-reduced-motion: reduce) { .map-file, .map-edge { transition: none; } }
+
+.map-options { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; margin: 0 0 16px; font-size: 12px; color: var(--muted); }
+.map-options label { display: inline-flex; gap: 6px; align-items: center; }
+.map-options select { display: inline-block; width: auto; margin: 0 0 0 4px; padding: 4px 8px; }
+.map-file:focus { outline: none; }
+.map-file:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
+
+.project-map { width: 100%; height: min(70vh, 640px); border: 1px solid var(--line); border-radius: 8px; cursor: grab; touch-action: none; user-select: none; }
+.project-map.panning { cursor: grabbing; }
+.map-zoom { display: inline-flex; gap: 4px; }
+.map-zoom button { padding: 4px 10px; font-size: 12px; }
+
+.graph-node { cursor: pointer; transition: opacity .15s; }
+.graph-node rect { fill: var(--vscode-editorWidget-background, var(--surface)); stroke: var(--line); }
+.graph-node.external rect { fill: transparent; stroke-dasharray: 4 3; }
+.graph-node.changed rect { stroke: var(--heat); stroke-width: 1.5; }
+.graph-node:focus { outline: none; }
+.graph-node:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
+.graph-name { font: 500 12px var(--vscode-editor-font-family, monospace); fill: var(--text); }
+.graph-file { font-size: 10.5px; fill: var(--muted); }
+.graph-badge { font-size: 10px; font-weight: 600; fill: var(--heat); }
+.map-edge.implicit { stroke-dasharray: 4 3; }
+.project-map.dim .graph-node:not(.near) { opacity: .3; }
+
+.args { flex-basis: 100%; display: grid; gap: 4px; margin-top: 4px; padding: 8px 12px; border-left: 2px solid var(--line); }
+.args-title { font-size: 11px; }
+.args-row { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-size: 12px; }
+.args-row code { font-family: var(--vscode-editor-font-family, monospace); overflow-wrap: anywhere; }
+.args-row > span { color: var(--muted); }
+.args-row.warn small { color: var(--heat); }
+.args-none { flex-basis: 100%; }
+
+.map-box-frame { fill: var(--vscode-editorWidget-background, var(--surface)); stroke: var(--line); }
+.map-box-head, .map-fn { cursor: pointer; outline: none; }
+.map-box-head text { fill: var(--text); }
+.map-box-head.heat-3 text, .map-box-head.heat-4 text { fill: var(--canvas); }
+.map-fn { transition: opacity .15s; }
+.map-fn rect { fill: transparent; }
+.map-fn:hover rect, .map-fn.near rect { fill: color-mix(in srgb, var(--accent) 16%, transparent); }
+.map-fn.changed rect { stroke: var(--heat); stroke-width: 1; }
+.map-fn-name { font: 11.5px var(--vscode-editor-font-family, monospace); fill: var(--text); }
+.map-fn-badge { font-size: 10px; font-weight: 600; fill: var(--heat); }
+.map-box-head:focus-visible rect, .map-fn:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
+.map-edge.inner { display: none; }
+.project-map.dim .map-edge.inner.near { display: inline; }
+.project-map.dim .map-fn:not(.near) { opacity: .35; }
+/* Zoomed out: function names and function lines give way to the file-level picture. */
+.project-map:not(.far) .map-edge.file-level { display: none; }
+.project-map.far .map-edge.fn { display: none; }
+.project-map.far .map-fn text { display: none; }
+.project-map.far .map-fn rect { fill: color-mix(in srgb, var(--text) 12%, transparent); stroke: none; }
+.project-map.far .map-fn.changed rect { fill: var(--heat); }
+@media (prefers-reduced-motion: reduce) { .map-fn { transition: none; } }

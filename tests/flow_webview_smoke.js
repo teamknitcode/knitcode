@@ -10,6 +10,7 @@ const elements=new Map(), listeners={}, messages=[];
 const document={
   getElementById(id) { if(!elements.has(id)) elements.set(id,new MockElement('div')); return elements.get(id); },
   createElement(tag) { return new MockElement(tag); },
+  createElementNS(ns, tag) { return new MockElement(tag); },
   querySelector() { return null; }
 };
 const window={addEventListener(type,callback){listeners[type]=callback;}};
@@ -23,13 +24,20 @@ const payload=JSON.parse(readFile(arguments[0]));
 const target=payload.nodes.find(n=>n.name.endsWith('.target') || n.name==='target');
 const caller=payload.nodes.find(n=>n.name.endsWith('.caller') || n.name==='caller');
 listeners.message({data:{type:'data',data:payload,initialFile:target.file}});
+assert(find(elements.get('project-map'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('map-fn')),'project map draws function nodes');
+const mapFile=find(elements.get('project-map'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('map-box-head'));
+assert(mapFile,'project map draws file boxes'); mapFile.events.click();
+assert(selected==='file:'+target.file,'map opens the file view');
+assert(find(elements.get('flow'),n=>n.tag==='g'&&String(n.attrs.class).startsWith('graph-node')),'file view draws the function graph');
 choose(target.id);
 assert(layers(target.id,true,1)[0].includes(caller.id),'directed caller expansion');
+assert(isTest({file:'tests/test_x.py'})&&isTest({file:'pkg/a_test.py'})&&!isTest({file:'main.py'})&&!isTest({file:'src/contest.py'}),'test file detection');
 assert(text(elements.get('flow')).includes('코드 ↗'),'source actions');
 elements.get('more').events.click();
 assert(text(elements.get('depth')).includes('2단계'),'depth control');
 choose(caller.id);
 assert(text(elements.get('evidence')).includes('미확정'),'unknown call visible');
+assert(text(elements.get('evidence')).includes('넘기는 값')||text(elements.get('evidence')).includes('전달값'),'call arguments paired with parameters');
 assert(text(elements.get('evidence')).includes('조건부 콜백 후보'),'callbacks distinguished');
 assert(!text(elements.get('status')).includes('반복 한도 도달'),'no fabricated convergence warning');
 const link=find(elements.get('evidence'),n=>n.tag==='button'&&n.textContent.includes('unknown'));
@@ -67,10 +75,12 @@ listeners.message({data:{type:'gitValidation',data:{available:true,analyzed_comm
   events:[{author:'alice',sha:'aaaaaaaa',type:'feature',functions:[target.name]},
           {author:'bob',sha:'bbbbbbbb',type:'feature',functions:[caller.name]}]
 }}}}});
+assert(text(elements.get('flow')).includes('변경 1회'),'flow cards show function change counts');
 const authorSelect=find(elements.get('git-validation-panel'),n=>n.tag==='select');
 authorSelect.value='alice'; authorSelect.events.change();
 assert(text(elements.get('git-validation-panel')).includes('선택 범위: 1개 커밋'),'author filters event count');
-const hotspot=find(elements.get('git-validation-panel'),n=>n.tag==='button'&&n.textContent.includes(target.name));
+assert(text(elements.get('git-validation-panel')).includes('기능 추가 1'),'commit types follow author filter');
+const hotspot=find(elements.get('git-validation-panel'),n=>n.tag==='button'&&text(n).includes(target.name));
 assert(hotspot,'hotspot links to current function'); hotspot.events.click();
 assert(messages.at(-1).type==='open'&&messages.at(-1).id===target.id,'hotspot opens source');
 data.working_changes={available:true,basis:'HEAD',warnings:[],files:[{file:target.file,functions:[{

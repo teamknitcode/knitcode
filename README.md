@@ -186,6 +186,8 @@ python pycg_benchmark.py --benchmark ..\pycg-evaluation --output out\pycg --pycg
 
 ## 실행 기반 검증 도구 (`trace_recall.py`, 2026-10-22)
 
+로컬 파일·모듈의 호출·타입·실행 경로 분석은 작업 디렉터리의 목적별 문서에서 확인할 수 있습니다. [변경 사항](../dynamic_analysis/변경사항.md) · [실행 방법](../dynamic_analysis/실행방법.md) · [분석 결과](../dynamic_analysis/분석결과.md)
+
 분석 대상의 테스트를 실제로 실행해 관찰한 함수 간 호출과 정적 그래프를 비교합니다. 팀원 누구나 같은 커밋·같은 명령으로 같은 숫자를 재현할 수 있습니다. **절차·지표 정의·기준 수치: [`RUNTIME_VALIDATION_KO.md`](RUNTIME_VALIDATION_KO.md)**
 
 ```powershell

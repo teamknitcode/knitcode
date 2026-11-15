@@ -1,0 +1,108 @@
+{
+  "project": "TextRank4ZH",
+  "files": 5,
+  "parse_errors": 0,
+  "lines": 587,
+  "seconds": 0.11,
+  "peak_rss_mb": 23.9,
+  "knitcode_raw": {
+    "tp": 60,
+    "fp": 5,
+    "fn": 18,
+    "edges": 78,
+    "precision": 0.9231,
+    "recall": 0.7692
+  },
+  "knitcode": {
+    "tp": 69,
+    "fp": 5,
+    "fn": 9,
+    "edges": 78,
+    "precision": 0.9324,
+    "recall": 0.8846
+  },
+  "false_positives": [
+    [
+      "textrank4zh.TextRank4Keyword.TextRank4Keyword.analyze",
+      "<str>.join"
+    ],
+    [
+      "textrank4zh.TextRank4Keyword.TextRank4Keyword.get_keyphrases",
+      "<set>.add"
+    ],
+    [
+      "textrank4zh.TextRank4Keyword.TextRank4Keyword.get_keyphrases",
+      "<str>.join"
+    ],
+    [
+      "textrank4zh.util.sort_sentences",
+      "textrank4zh.util.sort_sentences.<lambda1>"
+    ],
+    [
+      "textrank4zh.util.sort_words",
+      "textrank4zh.util.sort_words.<lambda1>"
+    ]
+  ],
+  "false_negatives": [
+    [
+      "textrank4zh.Segmentation",
+      "textrank4zh.Segmentation.Segmentation"
+    ],
+    [
+      "textrank4zh.Segmentation",
+      "textrank4zh.Segmentation.SentenceSegmentation"
+    ],
+    [
+      "textrank4zh.Segmentation",
+      "textrank4zh.Segmentation.WordSegmentation"
+    ],
+    [
+      "textrank4zh.TextRank4Keyword",
+      "textrank4zh.TextRank4Keyword.TextRank4Keyword"
+    ],
+    [
+      "textrank4zh.TextRank4Keyword.TextRank4Keyword.get_keyphrases",
+      "<str>.count"
+    ],
+    [
+      "textrank4zh.TextRank4Sentence",
+      "textrank4zh.TextRank4Sentence.TextRank4Sentence"
+    ],
+    [
+      "textrank4zh.util",
+      "textrank4zh.util.AttrDict"
+    ],
+    [
+      "textrank4zh.util.sort_sentences",
+      "textrank4zh.util.<lambda>"
+    ],
+    [
+      "textrank4zh.util.sort_words",
+      "textrank4zh.util.<lambda>"
+    ]
+  ],
+  "PyCG E.A.(1)": {
+    "tp": 68,
+    "fp": 0,
+    "fn": 10,
+    "edges": 78,
+    "precision": 1.0,
+    "recall": 0.8718
+  },
+  "PyCG E.A.(m)": {
+    "tp": 68,
+    "fp": 0,
+    "fn": 10,
+    "edges": 78,
+    "precision": 1.0,
+    "recall": 0.8718
+  },
+  "JARVIS E.A.": {
+    "tp": 74,
+    "fp": 0,
+    "fn": 4,
+    "edges": 78,
+    "precision": 1.0,
+    "recall": 0.9487
+  }
+}

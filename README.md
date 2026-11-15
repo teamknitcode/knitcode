@@ -6,6 +6,21 @@
 
 **[화면과 함께 보는 팀원 사용 안내](vscode-extension/USER_GUIDE_KO.md)** · [개발 안내](vscode-extension/VISUALIZATION_KO.md) · [설치 파일](releases/knitcode-0.4.12/knitcode-static-0.4.12.vsix)
 
+## 2026-11-15 — JARVIS 벤치마크 비교와 정적분석 개선
+
+최신 연구 JARVIS(arXiv 2305.05949)의 공개 벤치마크(micro 138개, macro 6개)로 KnitCode를 평가하는 scripts/jarvis_benchmark.py를 추가했다. 아티팩트에 들어 있는 PyCG·JARVIS 출력을 같은 채점기로 다시 채점해 논문 표를 재현한 뒤, 같은 조건(E.A.)에서 비교한다.
+
+- 엔진 개선 8가지: 데코레이터 적용 호출, raise A, 클래스 본문 별칭, f-string __str__, 반복 __next__, map/filter 콜백, 사용자 정의 __setattr__, six.add_metaclass(abc.ABCMeta).
+- JARVIS macro 합산 재현율 **69.1% → 74.7%**(PyCG 72.4%, JARVIS 77.6%). 정밀도는 87.8%로 두 도구(99%대)보다 낮다. 표본 오탐 26개는 모두 소스상 실행될 수 있는 호출이어서, JARVIS 정답의 암묵 호출 누락이 의심된다.
+- JARVIS micro 누락 81 → 66, PyCG micro Sound **71 → 78/112**. PyCG macro F1은 asciinema 82.70 → 83.08, autojump 81.89 → 81.80, 나머지 3개는 간선까지 동일.
+- Linux(Python 3.13)와 Windows(Python 3.12)에서 모든 점수가 같게 재현됐다.
+
+```bash
+python scripts/jarvis_benchmark.py micro --jarvis <pythonJaRvis.github.io/Jarvis 경로> --output out/jarvis/micro.json
+python scripts/jarvis_benchmark.py macro --jarvis <pythonJaRvis.github.io/Jarvis 경로> --output out/jarvis/macro
+```
+
+[실험 보고서](experiments/2026-11-15-jarvis-benchmark/REPORT_KO.md)에 채점 규칙, 관례 맞춤, 정답 감사, 남은 한계와 재현 명령을 적었다. PyCG·JARVIS를 전반적으로 능가한 상태는 아니다.
 
 ## 2026-10-25 — 기본 분석 경로를 단일 엔진으로 통합
 

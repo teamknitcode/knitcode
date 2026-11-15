@@ -78,6 +78,10 @@ NONE = Value(frozenset({Atom('none')}))
 BOTTOM = Value()
 
 
+# Atom site of the undecorated function object handed to its decorator.
+ORIGINAL_DEFINITION = 'original_definition'
+
+
 def one(kind, name='', site=''):
     return Value(frozenset({Atom(kind, name, site)}))
 
@@ -151,6 +155,7 @@ class ObjectFlow:
         self.advisory_events = defaultdict(set)
         self.reference_events = defaultdict(set)
         self._refs_cache = {}  # Static names only; never objects, heaps or returns.
+        self._definition_index = None
         self.call_index = {(c['file'], c['line'], c['column'], c.get('end_line'), c.get('end_column')): c for c in resolver.calls}
         trees = resolver.syntax_trees
         functions_by_file = defaultdict(list)
@@ -636,8 +641,11 @@ class ObjectFlow:
                     continue
                 found = [s for s in self.r._lookup(k + '.' + name) if s['kind'] == 'METHOD']
                 owner = self.r.classes[k]
-                if found or any(name in a.get('targets', []) for a in
-                                self.r.assignments.get((owner['file'], owner['qualified_name']), [])):
+                if found:
+                    break
+                if any(name in a.get('targets', []) for a in
+                       self.r.assignments.get((owner['file'], owner['qualified_name']), [])):
+                    found = self.r.class_alias(owner, name) or []
                     break
         self._member_cache[key] = found
         return found
@@ -678,6 +686,10 @@ class ObjectFlow:
                 receivers.add(atom.name)
         if not hits:
             return False
+        return self.record_implicit(node, context, mode, kind, name, hits, receivers)
+
+    def record_implicit(self, node, context, mode, kind, name, hits, receivers=()):
+        """Store an implicit call event (shared by implicit() and the syntax-driven ones)."""
         key = (context['file'], node.lineno, node.col_offset, kind, name)
         event = self.implicit_events.setdefault(key, {
             'owner': context.get('caller_id'), 'module': context.get('module'),
@@ -686,6 +698,93 @@ class ObjectFlow:
         slot['targets'].update(hits)
         slot['receivers'].update(receivers)
         return True
+
+    def iteration_next(self, node, context, mode, collection, is_async):
+        """Iterating calls __next__ on what __iter__ returns. Modeled for the
+        common iterator protocol where the iterated object (or the object its
+        __iter__ returns from a project method) defines __next__."""
+        name = '__anext__' if is_async else '__next__'
+        if self.implicit(node, context, mode, 'iteration', name, collection):
+            return
+        hits, receivers = set(), set()
+        for atom in collection.atoms:
+            if atom.kind != 'object':
+                continue
+            for it in self.member(atom.name, '__aiter__' if is_async else '__iter__'):
+                fn = self.functions.get(it['id'])
+                if fn is None:
+                    continue
+                # `return Other(...)` / `return self` inside __iter__.
+                for ret in (n for n in self.own_nodes(fn) if isinstance(n, ast.Return) and n.value is not None):
+                    cls_name = None
+                    if isinstance(ret.value, ast.Name) and ret.value.id == 'self':
+                        cls_name = atom.name
+                    elif isinstance(ret.value, ast.Call):
+                        refs = self.refs(ast.unparse(ret.value.func), {**context, 'file': it['file'],
+                                         'module': it['module'], 'scope': it['qualified_name']}, ret.value)
+                        if len(refs) == 1 and refs[0]['kind'] == 'CLASS':
+                            cls_name = refs[0]['canonical_name']
+                    if cls_name:
+                        methods = [m for m in self.member(cls_name, name)
+                                   if not is_property(m) and m['id'] not in self.r.mutated_methods]
+                        hits.update(m['id'] for m in methods)
+                        receivers.update([cls_name] if methods else [])
+        if hits:
+            self.record_implicit(node, context, mode, 'iteration', name, hits, receivers)
+
+    def raise_class(self, node, value, context, mode):
+        """`raise A` instantiates A: A.__init__ runs without a call expression."""
+        if node is None or isinstance(node, ast.Call):
+            return
+        hits, receivers = set(), set()
+        for atom in value.atoms:
+            cls = self.r.by_id.get(atom.name) if atom.kind == 'reference' else None
+            if not cls or cls['kind'] != 'CLASS':
+                continue
+            inits, _ = self.r._find_method(cls, '__init__')
+            inits = [i for i in inits if self.r.safe_callable(i)]
+            hits.update(i['id'] for i in inits)
+            receivers.update([cls['canonical_name']] if inits else [])
+        if hits:
+            self.record_implicit(node, context, mode, 'raise_instantiation', '__init__', hits, receivers)
+
+    def _definition_symbol(self, file, node):
+        if self._definition_index is None:
+            self._definition_index = {(s['file'], s['line']): s for s in self.r.symbols
+                                      if s['kind'] in ('FUNCTION', 'METHOD', 'CLASS')}
+        return self._definition_index.get((file, node.lineno))
+
+    def apply_decorators(self, stmt, env, heap, context, mode, site):
+        """`@dec` on a definition calls dec(definition) when the enclosing code runs.
+
+        Only bare (non-call) decorator expressions bound to project functions are
+        recorded; `@dec(...)` is an ordinary call site already. The decorator body
+        is interpreted with the defined function as its argument. Class bodies are
+        not interpreted here, but the decorators of their methods are applied while
+        the class statement runs (same caller as the class statement).
+        """
+        if not self.enhanced:
+            return
+        for decorator in reversed(stmt.decorator_list):
+            if isinstance(decorator, ast.Call):
+                continue
+            value = self.peek(decorator, env, heap, context, mode, site)
+            targets = [self.r.by_id.get(a.name) for a in value.atoms if a.kind == 'reference']
+            targets = [t for t in targets if t and t['kind'] in ('FUNCTION', 'LAMBDA') and self.r.safe_callable(t)]
+            if not targets:
+                continue
+            self.record_implicit(decorator, context, mode, 'decorator', 'decorator',
+                                 {t['id'] for t in targets})
+            defined = self._definition_symbol(context['file'], stmt)
+            arg = one('reference', defined['id'], ORIGINAL_DEFINITION) if defined else UNKNOWN
+            child_site = f"{context['file']}:{decorator.lineno}:{decorator.col_offset} > {site}"
+            for fn in targets:
+                if fn['id'] in self.functions:
+                    self.invoke(fn, [arg], {}, dict(heap), 'generic' if mode == 'generic' else 'specific', child_site)
+        if isinstance(stmt, ast.ClassDef):
+            for inner in stmt.body:
+                if isinstance(inner, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    self.apply_decorators(inner, env, heap, context, mode, site)
 
     def implicit_operator(self, node, context, mode, left_name, right_name, left, right):
         self.implicit(node, context, mode, 'operator', left_name, left)
@@ -945,7 +1044,10 @@ class ObjectFlow:
             value=self.expr(node.value,env,heap,context,mode,site)
             self.expr(node.format_spec,env,heap,context,mode,site)
             member={114:'__repr__',115:'__str__',97:'__repr__'}.get(node.conversion,'__format__')
-            self.implicit(node,context,mode,'format',member,value)
+            if not self.implicit(node,context,mode,'format',member,value) and member=='__format__':
+                # object.__format__(self, '') returns str(self): a class without
+                # its own __format__ runs __str__ for f'{x}'.
+                self.implicit(node,context,mode,'format','__str__',value)
             return UNKNOWN
         if isinstance(node, ast.BinOp):
             left = self.expr(node.left, env, heap, context, mode, site)
@@ -974,12 +1076,14 @@ class ObjectFlow:
                 iterable = self.peek(generator.iter, env, heap, context, mode, site)
                 self.implicit(generator.iter, context, mode, 'iteration',
                               '__aiter__' if generator.is_async else '__iter__', iterable)
+                self.iteration_next(generator.iter, context, mode, iterable, generator.is_async)
         for child in ast.iter_child_nodes(node):
             if isinstance(child, ast.expr):
                 self.expr(child, env, heap, context, mode, site)
         return UNKNOWN
 
     def call(self, node, env, heap, context, mode, site):
+        original = set()  # ids passed as the undecorated function object (apply_decorators)
         receiver = None
         targets = []
         bindings = []
@@ -1125,6 +1229,8 @@ class ObjectFlow:
                 if atom.kind == 'reference' and atom.name in self.r.by_id:
                     fn = self.r.by_id[atom.name]
                     targets.append(fn); bindings.append((fn, None))
+                    if atom.site == ORIGINAL_DEFINITION:
+                        original.add(fn['id'])
                 elif atom.kind == 'bound_method' and atom.name in self.r.by_id:
                     fn = self.r.by_id[atom.name]
                     bound = one('object', atom.receiver_class, atom.site)
@@ -1145,11 +1251,16 @@ class ObjectFlow:
                         bindings.append((fn, one('object', atom.name, atom.site)))
                     managed = True
                     tags.add('callable_instance')
-        if any(not self.r.safe_callable(fn) for fn in targets):
+        # The function object a decorator receives is the original definition,
+        # whatever the decorator later binds to the name.
+        safe = lambda fn: fn['id'] in original or self.r.safe_callable(fn)
+        if original:
+            tags.add(ORIGINAL_DEFINITION)
+        if any(not safe(fn) for fn in targets):
             managed = True
             tags.add('decorated_or_mutated_binding_unknown')
-            targets = [fn for fn in targets if self.r.safe_callable(fn)]
-            bindings = [(fn, bound) for fn, bound in bindings if self.r.safe_callable(fn)]
+            targets = [fn for fn in targets if safe(fn)]
+            bindings = [(fn, bound) for fn, bound in bindings if safe(fn)]
         args = [self.expr(a, env, heap, context, mode, site) for a in node.args]
         kwargs = {k.arg: self.expr(k.value, env, heap, context, mode, site) for k in node.keywords}
         if (not targets and args and isinstance(node.func, ast.Name)
@@ -1245,7 +1356,20 @@ class ObjectFlow:
         return result
 
     def note_builtin_callback(self, node, args, kwargs, context):
-        """sorted's key is a conditional callback, distinct from calling sorted."""
+        """sorted's key / map's and filter's function are conditional callbacks,
+        distinct from calling the builtin itself."""
+        if (isinstance(node.func, ast.Name) and node.func.id in ('map', 'filter') and len(node.args) >= 2
+                and not kwargs and not any(isinstance(a, ast.Starred) for a in node.args)):
+            call = self.call_index.get((context['file'],node.lineno,node.col_offset,node.end_lineno,node.end_col_offset))
+            if not call or self.call_origins.non_internal_origin(call)[0]!='BUILTIN':
+                return
+            # Lazy iterators: the function runs only if the result is consumed.
+            targets = self.callback_events.setdefault(call['id'],set())
+            for atom in args[0].atoms:
+                fn = self.r.by_id.get(atom.name) if atom.kind in ('reference','bound_method') else None
+                if fn and fn['kind'] in ('FUNCTION','METHOD','LAMBDA') and self.r.safe_callable(fn):
+                    targets.add(fn['id'])
+            return
         if (not isinstance(node.func, ast.Name) or node.func.id!='sorted' or len(node.args)!=1
                 or isinstance(node.args[0], ast.Starred) or set(kwargs)-{'key','reverse'} or 'key' not in kwargs):
             return
@@ -1302,6 +1426,9 @@ class ObjectFlow:
             receiver = self.expr(target.value, env, heap, context, mode, site)
             if record:
                 self.implicit(target, context, mode, 'property_set', target.attr, receiver, want_property=True)
+                if self.enhanced:
+                    # `obj.x = v` runs type(obj).__setattr__ when a project class defines it.
+                    self.implicit(target, context, mode, 'attribute_set', '__setattr__', receiver)
             self.namespace_write(receiver, target.attr, heap)
             objects = [a for a in receiver.atoms if a.kind == 'object']
             strong = len(receiver.atoms) == 1 and len(objects) == 1 and not objects[0].site.startswith('hint:')
@@ -1375,7 +1502,8 @@ class ObjectFlow:
                 return env, returns.join(value), False
             if isinstance(stmt, ast.Raise):
                 # Calls in the exception expression execute before the raise.
-                self.expr(stmt.exc, env, heap, context, mode, site)
+                exc = self.expr(stmt.exc, env, heap, context, mode, site)
+                self.raise_class(stmt.exc, exc, context, mode)
                 self.expr(stmt.cause, env, heap, context, mode, site)
                 return env, returns, False
             if isinstance(stmt, (ast.Break, ast.Continue)):
@@ -1383,6 +1511,7 @@ class ObjectFlow:
                 # loop retains a path that leaves the loop afterwards.
                 return env, returns, True
             if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                self.apply_decorators(stmt, env, heap, context, mode, site)
                 continue
             if isinstance(stmt, (ast.Import, ast.ImportFrom)):
                 for alias in stmt.names:
@@ -1489,6 +1618,7 @@ class ObjectFlow:
                     collection = self.expr(iterable, env, heap, context, mode, site)
                     self.implicit(iterable, context, mode, 'iteration',
                                   '__aiter__' if isinstance(stmt, ast.AsyncFor) else '__iter__', collection)
+                    self.iteration_next(iterable, context, mode, collection, isinstance(stmt, ast.AsyncFor))
                     unwrapped = frozenset(
                         Atom(atom.kind.removeprefix('collection_'), atom.name, atom.site, atom.receiver_class)
                         for atom in collection.atoms if atom.kind.startswith('collection_')

@@ -1,0 +1,124 @@
+{
+  "project": "rich-cli",
+  "files": 5,
+  "parse_errors": 0,
+  "lines": 1112,
+  "seconds": 0.18,
+  "peak_rss_mb": 27.9,
+  "knitcode_raw": {
+    "tp": 44,
+    "fp": 5,
+    "fn": 17,
+    "edges": 61,
+    "precision": 0.898,
+    "recall": 0.7213
+  },
+  "knitcode": {
+    "tp": 48,
+    "fp": 5,
+    "fn": 13,
+    "edges": 61,
+    "precision": 0.9057,
+    "recall": 0.7869
+  },
+  "false_positives": [
+    [
+      "rich_cli.__main__.RichCommand.format_help",
+      "<str>.join"
+    ],
+    [
+      "rich_cli.__main__.render_ipynb",
+      "<list>.append"
+    ],
+    [
+      "rich_cli.__main__.render_ipynb",
+      "<str>.join"
+    ],
+    [
+      "rich_cli.win_vt.enable_windows_virtual_terminal_processing",
+      "rich_cli.win_vt._get_console_mode"
+    ],
+    [
+      "rich_cli.win_vt.enable_windows_virtual_terminal_processing",
+      "rich_cli.win_vt._set_console_mode"
+    ]
+  ],
+  "false_negatives": [
+    [
+      "rich_cli.__main__",
+      "rich_cli.__main__.ForceWidth"
+    ],
+    [
+      "rich_cli.__main__",
+      "rich_cli.__main__.ForceWidth.__init__"
+    ],
+    [
+      "rich_cli.__main__",
+      "rich_cli.__main__.RichCommand"
+    ],
+    [
+      "rich_cli.__main__",
+      "rich_cli.__main__.RichCommand.__init__"
+    ],
+    [
+      "rich_cli.__main__.RichCommand.format_help",
+      "rich_cli.__main__.RichCommand.format_help.OptionHighlighter"
+    ],
+    [
+      "rich_cli.__main__.main",
+      "<str>.split"
+    ],
+    [
+      "rich_cli.__main__.main",
+      "<str>.splitlines"
+    ],
+    [
+      "rich_cli.__main__.main",
+      "<str>.upper"
+    ],
+    [
+      "rich_cli.__main__.main",
+      "rich_cli.markdown.Markdown.__init__"
+    ],
+    [
+      "rich_cli.__main__.run",
+      "rich_cli.__main__.main"
+    ],
+    [
+      "rich_cli.markdown",
+      "rich_cli.markdown.CodeBlock"
+    ],
+    [
+      "rich_cli.pager",
+      "rich_cli.pager.PagerApp"
+    ],
+    [
+      "rich_cli.pager",
+      "rich_cli.pager.PagerRenderable"
+    ]
+  ],
+  "PyCG E.A.(1)": {
+    "tp": 50,
+    "fp": 2,
+    "fn": 11,
+    "edges": 61,
+    "precision": 0.9615,
+    "recall": 0.8197
+  },
+  "PyCG E.A.(m)": {
+    "tp": 50,
+    "fp": 2,
+    "fn": 11,
+    "edges": 61,
+    "precision": 0.9615,
+    "recall": 0.8197
+  },
+  "JARVIS E.A.": {
+    "tp": 58,
+    "fp": 0,
+    "fn": 3,
+    "edges": 61,
+    "precision": 1.0,
+    "recall": 0.9508
+  }
+}

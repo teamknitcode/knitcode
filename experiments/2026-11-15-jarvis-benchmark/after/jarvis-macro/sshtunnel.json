@@ -1,0 +1,244 @@
+{
+  "project": "sshtunnel",
+  "files": 1,
+  "parse_errors": 0,
+  "lines": 1929,
+  "seconds": 0.6,
+  "peak_rss_mb": 39.5,
+  "knitcode_raw": {
+    "tp": 138,
+    "fp": 19,
+    "fn": 33,
+    "edges": 171,
+    "precision": 0.879,
+    "recall": 0.807
+  },
+  "knitcode": {
+    "tp": 142,
+    "fp": 19,
+    "fn": 29,
+    "edges": 171,
+    "precision": 0.882,
+    "recall": 0.8304
+  },
+  "false_positives": [
+    [
+      "sshtunnel.SSHTunnelForwarder.__init__",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.__str__",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_tunnel",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._create_tunnels",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._get_transport",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._make_ssh_forward_server",
+      "sshtunnel.SSHTunnelForwarder._make_stream_ssh_forward_server_class"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._make_ssh_forward_server",
+      "sshtunnel._StreamForwardServer.__init__"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._serve_forever_wrapper",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._stop_transport",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.get_agent_keys",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.get_keys",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.start",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel._ForwardHandler._redirect",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel._ForwardHandler.handle",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel._ForwardServer.handle_error",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel._ForwardServer.handle_error",
+      "sshtunnel._ForwardServer.remote_address"
+    ],
+    [
+      "sshtunnel.address_to_str",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.check_host",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.check_port",
+      "<str>.format"
+    ]
+  ],
+  "false_negatives": [
+    [
+      "sshtunnel",
+      "sshtunnel.BaseSSHTunnelForwarderError"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel.HandlerSSHTunnelForwarderError"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel.SSHTunnelForwarder"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel.SSHTunnelForwarder.__del__"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel._ForwardHandler"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel._ForwardServer"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel._StreamForwardServer"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel._ThreadingForwardServer"
+    ],
+    [
+      "sshtunnel",
+      "sshtunnel._ThreadingStreamForwardServer"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_is_started",
+      "sshtunnel.HandlerSSHTunnelForwarderError.__init__"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_tunnel",
+      "sshtunnel._ForwardServer.local_host"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_tunnel",
+      "sshtunnel._ForwardServer.local_port"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_tunnel",
+      "sshtunnel._ForwardServer.remote_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._check_tunnel",
+      "sshtunnel.local_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._consolidate_binds",
+      "<list>.extend"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class",
+      "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class.Handler"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._make_ssh_forward_server",
+      "<list>.append"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._process_deprecated",
+      "<str>.format"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._serve_forever_wrapper",
+      "sshtunnel._ForwardServer.local_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._serve_forever_wrapper",
+      "sshtunnel._ForwardServer.remote_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._stop_transport",
+      "sshtunnel._ForwardServer.local_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder._stop_transport",
+      "sshtunnel._ForwardServer.remote_address"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.local_is_up",
+      "<map>.get"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.start",
+      "<map>.values"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.start",
+      "sshtunnel.SSHTunnelForwarder.stop"
+    ],
+    [
+      "sshtunnel.SSHTunnelForwarder.start",
+      "sshtunnel._ForwardServer.local_port"
+    ],
+    [
+      "sshtunnel._ForwardServer.handle_error",
+      "sshtunnel.remote_address"
+    ],
+    [
+      "sshtunnel._cli_main",
+      "sshtunnel.SSHTunnelForwarder.__enter__"
+    ],
+    [
+      "sshtunnel._cli_main",
+      "sshtunnel.SSHTunnelForwarder.__exit__"
+    ]
+  ],
+  "PyCG E.A.(1)": {
+    "tp": 137,
+    "fp": 0,
+    "fn": 34,
+    "edges": 171,
+    "precision": 1.0,
+    "recall": 0.8012
+  },
+  "PyCG E.A.(m)": {
+    "tp": 137,
+    "fp": 0,
+    "fn": 34,
+    "edges": 171,
+    "precision": 1.0,
+    "recall": 0.8012
+  },
+  "JARVIS E.A.": {
+    "tp": 145,
+    "fp": 0,
+    "fn": 26,
+    "edges": 171,
+    "precision": 1.0,
+    "recall": 0.848
+  }
+}

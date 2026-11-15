@@ -557,8 +557,19 @@ class Resolver:
                 return None
             return '.'.join([imports[root], *name.split('.')[1:]])
 
-        if any(stdlib_name(d, allow_call=True) not in self._TRANSPARENT_CLASS_DECORATORS
-               for d in cls.get('decorators') or []):
+        def transparent(decorator):
+            name = stdlib_name(decorator, allow_call=True)
+            if name in self._TRANSPARENT_CLASS_DECORATORS:
+                return True
+            # six.add_metaclass(M) rebuilds the class from its own namespace with
+            # metaclass M (methods unchanged). Trusted only for a safe M.
+            if name == 'six.add_metaclass':
+                call = ast.parse(decorator, mode='eval').body
+                return (isinstance(call, ast.Call) and len(call.args) == 1 and not call.keywords
+                        and stdlib_name(ast.unparse(call.args[0]), allow_call=False) in self._SAFE_METACLASSES)
+            return False
+
+        if not all(transparent(d) for d in cls.get('decorators') or []):
             return False
         values = cls.get('class_keyword_values') or {}
         return all(kw == 'metaclass' and stdlib_name(values.get(kw), allow_call=False) in self._SAFE_METACLASSES
@@ -734,13 +745,35 @@ class Resolver:
         self._mro_cache[key] = result
         return result
 
+    def class_alias(self, cls: dict, name: str) -> list[dict] | None:
+        """`name = other` in the class body, where `other` is a method defined
+        earlier in the same body: the alias is that method (e.g. `l = left`).
+        None when the latest class-body write of `name` is anything else."""
+        writes = [a for a in self.assignments.get((cls['file'], cls['qualified_name']), [])
+                  if name in a.get('targets', [])]
+        if not writes:
+            return None
+        last = max(writes, key=lambda a: a['line'])
+        value = (last.get('value') or '').strip()
+        if (len(writes) != 1 or last.get('control_depth') or last.get('type') != 'ASSIGN'
+                or last.get('targets') != [name] or not value.isidentifier() or value == name):
+            return None
+        methods = [s for s in self._lookup(cls['canonical_name'] + '.' + value)
+                   if s['kind'] == 'METHOD' and not s.get('control_depth') and s['line'] < last['line']
+                   and all(d in ('staticmethod', 'classmethod') for d in s.get('decorators', []))]
+        # The aliased name itself must not be rebound in the class body.
+        rebound = any(value in a.get('targets', []) for a in
+                      self.assignments.get((cls['file'], cls['qualified_name']), []))
+        return methods if methods and not rebound else None
+
     def _local_method(self, cls: dict, name: str) -> tuple[list[dict], bool]:
         local = self._lookup(cls['canonical_name'] + '.' + name)
         assignments = [a for a in self.assignments.get((cls['file'], cls['qualified_name']), [])
                        if name in a.get('targets', [])]
         # Non-method class attributes and descriptors stop inheritance lookup.
         if assignments and (not local or max(a['line'] for a in assignments) >= max(s['line'] for s in local)):
-            return [], True
+            alias = None if local else self.class_alias(cls, name)
+            return (alias or []), True
         if local:
             methods = [s for s in local if s['kind'] == 'METHOD'
                        and not s.get('control_depth')
@@ -1202,11 +1235,15 @@ class Resolver:
             targets = object_flow.callback_events.get(call['id'])
             if not targets:
                 continue
+            builtin = call.get('callee_text')
             results.append({'file': call['file'], 'line': call['line'], 'column': call.get('column'),
                             'end_line': call.get('end_line'), 'end_column': call.get('end_column'),
-                            'kind': 'callback', 'member': 'key', 'owner': call.get('caller_id'),
+                            'kind': 'callback', 'member': 'key' if builtin == 'sorted' else 'function',
+                            'owner': call.get('caller_id'),
                             'module': call['module'], 'targets': sorted(targets), 'receivers': [],
-                            'evidence': {'trigger_call_id': call['id'], 'rule': 'builtin_sorted_key_callback',
+                            'evidence': {'trigger_call_id': call['id'],
+                                         'rule': 'builtin_sorted_key_callback' if builtin == 'sorted'
+                                         else f'builtin_{builtin}_function_callback',
                                          'certainty': 'callback_may_execute',
                                          'note': ('Key may execute for non-empty valid input; callback '
                                                   'body/return values are not interpreted. The sorted '
@@ -1280,7 +1317,10 @@ class Resolver:
             # external bases still permit a source-backed class candidate.
             targets = [t for t in targets if not (
                 t['kind'] == 'CLASS' and self._mro(t)[1].startswith('invalid'))]
-            safe = [t for t in targets if self.safe_callable(t)]
+            # object_flow proved the callee is the undecorated function object
+            # a decorator received (see ObjectFlow.apply_decorators).
+            original = 'original_definition' in (trace or [])
+            safe = [t for t in targets if original or self.safe_callable(t)]
             if len(safe) != len(targets):
                 targets, reason = safe, 'decorated_or_mutated_binding_unknown'
             if top_level:

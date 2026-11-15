@@ -231,7 +231,17 @@ class ProfileCollector:
         self.active = True
         if self.execution.coverage_enabled or self.execution.variables_enabled:
             threading.settrace(self.execution.callback)
-            sys.settrace(self.execution.callback)
+            # CPython 3.12 enables opcode instrumentation at settrace time
+            # only if an existing frame already requests opcode events.
+            # Setting the flag later in the trace callback is insufficient.
+            frame = sys._getframe()
+            previous_opcodes = frame.f_trace_opcodes
+            try:
+                frame.f_trace_opcodes = True
+                sys.settrace(self.execution.callback)
+            finally:
+                frame.f_trace_opcodes = previous_opcodes
+                del frame
         threading.setprofile(self.callback)
         sys.setprofile(self.callback)
 

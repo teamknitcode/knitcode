@@ -223,6 +223,29 @@ class DynamicAnalysisTests(unittest.TestCase):
                             and by_id[flow['target']]['operation'] == 'read'
                             for flow in trace['variables']['binding_flows']))
 
+    def test_opcode_observations_include_background_thread(self):
+        self.write('app.py', '''
+            import threading
+            def work():
+                assigned = 3
+                if assigned:
+                    copied = assigned
+                return copied
+            thread = threading.Thread(target=work)
+            thread.start()
+            thread.join()
+        ''')
+        trace, _ = self.run_target('--script', 'app.py')
+        self.assertTrue(trace['complete'])
+        node = next(n for n in trace['nodes'] if n['name'] == 'work')
+        observed = {(e['name'], e['operation']) for e in trace['variables']['events']
+                    if e['node'] == node['id']}
+        self.assertIn(('assigned', 'write'), observed)
+        self.assertIn(('assigned', 'read'), observed)
+        file = next(f for f in trace['coverage']['files'] if f['file'] == 'app.py')
+        branch = next(b for b in file['branches'] if b['scope'] == 'work')
+        self.assertEqual(len(branch['taken']), 1)
+
     def test_nested_subprocesses_are_collected_and_failures_are_partial(self):
         self.write('leaf.py', 'def work(): return 1\nwork()\nraise SystemExit(5)\n')
         self.write('child.py', '''

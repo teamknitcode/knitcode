@@ -2,7 +2,7 @@
   "project": "asciinema",
   "files": 24,
   "parse_errors": 0,
-  "seconds": 0.41,
+  "seconds": 0.52,
   "skipped": {
     "class_instantiation_without_init": 18,
     "non_dotted_external": 3

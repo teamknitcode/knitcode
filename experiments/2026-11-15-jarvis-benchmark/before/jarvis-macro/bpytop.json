@@ -3,8 +3,8 @@
   "files": 1,
   "parse_errors": 0,
   "lines": 5687,
-  "seconds": 4.05,
-  "peak_rss_mb": 81.2,
+  "seconds": 5.51,
+  "peak_rss_mb": 81.0,
   "knitcode_raw": {
     "tp": 448,
     "fp": 49,
@@ -14,12 +14,12 @@
     "recall": 0.7249
   },
   "knitcode": {
-    "tp": 491,
+    "tp": 524,
     "fp": 43,
-    "fn": 127,
+    "fn": 94,
     "edges": 618,
-    "precision": 0.9195,
-    "recall": 0.7945
+    "precision": 0.9242,
+    "recall": 0.8479
   },
   "false_positives": [
     [
@@ -196,138 +196,6 @@
     ]
   ],
   "false_negatives": [
-    [
-      "bpytop",
-      "bpytop.Banner"
-    ],
-    [
-      "bpytop",
-      "bpytop.Box"
-    ],
-    [
-      "bpytop",
-      "bpytop.Collector"
-    ],
-    [
-      "bpytop",
-      "bpytop.Color"
-    ],
-    [
-      "bpytop",
-      "bpytop.Colors"
-    ],
-    [
-      "bpytop",
-      "bpytop.Config"
-    ],
-    [
-      "bpytop",
-      "bpytop.CpuBox"
-    ],
-    [
-      "bpytop",
-      "bpytop.CpuCollector"
-    ],
-    [
-      "bpytop",
-      "bpytop.Draw"
-    ],
-    [
-      "bpytop",
-      "bpytop.Fx"
-    ],
-    [
-      "bpytop",
-      "bpytop.Graph"
-    ],
-    [
-      "bpytop",
-      "bpytop.Graphs"
-    ],
-    [
-      "bpytop",
-      "bpytop.Init"
-    ],
-    [
-      "bpytop",
-      "bpytop.Key"
-    ],
-    [
-      "bpytop",
-      "bpytop.MemBox"
-    ],
-    [
-      "bpytop",
-      "bpytop.MemCollector"
-    ],
-    [
-      "bpytop",
-      "bpytop.Menu"
-    ],
-    [
-      "bpytop",
-      "bpytop.Meter"
-    ],
-    [
-      "bpytop",
-      "bpytop.Meters"
-    ],
-    [
-      "bpytop",
-      "bpytop.Mv"
-    ],
-    [
-      "bpytop",
-      "bpytop.NetBox"
-    ],
-    [
-      "bpytop",
-      "bpytop.NetCollector"
-    ],
-    [
-      "bpytop",
-      "bpytop.Nonblocking"
-    ],
-    [
-      "bpytop",
-      "bpytop.ProcBox"
-    ],
-    [
-      "bpytop",
-      "bpytop.ProcCollector"
-    ],
-    [
-      "bpytop",
-      "bpytop.Raw"
-    ],
-    [
-      "bpytop",
-      "bpytop.SubBox"
-    ],
-    [
-      "bpytop",
-      "bpytop.Symbol"
-    ],
-    [
-      "bpytop",
-      "bpytop.Term"
-    ],
-    [
-      "bpytop",
-      "bpytop.Theme"
-    ],
-    [
-      "bpytop",
-      "bpytop.TimeIt"
-    ],
-    [
-      "bpytop",
-      "bpytop.Timer"
-    ],
-    [
-      "bpytop",
-      "bpytop.UpdateChecker"
-    ],
     [
       "bpytop.Banner",
       "bpytop.Mv.right"

@@ -3,8 +3,8 @@
   "files": 6,
   "parse_errors": 0,
   "lines": 2104,
-  "seconds": 0.38,
-  "peak_rss_mb": 30.0,
+  "seconds": 0.49,
+  "peak_rss_mb": 29.8,
   "knitcode_raw": {
     "tp": 158,
     "fp": 16,
@@ -14,12 +14,12 @@
     "recall": 0.4953
   },
   "knitcode": {
-    "tp": 169,
+    "tp": 180,
     "fp": 16,
-    "fn": 150,
+    "fn": 139,
     "edges": 319,
-    "precision": 0.9135,
-    "recall": 0.5298
+    "precision": 0.9184,
+    "recall": 0.5643
   },
   "false_positives": [
     [
@@ -97,48 +97,8 @@
       "<builtin>.globals"
     ],
     [
-      "furl.compat",
-      "furl.compat.UnicodeMixin"
-    ],
-    [
       "furl.compat.UnicodeMixin.__str__",
       "furl.furl.furl.__unicode__"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.Fragment"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.FragmentCompositionInterface"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.FragmentPathCompositionInterface"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.Path"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.PathCompositionInterface"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.Query"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.QueryCompositionInterface"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.URLPathCompositionInterface"
-    ],
-    [
-      "furl.furl",
-      "furl.furl.furl"
     ],
     [
       "furl.furl",
@@ -683,10 +643,6 @@
     [
       "furl.furl.urlsplit",
       "<str>.startswith"
-    ],
-    [
-      "furl.omdict1D",
-      "furl.omdict1D.omdict1D"
     ]
   ],
   "PyCG E.A.(1)": {

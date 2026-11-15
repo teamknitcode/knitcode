@@ -3,8 +3,8 @@
   "files": 21,
   "parse_errors": 0,
   "lines": 3803,
-  "seconds": 0.59,
-  "peak_rss_mb": 43.8,
+  "seconds": 0.83,
+  "peak_rss_mb": 43.5,
   "knitcode_raw": {
     "tp": 307,
     "fp": 39,
@@ -14,12 +14,12 @@
     "recall": 0.5016
   },
   "knitcode": {
-    "tp": 365,
+    "tp": 406,
     "fp": 39,
-    "fn": 247,
+    "fn": 206,
     "edges": 612,
-    "precision": 0.9035,
-    "recall": 0.5964
+    "precision": 0.9124,
+    "recall": 0.6634
   },
   "false_positives": [
     [
@@ -180,10 +180,6 @@
     ]
   ],
   "false_negatives": [
-    [
-      "sqlparse.engine.filter_stack",
-      "sqlparse.engine.filter_stack.FilterStack"
-    ],
     [
       "sqlparse.engine.filter_stack.FilterStack.run",
       "sqlparse.engine.statement_splitter.StatementSplitter.process"
@@ -397,10 +393,6 @@
       "sqlparse.sql._groupable_tokens"
     ],
     [
-      "sqlparse.engine.statement_splitter",
-      "sqlparse.engine.statement_splitter.StatementSplitter"
-    ],
-    [
       "sqlparse.engine.statement_splitter.StatementSplitter.process",
       "<list>.append"
     ],
@@ -419,14 +411,6 @@
     [
       "sqlparse.engine.statement_splitter.StatementSplitter.process",
       "sqlparse.tokens._CaseFilter.process"
-    ],
-    [
-      "sqlparse.exceptions",
-      "sqlparse.exceptions.SQLParseError"
-    ],
-    [
-      "sqlparse.filters.aligned_indent",
-      "sqlparse.filters.aligned_indent.AlignedIndentFilter"
     ],
     [
       "sqlparse.filters.aligned_indent.AlignedIndentFilter._next_token",
@@ -517,22 +501,6 @@
       "sqlparse.sql.TokenList.insert_before"
     ],
     [
-      "sqlparse.filters.others",
-      "sqlparse.filters.others.SerializerUnicode"
-    ],
-    [
-      "sqlparse.filters.others",
-      "sqlparse.filters.others.SpacesAroundOperatorsFilter"
-    ],
-    [
-      "sqlparse.filters.others",
-      "sqlparse.filters.others.StripCommentsFilter"
-    ],
-    [
-      "sqlparse.filters.others",
-      "sqlparse.filters.others.StripWhitespaceFilter"
-    ],
-    [
       "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
       "sqlparse.sql.TokenList.insert_after"
     ],
@@ -577,24 +545,8 @@
       "sqlparse.filters.others._stripws_default"
     ],
     [
-      "sqlparse.filters.output",
-      "sqlparse.filters.output.OutputFilter"
-    ],
-    [
-      "sqlparse.filters.output",
-      "sqlparse.filters.output.OutputPHPFilter"
-    ],
-    [
-      "sqlparse.filters.output",
-      "sqlparse.filters.output.OutputPythonFilter"
-    ],
-    [
       "sqlparse.filters.output.OutputFilter.process",
       "sqlparse.sql.TokenList.__str__"
-    ],
-    [
-      "sqlparse.filters.reindent",
-      "sqlparse.filters.reindent.ReindentFilter"
     ],
     [
       "sqlparse.filters.reindent.ReindentFilter._flatten_up_to_token",
@@ -797,26 +749,6 @@
       "sqlparse.sql.TokenList.__str__"
     ],
     [
-      "sqlparse.filters.right_margin",
-      "sqlparse.filters.right_margin.RightMarginFilter"
-    ],
-    [
-      "sqlparse.filters.tokens",
-      "sqlparse.filters.tokens.IdentifierCaseFilter"
-    ],
-    [
-      "sqlparse.filters.tokens",
-      "sqlparse.filters.tokens.KeywordCaseFilter"
-    ],
-    [
-      "sqlparse.filters.tokens",
-      "sqlparse.filters.tokens.TruncateStringFilter"
-    ],
-    [
-      "sqlparse.filters.tokens",
-      "sqlparse.filters.tokens._CaseFilter"
-    ],
-    [
       "sqlparse.format",
       "<list>.append"
     ],
@@ -845,10 +777,6 @@
       "<map>.get"
     ],
     [
-      "sqlparse.lexer",
-      "sqlparse.lexer.Lexer"
-    ],
-    [
       "sqlparse.lexer.get_tokens",
       "sqlparse.keywords.is_keyword"
     ],
@@ -859,94 +787,6 @@
     [
       "sqlparse.parse",
       "sqlparse.engine.filter_stack.FilterStack.run"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Assignment"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Begin"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Case"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Command"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Comment"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Comparison"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.For"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Function"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Having"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Identifier"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.IdentifierList"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.If"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.NameAliasMixin"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Operation"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Parenthesis"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.SquareBrackets"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Statement"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Token"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.TokenList"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.TypedLiteral"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Values"
-    ],
-    [
-      "sqlparse.sql",
-      "sqlparse.sql.Where"
     ],
     [
       "sqlparse.sql.<lambda>",
@@ -1099,10 +939,6 @@
     [
       "sqlparse.tokens",
       "sqlparse.tokens._CaseFilter"
-    ],
-    [
-      "sqlparse.tokens",
-      "sqlparse.tokens._TokenType"
     ],
     [
       "sqlparse.tokens",

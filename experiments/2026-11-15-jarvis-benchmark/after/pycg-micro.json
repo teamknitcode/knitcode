@@ -1,10 +1,10 @@
 {
-  "engine_module": "/home/user/teamknitcode/knitcode/graph_builder.py",
-  "adapter_module": "/home/user/teamknitcode/knitcode/pycg_adapter.py",
+  "engine_module": "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/proto/graph_builder.py",
+  "adapter_module": "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/proto/pycg_adapter.py",
   "include_implicit": true,
   "cases": 112,
   "complete": 111,
-  "sound": 78,
+  "sound": 82,
   "categories": {
     "assignments": {
       "cases": 4,
@@ -30,9 +30,9 @@
     "decorators": {
       "cases": 7,
       "complete": 7,
-      "sound": 1,
+      "sound": 5,
       "strict_no_extra_edges": 7,
-      "all_truth_edges_found": 1
+      "all_truth_edges_found": 5
     },
     "dicts": {
       "cases": 12,
@@ -138,7 +138,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.015987162999977045
+      "seconds": 0.01782020000001694
     },
     {
       "case": "assignments/recursive_tuple",
@@ -171,7 +171,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003559478000056515
+      "seconds": 0.005018569999975853
     },
     {
       "case": "assignments/starred",
@@ -208,7 +208,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026763910000227042
+      "seconds": 0.003852260000002161
     },
     {
       "case": "assignments/tuple",
@@ -228,7 +228,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002670678999947995
+      "seconds": 0.003544868000005863
     },
     {
       "case": "builtins/functions",
@@ -248,7 +248,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0014259690000244518
+      "seconds": 0.002468898999978819
     },
     {
       "case": "builtins/map",
@@ -285,7 +285,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030755790000966954
+      "seconds": 0.004752300000006926
     },
     {
       "case": "builtins/types",
@@ -305,7 +305,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019399799999746392
+      "seconds": 0.0029211140000029445
     },
     {
       "case": "classes/assigned_call",
@@ -325,7 +325,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020890119999421586
+      "seconds": 0.0031974579999882735
     },
     {
       "case": "classes/assigned_self_call",
@@ -345,7 +345,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.002390624000099706
+      "seconds": 0.0034104249999984404
     },
     {
       "case": "classes/base_class_attr",
@@ -365,7 +365,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.002543033999927502
+      "seconds": 0.003724774000005482
     },
     {
       "case": "classes/base_class_calls_child",
@@ -385,7 +385,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004119142000035936
+      "seconds": 0.0062511380000103145
     },
     {
       "case": "classes/call",
@@ -405,7 +405,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.001942530000064835
+      "seconds": 0.0027642519999915294
     },
     {
       "case": "classes/direct_call",
@@ -425,7 +425,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020232130000295
+      "seconds": 0.0026632699999993292
     },
     {
       "case": "classes/imported_attr_access",
@@ -445,7 +445,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0016797449999330638
+      "seconds": 0.002603308000004745
     },
     {
       "case": "classes/imported_call",
@@ -465,7 +465,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021939299999758077
+      "seconds": 0.003269599000020662
     },
     {
       "case": "classes/imported_call_without_init",
@@ -485,7 +485,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020905320000110805
+      "seconds": 0.0029542229999890424
     },
     {
       "case": "classes/imported_nested_attr_access",
@@ -505,7 +505,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0017514180000262058
+      "seconds": 0.0031201500000008764
     },
     {
       "case": "classes/instance",
@@ -525,7 +525,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019560650000585156
+      "seconds": 0.002953936000011481
     },
     {
       "case": "classes/nested_call",
@@ -545,7 +545,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025838029999931678
+      "seconds": 0.0037488759999746435
     },
     {
       "case": "classes/nested_class_calls",
@@ -565,7 +565,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0038837700000158293
+      "seconds": 0.005613708999987921
     },
     {
       "case": "classes/parameter_call",
@@ -585,7 +585,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.002898209000022689
+      "seconds": 0.0038543880000077024
     },
     {
       "case": "classes/return_call",
@@ -605,7 +605,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.002307967999968241
+      "seconds": 0.00336445700000354
     },
     {
       "case": "classes/return_call_direct",
@@ -625,7 +625,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.002227878999974564
+      "seconds": 0.02112566499999957
     },
     {
       "case": "classes/self_assign_func",
@@ -645,7 +645,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0032808610000074623
+      "seconds": 0.006912448000008453
     },
     {
       "case": "classes/self_assignment",
@@ -665,7 +665,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0028090440000596573
+      "seconds": 0.0055657260000145925
     },
     {
       "case": "classes/self_call",
@@ -685,7 +685,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002746397999999317
+      "seconds": 0.0056840459999989434
     },
     {
       "case": "classes/static_method_call",
@@ -705,7 +705,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0016904169999634178
+      "seconds": 0.0035971709999955692
     },
     {
       "case": "classes/super_class_return",
@@ -725,7 +725,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025999189999765804
+      "seconds": 0.006674866999986762
     },
     {
       "case": "classes/tuple_assignment",
@@ -758,57 +758,47 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0033197460001019863
+      "seconds": 0.007712951000002022
     },
     {
       "case": "decorators/assigned",
       "category": "decorators",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024960569999166182
+      "seconds": 0.004318990000001577
     },
     {
       "case": "decorators/call",
       "category": "decorators",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0017966980000210242
+      "seconds": 0.0038422809999758556
     },
     {
       "case": "decorators/nested",
@@ -828,7 +818,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00220861299999342
+      "seconds": 0.004947370999985878
     },
     {
       "case": "decorators/nested_decorators",
@@ -837,9 +827,9 @@
       "sound": false,
       "strict_no_extra_edges": true,
       "all_truth_edges_found": false,
-      "tp": 2,
+      "tp": 4,
       "fp": 0,
-      "fn": 4,
+      "fn": 2,
       "false_positives": [],
       "false_negatives": [
         [
@@ -849,14 +839,6 @@
         [
           "main",
           "main.func"
-        ],
-        [
-          "main.dec1.inner",
-          "main.dec2.inner"
-        ],
-        [
-          "main.dec2.inner",
-          "main.func"
         ]
       ],
       "missing_nodes": [],
@@ -865,61 +847,47 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00252245900003345
+      "seconds": 0.006199472000020023
     },
     {
       "case": "decorators/param_call",
       "category": "decorators",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 2,
+      "all_truth_edges_found": true,
+      "tp": 3,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019498450000128287
+      "seconds": 0.0041493489999879785
     },
     {
       "case": "decorators/return",
       "category": "decorators",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 3,
       "fp": 0,
-      "fn": 2,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func1.dec"
-        ],
-        [
-          "main",
-          "main.func2"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019267299999228271
+      "seconds": 0.004359735999997838
     },
     {
       "case": "decorators/return_different_func",
@@ -928,15 +896,11 @@
       "sound": false,
       "strict_no_extra_edges": true,
       "all_truth_edges_found": false,
-      "tp": 2,
+      "tp": 3,
       "fp": 0,
-      "fn": 2,
+      "fn": 1,
       "false_positives": [],
       "false_negatives": [
-        [
-          "main.dec.inner",
-          "main.func"
-        ],
         [
           "main.func2",
           "main.dec.inner"
@@ -948,7 +912,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026782909999383264
+      "seconds": 0.005549309000002722
     },
     {
       "case": "dicts/add_key",
@@ -973,7 +937,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0022466020000138087
+      "seconds": 0.003642336000012847
     },
     {
       "case": "dicts/assign",
@@ -1002,7 +966,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001931710999997449
+      "seconds": 0.003848358999988477
     },
     {
       "case": "dicts/call",
@@ -1022,7 +986,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019199900000330672
+      "seconds": 0.004127267000001211
     },
     {
       "case": "dicts/ext_key",
@@ -1047,7 +1011,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002058866000083981
+      "seconds": 0.004199499000009155
     },
     {
       "case": "dicts/nested",
@@ -1076,7 +1040,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019362190000720148
+      "seconds": 0.002835338000011234
     },
     {
       "case": "dicts/new_key_param",
@@ -1101,7 +1065,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002158822000069449
+      "seconds": 0.0030034119999982067
     },
     {
       "case": "dicts/param",
@@ -1121,7 +1085,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001941495999972176
+      "seconds": 0.0026792209999939587
     },
     {
       "case": "dicts/param_key",
@@ -1150,7 +1114,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024085999999670094
+      "seconds": 0.0037301770000226497
     },
     {
       "case": "dicts/return",
@@ -1170,7 +1134,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026062010000487135
+      "seconds": 0.0026948590000017703
     },
     {
       "case": "dicts/return_assign",
@@ -1190,7 +1154,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001995358000044689
+      "seconds": 0.002597494000013967
     },
     {
       "case": "dicts/type_coercion",
@@ -1210,7 +1174,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0017684670000335245
+      "seconds": 0.0026469050000059724
     },
     {
       "case": "dicts/update",
@@ -1244,7 +1208,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002005402999998296
+      "seconds": 0.0029163619999792445
     },
     {
       "case": "direct_calls/assigned_call",
@@ -1269,7 +1233,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020722909999904005
+      "seconds": 0.0027712210000174764
     },
     {
       "case": "direct_calls/imported_return_call",
@@ -1294,7 +1258,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019655680000596476
+      "seconds": 0.0029241909999768723
     },
     {
       "case": "direct_calls/return_call",
@@ -1323,7 +1287,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0022745369999483955
+      "seconds": 0.0032475479999902745
     },
     {
       "case": "direct_calls/with_parameters",
@@ -1348,7 +1312,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021756910000476637
+      "seconds": 0.0033774359999938497
     },
     {
       "case": "exceptions/raise",
@@ -1368,7 +1332,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021696540001130415
+      "seconds": 0.0023034380000126475
     },
     {
       "case": "exceptions/raise_assigned",
@@ -1388,7 +1352,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0015720420000207014
+      "seconds": 0.0023739779999800703
     },
     {
       "case": "exceptions/raise_attr",
@@ -1408,7 +1372,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0017199579999669368
+      "seconds": 0.0023940250000009655
     },
     {
       "case": "functions/assigned_call",
@@ -1428,7 +1392,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0014732160000221484
+      "seconds": 0.0021997089999956643
     },
     {
       "case": "functions/assigned_call_lit_param",
@@ -1448,7 +1412,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0016038850000086313
+      "seconds": 0.002374059000004536
     },
     {
       "case": "functions/call",
@@ -1468,7 +1432,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0013713280000047234
+      "seconds": 0.00207237499998314
     },
     {
       "case": "functions/imported_call",
@@ -1488,7 +1452,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001627668999958587
+      "seconds": 0.0025239020000071832
     },
     {
       "case": "generators/iter_param",
@@ -1508,7 +1472,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003591679999999542
+      "seconds": 0.005134529000002885
     },
     {
       "case": "generators/iter_return",
@@ -1533,7 +1497,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0040078960000755615
+      "seconds": 0.004609611000006453
     },
     {
       "case": "generators/iterable",
@@ -1553,7 +1517,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0032194159999789917
+      "seconds": 0.004471096000003172
     },
     {
       "case": "generators/iterable_assigned",
@@ -1573,7 +1537,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003212759999996706
+      "seconds": 0.0042071530000100665
     },
     {
       "case": "generators/no_iter",
@@ -1593,7 +1557,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029924309999387333
+      "seconds": 0.004012843000026578
     },
     {
       "case": "generators/yield",
@@ -1618,7 +1582,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0022713880000537756
+      "seconds": 0.003617222999992009
     },
     {
       "case": "imports/chained_import",
@@ -1638,7 +1602,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021290130000579666
+      "seconds": 0.003254335999997693
     },
     {
       "case": "imports/import_all",
@@ -1667,7 +1631,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002356193000082385
+      "seconds": 0.0028034509999770307
     },
     {
       "case": "imports/import_as",
@@ -1687,7 +1651,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0015101620000450566
+      "seconds": 0.002292398999998113
     },
     {
       "case": "imports/import_from",
@@ -1707,7 +1671,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0015199929999880624
+      "seconds": 0.0025415510000073027
     },
     {
       "case": "imports/init_func_import",
@@ -1727,7 +1691,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00209745600000133
+      "seconds": 0.003266849999988608
     },
     {
       "case": "imports/init_import",
@@ -1752,7 +1716,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024407889999338295
+      "seconds": 0.003664772000007588
     },
     {
       "case": "imports/parent_import",
@@ -1772,7 +1736,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020811349999121376
+      "seconds": 0.0035798840000040855
     },
     {
       "case": "imports/relative_import",
@@ -1792,7 +1756,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0015883880000728823
+      "seconds": 0.0029244379999795456
     },
     {
       "case": "imports/relative_import_with_name",
@@ -1812,7 +1776,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00235161800003425
+      "seconds": 0.0036608970000031604
     },
     {
       "case": "imports/simple_import",
@@ -1832,7 +1796,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0014793340000096578
+      "seconds": 0.0032623599999794806
     },
     {
       "case": "imports/submodule_import",
@@ -1852,7 +1816,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021166740000353457
+      "seconds": 0.003715895999988561
     },
     {
       "case": "imports/submodule_import_all",
@@ -1881,7 +1845,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020048290000431734
+      "seconds": 0.0030490450000115743
     },
     {
       "case": "imports/submodule_import_as",
@@ -1901,7 +1865,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001689120000037292
+      "seconds": 0.002781986999991659
     },
     {
       "case": "imports/submodule_import_from",
@@ -1921,7 +1885,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001989985000022898
+      "seconds": 0.0030833780000136812
     },
     {
       "case": "kwargs/assigned_call",
@@ -1941,7 +1905,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002002581000056125
+      "seconds": 0.002876107999981059
     },
     {
       "case": "kwargs/call",
@@ -1961,7 +1925,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024966739999854326
+      "seconds": 0.004683013000004621
     },
     {
       "case": "kwargs/chained_call",
@@ -1986,7 +1950,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002269307000005938
+      "seconds": 0.0031555389999766703
     },
     {
       "case": "lambdas/call",
@@ -2006,7 +1970,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0014102970000067216
+      "seconds": 0.002137180000005401
     },
     {
       "case": "lambdas/calls_parameter",
@@ -2035,7 +1999,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003430076999961784
+      "seconds": 0.003072658999997202
     },
     {
       "case": "lambdas/chained_calls",
@@ -2055,7 +2019,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029995229999713047
+      "seconds": 0.004339909999998781
     },
     {
       "case": "lambdas/parameter_call",
@@ -2075,7 +2039,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0018909550000216768
+      "seconds": 0.002723820999989357
     },
     {
       "case": "lambdas/return_call",
@@ -2095,7 +2059,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0016409920000342026
+      "seconds": 0.0024650650000239693
     },
     {
       "case": "lists/comprehension_if",
@@ -2115,7 +2079,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00167127800000344
+      "seconds": 0.0023701519999974607
     },
     {
       "case": "lists/comprehension_val",
@@ -2135,7 +2099,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001742111999988083
+      "seconds": 0.0030176699999913126
     },
     {
       "case": "lists/ext_index",
@@ -2160,7 +2124,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002101390999996511
+      "seconds": 0.002995895999987397
     },
     {
       "case": "lists/nested",
@@ -2180,7 +2144,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001790567999933046
+      "seconds": 0.0025000900000122783
     },
     {
       "case": "lists/nested_comprehension",
@@ -2200,7 +2164,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002474099999972168
+      "seconds": 0.002818615999984786
     },
     {
       "case": "lists/param_index",
@@ -2225,7 +2189,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020206319999260813
+      "seconds": 0.002871754000011606
     },
     {
       "case": "lists/simple",
@@ -2250,7 +2214,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0027277949999415796
+      "seconds": 0.003763765000002195
     },
     {
       "case": "lists/slice",
@@ -2275,7 +2239,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020612009999467773
+      "seconds": 0.0032034900000041944
     },
     {
       "case": "mro/basic",
@@ -2295,7 +2259,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019926950000126453
+      "seconds": 0.003413754999996854
     },
     {
       "case": "mro/basic_init",
@@ -2315,7 +2279,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002149294999981066
+      "seconds": 0.0031174709999959305
     },
     {
       "case": "mro/parents_same_superclass",
@@ -2335,7 +2299,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003062727000042287
+      "seconds": 0.0038943429999847012
     },
     {
       "case": "mro/self_assignment",
@@ -2360,7 +2324,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.003317601999924591
+      "seconds": 0.004553599000018949
     },
     {
       "case": "mro/super_call",
@@ -2380,7 +2344,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029912839999042262
+      "seconds": 0.004032822999988639
     },
     {
       "case": "mro/two_parents",
@@ -2400,7 +2364,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024744210001017564
+      "seconds": 0.003898364000008314
     },
     {
       "case": "mro/two_parents_method_defined",
@@ -2420,7 +2384,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002562162999993234
+      "seconds": 0.0036501259999965896
     },
     {
       "case": "parameters/assigned_call",
@@ -2440,7 +2404,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001825962999987496
+      "seconds": 0.0027692930000000615
     },
     {
       "case": "parameters/call",
@@ -2460,7 +2424,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0017547259999446396
+      "seconds": 0.0025891969999918274
     },
     {
       "case": "parameters/imported_assigned_call",
@@ -2480,7 +2444,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0027158740000459147
+      "seconds": 0.003293984999999111
     },
     {
       "case": "parameters/imported_call",
@@ -2500,7 +2464,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0019785200000796976
+      "seconds": 0.0030601539999963734
     },
     {
       "case": "parameters/nested_call",
@@ -2520,7 +2484,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002234909999970114
+      "seconds": 0.003256035999982032
     },
     {
       "case": "parameters/param_call",
@@ -2540,7 +2504,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0020708360000298853
+      "seconds": 0.003447020999999495
     },
     {
       "case": "returns/call",
@@ -2560,7 +2524,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0018308549999801471
+      "seconds": 0.002613722999996071
     },
     {
       "case": "returns/imported_call",
@@ -2580,7 +2544,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.001940215999979955
+      "seconds": 0.0029961479999940366
     },
     {
       "case": "returns/nested_import_call",
@@ -2600,7 +2564,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021852279999166058
+      "seconds": 0.0033734499999980017
     },
     {
       "case": "returns/return_complex",
@@ -2625,7 +2589,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0033484069999758503
+      "seconds": 0.0038760280000076364
     }
   ]
 }

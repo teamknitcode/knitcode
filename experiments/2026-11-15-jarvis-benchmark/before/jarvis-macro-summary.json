@@ -5,8 +5,8 @@
       "files": 1,
       "parse_errors": 0,
       "lines": 5687,
-      "seconds": 4.05,
-      "peak_rss_mb": 81.2,
+      "seconds": 5.51,
+      "peak_rss_mb": 81.0,
       "knitcode_raw": {
         "tp": 448,
         "fp": 49,
@@ -16,12 +16,12 @@
         "recall": 0.7249
       },
       "knitcode": {
-        "tp": 491,
+        "tp": 524,
         "fp": 43,
-        "fn": 127,
+        "fn": 94,
         "edges": 618,
-        "precision": 0.9195,
-        "recall": 0.7945
+        "precision": 0.9242,
+        "recall": 0.8479
       },
       "false_positives": [
         [
@@ -198,138 +198,6 @@
         ]
       ],
       "false_negatives": [
-        [
-          "bpytop",
-          "bpytop.Banner"
-        ],
-        [
-          "bpytop",
-          "bpytop.Box"
-        ],
-        [
-          "bpytop",
-          "bpytop.Collector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Color"
-        ],
-        [
-          "bpytop",
-          "bpytop.Colors"
-        ],
-        [
-          "bpytop",
-          "bpytop.Config"
-        ],
-        [
-          "bpytop",
-          "bpytop.CpuBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.CpuCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Draw"
-        ],
-        [
-          "bpytop",
-          "bpytop.Fx"
-        ],
-        [
-          "bpytop",
-          "bpytop.Graph"
-        ],
-        [
-          "bpytop",
-          "bpytop.Graphs"
-        ],
-        [
-          "bpytop",
-          "bpytop.Init"
-        ],
-        [
-          "bpytop",
-          "bpytop.Key"
-        ],
-        [
-          "bpytop",
-          "bpytop.MemBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.MemCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Menu"
-        ],
-        [
-          "bpytop",
-          "bpytop.Meter"
-        ],
-        [
-          "bpytop",
-          "bpytop.Meters"
-        ],
-        [
-          "bpytop",
-          "bpytop.Mv"
-        ],
-        [
-          "bpytop",
-          "bpytop.NetBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.NetCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Nonblocking"
-        ],
-        [
-          "bpytop",
-          "bpytop.ProcBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.ProcCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Raw"
-        ],
-        [
-          "bpytop",
-          "bpytop.SubBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.Symbol"
-        ],
-        [
-          "bpytop",
-          "bpytop.Term"
-        ],
-        [
-          "bpytop",
-          "bpytop.Theme"
-        ],
-        [
-          "bpytop",
-          "bpytop.TimeIt"
-        ],
-        [
-          "bpytop",
-          "bpytop.Timer"
-        ],
-        [
-          "bpytop",
-          "bpytop.UpdateChecker"
-        ],
         [
           "bpytop.Banner",
           "bpytop.Mv.right"
@@ -737,8 +605,8 @@
       "files": 21,
       "parse_errors": 0,
       "lines": 3803,
-      "seconds": 0.59,
-      "peak_rss_mb": 43.8,
+      "seconds": 0.83,
+      "peak_rss_mb": 43.5,
       "knitcode_raw": {
         "tp": 307,
         "fp": 39,
@@ -748,12 +616,12 @@
         "recall": 0.5016
       },
       "knitcode": {
-        "tp": 365,
+        "tp": 406,
         "fp": 39,
-        "fn": 247,
+        "fn": 206,
         "edges": 612,
-        "precision": 0.9035,
-        "recall": 0.5964
+        "precision": 0.9124,
+        "recall": 0.6634
       },
       "false_positives": [
         [
@@ -914,10 +782,6 @@
         ]
       ],
       "false_negatives": [
-        [
-          "sqlparse.engine.filter_stack",
-          "sqlparse.engine.filter_stack.FilterStack"
-        ],
         [
           "sqlparse.engine.filter_stack.FilterStack.run",
           "sqlparse.engine.statement_splitter.StatementSplitter.process"
@@ -1131,10 +995,6 @@
           "sqlparse.sql._groupable_tokens"
         ],
         [
-          "sqlparse.engine.statement_splitter",
-          "sqlparse.engine.statement_splitter.StatementSplitter"
-        ],
-        [
           "sqlparse.engine.statement_splitter.StatementSplitter.process",
           "<list>.append"
         ],
@@ -1153,14 +1013,6 @@
         [
           "sqlparse.engine.statement_splitter.StatementSplitter.process",
           "sqlparse.tokens._CaseFilter.process"
-        ],
-        [
-          "sqlparse.exceptions",
-          "sqlparse.exceptions.SQLParseError"
-        ],
-        [
-          "sqlparse.filters.aligned_indent",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter"
         ],
         [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._next_token",
@@ -1251,22 +1103,6 @@
           "sqlparse.sql.TokenList.insert_before"
         ],
         [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.SerializerUnicode"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.SpacesAroundOperatorsFilter"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.StripCommentsFilter"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.StripWhitespaceFilter"
-        ],
-        [
           "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
           "sqlparse.sql.TokenList.insert_after"
         ],
@@ -1311,24 +1147,8 @@
           "sqlparse.filters.others._stripws_default"
         ],
         [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputFilter"
-        ],
-        [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputPHPFilter"
-        ],
-        [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputPythonFilter"
-        ],
-        [
           "sqlparse.filters.output.OutputFilter.process",
           "sqlparse.sql.TokenList.__str__"
-        ],
-        [
-          "sqlparse.filters.reindent",
-          "sqlparse.filters.reindent.ReindentFilter"
         ],
         [
           "sqlparse.filters.reindent.ReindentFilter._flatten_up_to_token",
@@ -1531,26 +1351,6 @@
           "sqlparse.sql.TokenList.__str__"
         ],
         [
-          "sqlparse.filters.right_margin",
-          "sqlparse.filters.right_margin.RightMarginFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.IdentifierCaseFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.KeywordCaseFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.TruncateStringFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens._CaseFilter"
-        ],
-        [
           "sqlparse.format",
           "<list>.append"
         ],
@@ -1579,10 +1379,6 @@
           "<map>.get"
         ],
         [
-          "sqlparse.lexer",
-          "sqlparse.lexer.Lexer"
-        ],
-        [
           "sqlparse.lexer.get_tokens",
           "sqlparse.keywords.is_keyword"
         ],
@@ -1593,94 +1389,6 @@
         [
           "sqlparse.parse",
           "sqlparse.engine.filter_stack.FilterStack.run"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Assignment"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Begin"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Case"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Command"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Comment"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Comparison"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.For"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Function"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Having"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Identifier"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.IdentifierList"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.If"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.NameAliasMixin"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Operation"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Parenthesis"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.SquareBrackets"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Statement"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Token"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.TokenList"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.TypedLiteral"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Values"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Where"
         ],
         [
           "sqlparse.sql.<lambda>",
@@ -1836,10 +1544,6 @@
         ],
         [
           "sqlparse.tokens",
-          "sqlparse.tokens._TokenType"
-        ],
-        [
-          "sqlparse.tokens",
           "sqlparse.tokens._TokenType.__getattr__"
         ],
         [
@@ -1933,8 +1637,8 @@
       "files": 5,
       "parse_errors": 0,
       "lines": 587,
-      "seconds": 0.11,
-      "peak_rss_mb": 23.9,
+      "seconds": 0.15,
+      "peak_rss_mb": 23.7,
       "knitcode_raw": {
         "tp": 60,
         "fp": 5,
@@ -1944,12 +1648,12 @@
         "recall": 0.7692
       },
       "knitcode": {
-        "tp": 69,
+        "tp": 75,
         "fp": 5,
-        "fn": 9,
+        "fn": 3,
         "edges": 78,
-        "precision": 0.9324,
-        "recall": 0.8846
+        "precision": 0.9375,
+        "recall": 0.9615
       },
       "false_positives": [
         [
@@ -1975,32 +1679,8 @@
       ],
       "false_negatives": [
         [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.Segmentation"
-        ],
-        [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.SentenceSegmentation"
-        ],
-        [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.WordSegmentation"
-        ],
-        [
-          "textrank4zh.TextRank4Keyword",
-          "textrank4zh.TextRank4Keyword.TextRank4Keyword"
-        ],
-        [
           "textrank4zh.TextRank4Keyword.TextRank4Keyword.get_keyphrases",
           "<str>.count"
-        ],
-        [
-          "textrank4zh.TextRank4Sentence",
-          "textrank4zh.TextRank4Sentence.TextRank4Sentence"
-        ],
-        [
-          "textrank4zh.util",
-          "textrank4zh.util.AttrDict"
         ],
         [
           "textrank4zh.util.sort_sentences",
@@ -2041,8 +1721,8 @@
       "files": 6,
       "parse_errors": 0,
       "lines": 2104,
-      "seconds": 0.38,
-      "peak_rss_mb": 30.0,
+      "seconds": 0.49,
+      "peak_rss_mb": 29.8,
       "knitcode_raw": {
         "tp": 158,
         "fp": 16,
@@ -2052,12 +1732,12 @@
         "recall": 0.4953
       },
       "knitcode": {
-        "tp": 169,
+        "tp": 180,
         "fp": 16,
-        "fn": 150,
+        "fn": 139,
         "edges": 319,
-        "precision": 0.9135,
-        "recall": 0.5298
+        "precision": 0.9184,
+        "recall": 0.5643
       },
       "false_positives": [
         [
@@ -2135,48 +1815,8 @@
           "<builtin>.globals"
         ],
         [
-          "furl.compat",
-          "furl.compat.UnicodeMixin"
-        ],
-        [
           "furl.compat.UnicodeMixin.__str__",
           "furl.furl.furl.__unicode__"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Fragment"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.FragmentCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.FragmentPathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Path"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.PathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Query"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.QueryCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.URLPathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.furl"
         ],
         [
           "furl.furl",
@@ -2721,10 +2361,6 @@
         [
           "furl.furl.urlsplit",
           "<str>.startswith"
-        ],
-        [
-          "furl.omdict1D",
-          "furl.omdict1D.omdict1D"
         ]
       ],
       "PyCG E.A.(1)": {
@@ -2757,8 +2393,8 @@
       "files": 5,
       "parse_errors": 0,
       "lines": 1112,
-      "seconds": 0.18,
-      "peak_rss_mb": 27.9,
+      "seconds": 0.23,
+      "peak_rss_mb": 27.5,
       "knitcode_raw": {
         "tp": 44,
         "fp": 5,
@@ -2768,12 +2404,12 @@
         "recall": 0.7213
       },
       "knitcode": {
-        "tp": 48,
+        "tp": 54,
         "fp": 5,
-        "fn": 13,
+        "fn": 7,
         "edges": 61,
-        "precision": 0.9057,
-        "recall": 0.7869
+        "precision": 0.9153,
+        "recall": 0.8852
       },
       "false_positives": [
         [
@@ -2800,23 +2436,11 @@
       "false_negatives": [
         [
           "rich_cli.__main__",
-          "rich_cli.__main__.ForceWidth"
-        ],
-        [
-          "rich_cli.__main__",
           "rich_cli.__main__.ForceWidth.__init__"
         ],
         [
           "rich_cli.__main__",
-          "rich_cli.__main__.RichCommand"
-        ],
-        [
-          "rich_cli.__main__",
           "rich_cli.__main__.RichCommand.__init__"
-        ],
-        [
-          "rich_cli.__main__.RichCommand.format_help",
-          "rich_cli.__main__.RichCommand.format_help.OptionHighlighter"
         ],
         [
           "rich_cli.__main__.main",
@@ -2837,18 +2461,6 @@
         [
           "rich_cli.__main__.run",
           "rich_cli.__main__.main"
-        ],
-        [
-          "rich_cli.markdown",
-          "rich_cli.markdown.CodeBlock"
-        ],
-        [
-          "rich_cli.pager",
-          "rich_cli.pager.PagerApp"
-        ],
-        [
-          "rich_cli.pager",
-          "rich_cli.pager.PagerRenderable"
         ]
       ],
       "PyCG E.A.(1)": {
@@ -2881,8 +2493,8 @@
       "files": 1,
       "parse_errors": 0,
       "lines": 1929,
-      "seconds": 0.61,
-      "peak_rss_mb": 39.5,
+      "seconds": 0.9,
+      "peak_rss_mb": 39.1,
       "knitcode_raw": {
         "tp": 138,
         "fp": 19,
@@ -2892,12 +2504,12 @@
         "recall": 0.807
       },
       "knitcode": {
-        "tp": 142,
+        "tp": 151,
         "fp": 19,
-        "fn": 29,
+        "fn": 20,
         "edges": 171,
-        "precision": 0.882,
-        "recall": 0.8304
+        "precision": 0.8882,
+        "recall": 0.883
       },
       "false_positives": [
         [
@@ -2980,39 +2592,7 @@
       "false_negatives": [
         [
           "sshtunnel",
-          "sshtunnel.BaseSSHTunnelForwarderError"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel.HandlerSSHTunnelForwarderError"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel.SSHTunnelForwarder"
-        ],
-        [
-          "sshtunnel",
           "sshtunnel.SSHTunnelForwarder.__del__"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ForwardHandler"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._StreamForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ThreadingForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ThreadingStreamForwardServer"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._check_is_started",
@@ -3037,10 +2617,6 @@
         [
           "sshtunnel.SSHTunnelForwarder._consolidate_binds",
           "<list>.extend"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class",
-          "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class.Handler"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._make_ssh_forward_server",
@@ -3127,8 +2703,8 @@
       "recall": 0.6699
     },
     "knitcode": {
-      "precision": 0.9094,
-      "recall": 0.7371
+      "precision": 0.916,
+      "recall": 0.8009
     },
     "PyCG E.A.(1)": {
       "precision": 0.9905,

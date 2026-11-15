@@ -5,8 +5,8 @@
       "files": 1,
       "parse_errors": 0,
       "lines": 5687,
-      "seconds": 4.18,
-      "peak_rss_mb": 81.2,
+      "seconds": 5.67,
+      "peak_rss_mb": 81.1,
       "knitcode_raw": {
         "tp": 477,
         "fp": 54,
@@ -16,12 +16,12 @@
         "recall": 0.7718
       },
       "knitcode": {
-        "tp": 523,
+        "tp": 556,
         "fp": 45,
-        "fn": 95,
+        "fn": 62,
         "edges": 618,
-        "precision": 0.9208,
-        "recall": 0.8463
+        "precision": 0.9251,
+        "recall": 0.8997
       },
       "false_positives": [
         [
@@ -206,138 +206,6 @@
         ]
       ],
       "false_negatives": [
-        [
-          "bpytop",
-          "bpytop.Banner"
-        ],
-        [
-          "bpytop",
-          "bpytop.Box"
-        ],
-        [
-          "bpytop",
-          "bpytop.Collector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Color"
-        ],
-        [
-          "bpytop",
-          "bpytop.Colors"
-        ],
-        [
-          "bpytop",
-          "bpytop.Config"
-        ],
-        [
-          "bpytop",
-          "bpytop.CpuBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.CpuCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Draw"
-        ],
-        [
-          "bpytop",
-          "bpytop.Fx"
-        ],
-        [
-          "bpytop",
-          "bpytop.Graph"
-        ],
-        [
-          "bpytop",
-          "bpytop.Graphs"
-        ],
-        [
-          "bpytop",
-          "bpytop.Init"
-        ],
-        [
-          "bpytop",
-          "bpytop.Key"
-        ],
-        [
-          "bpytop",
-          "bpytop.MemBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.MemCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Menu"
-        ],
-        [
-          "bpytop",
-          "bpytop.Meter"
-        ],
-        [
-          "bpytop",
-          "bpytop.Meters"
-        ],
-        [
-          "bpytop",
-          "bpytop.Mv"
-        ],
-        [
-          "bpytop",
-          "bpytop.NetBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.NetCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Nonblocking"
-        ],
-        [
-          "bpytop",
-          "bpytop.ProcBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.ProcCollector"
-        ],
-        [
-          "bpytop",
-          "bpytop.Raw"
-        ],
-        [
-          "bpytop",
-          "bpytop.SubBox"
-        ],
-        [
-          "bpytop",
-          "bpytop.Symbol"
-        ],
-        [
-          "bpytop",
-          "bpytop.Term"
-        ],
-        [
-          "bpytop",
-          "bpytop.Theme"
-        ],
-        [
-          "bpytop",
-          "bpytop.TimeIt"
-        ],
-        [
-          "bpytop",
-          "bpytop.Timer"
-        ],
-        [
-          "bpytop",
-          "bpytop.UpdateChecker"
-        ],
         [
           "bpytop.Box.calc_sizes",
           "bpytop.Box._calc_size"
@@ -617,23 +485,23 @@
       "files": 21,
       "parse_errors": 0,
       "lines": 3803,
-      "seconds": 0.62,
-      "peak_rss_mb": 43.7,
+      "seconds": 1.25,
+      "peak_rss_mb": 45.3,
       "knitcode_raw": {
-        "tp": 307,
-        "fp": 39,
-        "fn": 305,
+        "tp": 346,
+        "fp": 45,
+        "fn": 266,
         "edges": 612,
-        "precision": 0.8873,
-        "recall": 0.5016
+        "precision": 0.8849,
+        "recall": 0.5654
       },
       "knitcode": {
-        "tp": 365,
-        "fp": 39,
-        "fn": 247,
+        "tp": 445,
+        "fp": 45,
+        "fn": 167,
         "edges": 612,
-        "precision": 0.9035,
-        "recall": 0.5964
+        "precision": 0.9082,
+        "recall": 0.7271
       },
       "false_positives": [
         [
@@ -643,6 +511,18 @@
         [
           "sqlparse.cli.main",
           "<str>.join"
+        ],
+        [
+          "sqlparse.engine.filter_stack.FilterStack.run",
+          "sqlparse.filters.tokens.IdentifierCaseFilter.process"
+        ],
+        [
+          "sqlparse.engine.filter_stack.FilterStack.run",
+          "sqlparse.filters.tokens.TruncateStringFilter.process"
+        ],
+        [
+          "sqlparse.engine.filter_stack.FilterStack.run",
+          "sqlparse.filters.tokens._CaseFilter.process"
         ],
         [
           "sqlparse.engine.grouping.group",
@@ -733,12 +613,24 @@
           "<list>.pop"
         ],
         [
+          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_identifierlist",
+          "sqlparse.sql.TokenList.insert_before"
+        ],
+        [
+          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+          "sqlparse.sql.TokenList.__getitem__"
+        ],
+        [
           "sqlparse.filters.others.SerializerUnicode.process",
           "<str>.join"
         ],
         [
           "sqlparse.filters.others.StripWhitespaceFilter._stripws",
           "<str>.format"
+        ],
+        [
+          "sqlparse.filters.others.StripWhitespaceFilter._stripws",
+          "sqlparse.filters.others.StripWhitespaceFilter._stripws_default"
         ],
         [
           "sqlparse.filters.output.OutputFilter.process",
@@ -795,48 +687,12 @@
       ],
       "false_negatives": [
         [
-          "sqlparse.engine.filter_stack",
-          "sqlparse.engine.filter_stack.FilterStack"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.engine.statement_splitter.StatementSplitter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.others.SpacesAroundOperatorsFilter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.others.StripCommentsFilter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.others.StripWhitespaceFilter.process"
-        ],
-        [
           "sqlparse.engine.filter_stack.FilterStack.run",
           "sqlparse.filters.others.process"
         ],
         [
           "sqlparse.engine.filter_stack.FilterStack.run",
           "sqlparse.filters.output.OutputFilter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.reindent.ReindentFilter.process"
-        ],
-        [
-          "sqlparse.engine.filter_stack.FilterStack.run",
-          "sqlparse.filters.right_margin.RightMarginFilter.process"
-        ],
-        [
-          "sqlparse.engine.grouping",
-          "sqlparse.utils.recurse.wrap"
         ],
         [
           "sqlparse.engine.grouping.<lambda>",
@@ -1011,10 +867,6 @@
           "sqlparse.sql._groupable_tokens"
         ],
         [
-          "sqlparse.engine.statement_splitter",
-          "sqlparse.engine.statement_splitter.StatementSplitter"
-        ],
-        [
           "sqlparse.engine.statement_splitter.StatementSplitter.process",
           "<list>.append"
         ],
@@ -1035,68 +887,12 @@
           "sqlparse.tokens._CaseFilter.process"
         ],
         [
-          "sqlparse.exceptions",
-          "sqlparse.exceptions.SQLParseError"
-        ],
-        [
-          "sqlparse.filters.aligned_indent",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._next_token",
-          "sqlparse.sql.TokenList.token_next_by"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_identifierlist"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_statement"
-        ],
-        [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
           "sqlparse.sql.Case.get_cases"
         ],
         [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
-          "sqlparse.sql.TokenList.insert_after"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
-          "sqlparse.sql.TokenList.insert_before"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
-          "sqlparse.sql.TokenList.token_next_by"
-        ],
-        [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
           "sqlparse.sql.Token.match"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
-          "sqlparse.sql.TokenList.get_sublists"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
-          "sqlparse.sql.TokenList.token_index"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
-          "sqlparse.sql.TokenList.token_prev"
         ],
         [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
@@ -1108,43 +904,11 @@
         ],
         [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
-          "sqlparse.sql.TokenList.insert_after"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
-          "sqlparse.sql.TokenList.insert_before"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
-          "sqlparse.sql.TokenList.token_next_by"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
           "sqlparse.utils.indent"
         ],
         [
           "sqlparse.filters.aligned_indent.AlignedIndentFilter._split_kwds",
           "sqlparse.sql.Token.match"
-        ],
-        [
-          "sqlparse.filters.aligned_indent.AlignedIndentFilter._split_kwds",
-          "sqlparse.sql.TokenList.insert_before"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.SerializerUnicode"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.SpacesAroundOperatorsFilter"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.StripCommentsFilter"
-        ],
-        [
-          "sqlparse.filters.others",
-          "sqlparse.filters.others.StripWhitespaceFilter"
         ],
         [
           "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
@@ -1180,35 +944,11 @@
         ],
         [
           "sqlparse.filters.others.StripWhitespaceFilter._stripws",
-          "sqlparse.filters.others.StripWhitespaceFilter._stripws_identifierlist"
-        ],
-        [
-          "sqlparse.filters.others.StripWhitespaceFilter._stripws",
-          "sqlparse.filters.others.StripWhitespaceFilter._stripws_parenthesis"
-        ],
-        [
-          "sqlparse.filters.others.StripWhitespaceFilter._stripws",
           "sqlparse.filters.others._stripws_default"
-        ],
-        [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputFilter"
-        ],
-        [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputPHPFilter"
-        ],
-        [
-          "sqlparse.filters.output",
-          "sqlparse.filters.output.OutputPythonFilter"
         ],
         [
           "sqlparse.filters.output.OutputFilter.process",
           "sqlparse.sql.TokenList.__str__"
-        ],
-        [
-          "sqlparse.filters.reindent",
-          "sqlparse.filters.reindent.ReindentFilter"
         ],
         [
           "sqlparse.filters.reindent.ReindentFilter._flatten_up_to_token",
@@ -1225,34 +965,6 @@
         [
           "sqlparse.filters.reindent.ReindentFilter._next_token",
           "sqlparse.sql.TokenList.token_next_by"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_case"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_default"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_function"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_identifierlist"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_parenthesis"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_values"
-        ],
-        [
-          "sqlparse.filters.reindent.ReindentFilter._process",
-          "sqlparse.filters.reindent.ReindentFilter._process_where"
         ],
         [
           "sqlparse.filters.reindent.ReindentFilter._process_case",
@@ -1411,26 +1123,6 @@
           "sqlparse.sql.TokenList.__str__"
         ],
         [
-          "sqlparse.filters.right_margin",
-          "sqlparse.filters.right_margin.RightMarginFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.IdentifierCaseFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.KeywordCaseFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens.TruncateStringFilter"
-        ],
-        [
-          "sqlparse.filters.tokens",
-          "sqlparse.filters.tokens._CaseFilter"
-        ],
-        [
           "sqlparse.format",
           "<list>.append"
         ],
@@ -1459,10 +1151,6 @@
           "<map>.get"
         ],
         [
-          "sqlparse.lexer",
-          "sqlparse.lexer.Lexer"
-        ],
-        [
           "sqlparse.lexer.get_tokens",
           "sqlparse.keywords.is_keyword"
         ],
@@ -1473,94 +1161,6 @@
         [
           "sqlparse.parse",
           "sqlparse.engine.filter_stack.FilterStack.run"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Assignment"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Begin"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Case"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Command"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Comment"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Comparison"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.For"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Function"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Having"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Identifier"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.IdentifierList"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.If"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.NameAliasMixin"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Operation"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Parenthesis"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.SquareBrackets"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Statement"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Token"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.TokenList"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.TypedLiteral"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Values"
-        ],
-        [
-          "sqlparse.sql",
-          "sqlparse.sql.Where"
         ],
         [
           "sqlparse.sql.<lambda>",
@@ -1716,10 +1316,6 @@
         ],
         [
           "sqlparse.tokens",
-          "sqlparse.tokens._TokenType"
-        ],
-        [
-          "sqlparse.tokens",
           "sqlparse.tokens._TokenType.__getattr__"
         ],
         [
@@ -1741,30 +1337,6 @@
         [
           "sqlparse.tokens._CaseFilter.process",
           "sqlparse.tokens._TokenType.__contains__"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.align_comments"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.group_aliased"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.group_comments"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.group_functions"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.group_identifier"
-        ],
-        [
-          "sqlparse.utils.recurse.wrap.wrapped_f",
-          "sqlparse.engine.grouping.group_where"
         ],
         [
           "sqlparse.utils.recurse.wrap.wrapped_f",
@@ -1813,8 +1385,8 @@
       "files": 5,
       "parse_errors": 0,
       "lines": 587,
-      "seconds": 0.13,
-      "peak_rss_mb": 24.0,
+      "seconds": 0.15,
+      "peak_rss_mb": 23.8,
       "knitcode_raw": {
         "tp": 60,
         "fp": 5,
@@ -1824,12 +1396,12 @@
         "recall": 0.7692
       },
       "knitcode": {
-        "tp": 69,
+        "tp": 75,
         "fp": 5,
-        "fn": 9,
+        "fn": 3,
         "edges": 78,
-        "precision": 0.9324,
-        "recall": 0.8846
+        "precision": 0.9375,
+        "recall": 0.9615
       },
       "false_positives": [
         [
@@ -1855,32 +1427,8 @@
       ],
       "false_negatives": [
         [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.Segmentation"
-        ],
-        [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.SentenceSegmentation"
-        ],
-        [
-          "textrank4zh.Segmentation",
-          "textrank4zh.Segmentation.WordSegmentation"
-        ],
-        [
-          "textrank4zh.TextRank4Keyword",
-          "textrank4zh.TextRank4Keyword.TextRank4Keyword"
-        ],
-        [
           "textrank4zh.TextRank4Keyword.TextRank4Keyword.get_keyphrases",
           "<str>.count"
-        ],
-        [
-          "textrank4zh.TextRank4Sentence",
-          "textrank4zh.TextRank4Sentence.TextRank4Sentence"
-        ],
-        [
-          "textrank4zh.util",
-          "textrank4zh.util.AttrDict"
         ],
         [
           "textrank4zh.util.sort_sentences",
@@ -1921,23 +1469,23 @@
       "files": 6,
       "parse_errors": 0,
       "lines": 2104,
-      "seconds": 1.91,
-      "peak_rss_mb": 31.6,
+      "seconds": 2.75,
+      "peak_rss_mb": 31.4,
       "knitcode_raw": {
-        "tp": 231,
-        "fp": 80,
-        "fn": 88,
+        "tp": 247,
+        "fp": 87,
+        "fn": 72,
         "edges": 319,
-        "precision": 0.7428,
-        "recall": 0.7241
+        "precision": 0.7395,
+        "recall": 0.7743
       },
       "knitcode": {
-        "tp": 242,
-        "fp": 80,
-        "fn": 77,
+        "tp": 269,
+        "fp": 87,
+        "fn": 50,
         "edges": 319,
-        "precision": 0.7516,
-        "recall": 0.7586
+        "precision": 0.7556,
+        "recall": 0.8433
       },
       "false_positives": [
         [
@@ -2037,6 +1585,10 @@
           "furl.furl.FragmentCompositionInterface.fragment"
         ],
         [
+          "furl.furl.FragmentCompositionInterface.fragmentstr",
+          "furl.furl.Fragment.__str__"
+        ],
+        [
           "furl.furl.Path.__eq__",
           "furl.furl.Path.__str__"
         ],
@@ -2059,6 +1611,10 @@
         [
           "furl.furl.PathCompositionInterface.__init__",
           "furl.furl.furl.__setattr__"
+        ],
+        [
+          "furl.furl.PathCompositionInterface.pathstr",
+          "furl.furl.Path.__str__"
         ],
         [
           "furl.furl.Query.__bool__",
@@ -2111,6 +1667,14 @@
         [
           "furl.furl.QueryCompositionInterface.__init__",
           "furl.furl.furl.__setattr__"
+        ],
+        [
+          "furl.furl.QueryCompositionInterface.args",
+          "furl.furl.Query.params"
+        ],
+        [
+          "furl.furl.QueryCompositionInterface.querystr",
+          "furl.furl.Query.__str__"
         ],
         [
           "furl.furl.create_quote_fn.quote_fn",
@@ -2177,6 +1741,14 @@
           "furl.furl.furl.netloc"
         ],
         [
+          "furl.furl.furl.origin",
+          "furl.furl.furl.__setattr__"
+        ],
+        [
+          "furl.furl.furl.origin",
+          "furl.furl.furl.netloc"
+        ],
+        [
           "furl.furl.furl.remove",
           "furl.furl.FragmentCompositionInterface.fragment"
         ],
@@ -2207,6 +1779,10 @@
         [
           "furl.furl.furl.remove",
           "furl.furl.furl.scheme"
+        ],
+        [
+          "furl.furl.furl.scheme",
+          "furl.furl.furl.__setattr__"
         ],
         [
           "furl.furl.furl.set",
@@ -2271,52 +1847,8 @@
           "<builtin>.globals"
         ],
         [
-          "furl.compat",
-          "furl.compat.UnicodeMixin"
-        ],
-        [
           "furl.compat.UnicodeMixin.__str__",
           "furl.furl.furl.__unicode__"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Fragment"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.FragmentCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.FragmentPathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Path"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.PathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.Query"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.QueryCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.URLPathCompositionInterface"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.furl"
-        ],
-        [
-          "furl.furl",
-          "furl.furl.static_vars.decorator"
         ],
         [
           "furl.furl.Fragment.__init__",
@@ -2353,10 +1885,6 @@
         [
           "furl.furl.Path._segments_from_path",
           "<str>.split"
-        ],
-        [
-          "furl.furl.Path._segments_from_path",
-          "furl.furl.is_valid_encoded_path_segment"
         ],
         [
           "furl.furl.Path.add",
@@ -2419,14 +1947,6 @@
           "<str>.split"
         ],
         [
-          "furl.furl.Query._extract_items_from_querystr",
-          "furl.furl.is_valid_encoded_query_key"
-        ],
-        [
-          "furl.furl.Query._extract_items_from_querystr",
-          "furl.furl.is_valid_encoded_query_value"
-        ],
-        [
           "furl.furl.Query._items",
           "<list>.allitems"
         ],
@@ -2440,10 +1960,6 @@
         ],
         [
           "furl.furl.Query.add",
-          "furl.omdict1D.omdict1D.add"
-        ],
-        [
-          "furl.furl.Query.params",
           "furl.omdict1D.omdict1D.add"
         ],
         [
@@ -2487,51 +2003,11 @@
           "furl.furl.furl.__init__"
         ],
         [
-          "furl.furl.furl.host",
-          "furl.furl.furl.__setattr__"
-        ],
-        [
-          "furl.furl.furl.host",
-          "furl.furl.is_valid_host"
-        ],
-        [
           "furl.furl.furl.load",
           "furl.compat.UnicodeMixin.__str__"
         ],
         [
           "furl.furl.furl.netloc",
-          "furl.furl.furl.__setattr__"
-        ],
-        [
-          "furl.furl.furl.netloc",
-          "furl.furl.furl.host"
-        ],
-        [
-          "furl.furl.furl.netloc",
-          "furl.furl.furl.port"
-        ],
-        [
-          "furl.furl.furl.netloc",
-          "furl.furl.furl.scheme"
-        ],
-        [
-          "furl.furl.furl.origin",
-          "furl.furl.furl.host"
-        ],
-        [
-          "furl.furl.furl.origin",
-          "furl.furl.furl.port"
-        ],
-        [
-          "furl.furl.furl.origin",
-          "furl.furl.furl.scheme"
-        ],
-        [
-          "furl.furl.furl.port",
-          "furl.furl.furl.__setattr__"
-        ],
-        [
-          "furl.furl.furl.port",
           "furl.furl.furl.scheme"
         ],
         [
@@ -2541,10 +2017,6 @@
         [
           "furl.furl.get_scheme",
           "<str>.startswith"
-        ],
-        [
-          "furl.furl.get_scheme",
-          "furl.furl.is_valid_scheme"
         ],
         [
           "furl.furl.has_netloc",
@@ -2565,10 +2037,6 @@
         [
           "furl.furl.urlsplit",
           "<str>.startswith"
-        ],
-        [
-          "furl.omdict1D",
-          "furl.omdict1D.omdict1D"
         ]
       ],
       "PyCG E.A.(1)": {
@@ -2601,8 +2069,8 @@
       "files": 5,
       "parse_errors": 0,
       "lines": 1112,
-      "seconds": 0.18,
-      "peak_rss_mb": 27.8,
+      "seconds": 0.29,
+      "peak_rss_mb": 28.0,
       "knitcode_raw": {
         "tp": 44,
         "fp": 5,
@@ -2612,12 +2080,12 @@
         "recall": 0.7213
       },
       "knitcode": {
-        "tp": 48,
+        "tp": 54,
         "fp": 5,
-        "fn": 13,
+        "fn": 7,
         "edges": 61,
-        "precision": 0.9057,
-        "recall": 0.7869
+        "precision": 0.9153,
+        "recall": 0.8852
       },
       "false_positives": [
         [
@@ -2644,23 +2112,11 @@
       "false_negatives": [
         [
           "rich_cli.__main__",
-          "rich_cli.__main__.ForceWidth"
-        ],
-        [
-          "rich_cli.__main__",
           "rich_cli.__main__.ForceWidth.__init__"
         ],
         [
           "rich_cli.__main__",
-          "rich_cli.__main__.RichCommand"
-        ],
-        [
-          "rich_cli.__main__",
           "rich_cli.__main__.RichCommand.__init__"
-        ],
-        [
-          "rich_cli.__main__.RichCommand.format_help",
-          "rich_cli.__main__.RichCommand.format_help.OptionHighlighter"
         ],
         [
           "rich_cli.__main__.main",
@@ -2681,18 +2137,6 @@
         [
           "rich_cli.__main__.run",
           "rich_cli.__main__.main"
-        ],
-        [
-          "rich_cli.markdown",
-          "rich_cli.markdown.CodeBlock"
-        ],
-        [
-          "rich_cli.pager",
-          "rich_cli.pager.PagerApp"
-        ],
-        [
-          "rich_cli.pager",
-          "rich_cli.pager.PagerRenderable"
         ]
       ],
       "PyCG E.A.(1)": {
@@ -2725,23 +2169,23 @@
       "files": 1,
       "parse_errors": 0,
       "lines": 1929,
-      "seconds": 0.6,
-      "peak_rss_mb": 39.5,
+      "seconds": 0.87,
+      "peak_rss_mb": 39.4,
       "knitcode_raw": {
-        "tp": 138,
-        "fp": 19,
-        "fn": 33,
+        "tp": 144,
+        "fp": 30,
+        "fn": 27,
         "edges": 171,
-        "precision": 0.879,
-        "recall": 0.807
+        "precision": 0.8276,
+        "recall": 0.8421
       },
       "knitcode": {
-        "tp": 142,
-        "fp": 19,
-        "fn": 29,
+        "tp": 157,
+        "fp": 30,
+        "fn": 14,
         "edges": 171,
-        "precision": 0.882,
-        "recall": 0.8304
+        "precision": 0.8396,
+        "recall": 0.9181
       },
       "false_positives": [
         [
@@ -2755,6 +2199,26 @@
         [
           "sshtunnel.SSHTunnelForwarder._check_tunnel",
           "<str>.format"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._check_tunnel",
+          "sshtunnel._ForwardServer.local_address"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._check_tunnel",
+          "sshtunnel._StreamForwardServer.local_address"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._check_tunnel",
+          "sshtunnel._StreamForwardServer.local_host"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._check_tunnel",
+          "sshtunnel._StreamForwardServer.local_port"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._check_tunnel",
+          "sshtunnel._StreamForwardServer.remote_address"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._create_tunnels",
@@ -2781,6 +2245,14 @@
           "<str>.format"
         ],
         [
+          "sshtunnel.SSHTunnelForwarder._stop_transport",
+          "sshtunnel._StreamForwardServer.local_address"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder._stop_transport",
+          "sshtunnel._StreamForwardServer.remote_address"
+        ],
+        [
           "sshtunnel.SSHTunnelForwarder.get_agent_keys",
           "<str>.format"
         ],
@@ -2789,8 +2261,24 @@
           "<str>.format"
         ],
         [
+          "sshtunnel.SSHTunnelForwarder.local_bind_address",
+          "sshtunnel.SSHTunnelForwarder.local_bind_addresses"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder.local_bind_host",
+          "sshtunnel.SSHTunnelForwarder.local_bind_hosts"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder.local_bind_port",
+          "sshtunnel.SSHTunnelForwarder.local_bind_ports"
+        ],
+        [
           "sshtunnel.SSHTunnelForwarder.start",
           "<str>.format"
+        ],
+        [
+          "sshtunnel.SSHTunnelForwarder.start",
+          "sshtunnel._StreamForwardServer.local_port"
         ],
         [
           "sshtunnel._ForwardHandler._redirect",
@@ -2824,55 +2312,11 @@
       "false_negatives": [
         [
           "sshtunnel",
-          "sshtunnel.BaseSSHTunnelForwarderError"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel.HandlerSSHTunnelForwarderError"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel.SSHTunnelForwarder"
-        ],
-        [
-          "sshtunnel",
           "sshtunnel.SSHTunnelForwarder.__del__"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ForwardHandler"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._StreamForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ThreadingForwardServer"
-        ],
-        [
-          "sshtunnel",
-          "sshtunnel._ThreadingStreamForwardServer"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._check_is_started",
           "sshtunnel.HandlerSSHTunnelForwarderError.__init__"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._check_tunnel",
-          "sshtunnel._ForwardServer.local_host"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._check_tunnel",
-          "sshtunnel._ForwardServer.local_port"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._check_tunnel",
-          "sshtunnel._ForwardServer.remote_address"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._check_tunnel",
@@ -2881,10 +2325,6 @@
         [
           "sshtunnel.SSHTunnelForwarder._consolidate_binds",
           "<list>.extend"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class",
-          "sshtunnel.SSHTunnelForwarder._make_ssh_forward_handler_class.Handler"
         ],
         [
           "sshtunnel.SSHTunnelForwarder._make_ssh_forward_server",
@@ -2903,14 +2343,6 @@
           "sshtunnel._ForwardServer.remote_address"
         ],
         [
-          "sshtunnel.SSHTunnelForwarder._stop_transport",
-          "sshtunnel._ForwardServer.local_address"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder._stop_transport",
-          "sshtunnel._ForwardServer.remote_address"
-        ],
-        [
           "sshtunnel.SSHTunnelForwarder.local_is_up",
           "<map>.get"
         ],
@@ -2921,10 +2353,6 @@
         [
           "sshtunnel.SSHTunnelForwarder.start",
           "sshtunnel.SSHTunnelForwarder.stop"
-        ],
-        [
-          "sshtunnel.SSHTunnelForwarder.start",
-          "sshtunnel._ForwardServer.local_port"
         ],
         [
           "sshtunnel._ForwardServer.handle_error",
@@ -2967,12 +2395,12 @@
   ],
   "average": {
     "knitcode_raw": {
-      "precision": 0.8714,
-      "recall": 0.7158
+      "precision": 0.8619,
+      "recall": 0.7407
     },
     "knitcode": {
-      "precision": 0.8827,
-      "recall": 0.7839
+      "precision": 0.8802,
+      "recall": 0.8725
     },
     "PyCG E.A.(1)": {
       "precision": 0.9905,

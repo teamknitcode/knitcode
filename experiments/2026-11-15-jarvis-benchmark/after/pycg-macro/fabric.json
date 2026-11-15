@@ -2,7 +2,7 @@
   "project": "fabric",
   "files": 20,
   "parse_errors": 0,
-  "seconds": 0.57,
+  "seconds": 0.66,
   "skipped": {
     "class_instantiation_without_init": 2,
     "non_dotted_external": 3

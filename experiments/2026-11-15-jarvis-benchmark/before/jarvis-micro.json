@@ -232,7 +232,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0232
+      "seconds": 0.0402
     },
     {
       "category": "arguments",
@@ -250,7 +250,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0045
     },
     {
       "category": "arguments",
@@ -268,7 +268,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0023
+      "seconds": 0.0056
     },
     {
       "category": "arguments",
@@ -286,7 +286,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0049
     },
     {
       "category": "arguments",
@@ -304,7 +304,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0049
     },
     {
       "category": "arguments",
@@ -322,7 +322,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0045
     },
     {
       "category": "assignments",
@@ -340,7 +340,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0042
     },
     {
       "category": "assignments",
@@ -371,7 +371,7 @@
           "main.func4"
         ]
       ],
-      "seconds": 0.0032
+      "seconds": 0.0082
     },
     {
       "category": "assignments",
@@ -406,7 +406,7 @@
           "main.func4"
         ]
       ],
-      "seconds": 0.0027
+      "seconds": 0.0055
     },
     {
       "category": "assignments",
@@ -424,7 +424,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0024
+      "seconds": 0.0051
     },
     {
       "category": "builtins",
@@ -442,7 +442,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0014
+      "seconds": 0.0034
     },
     {
       "category": "builtins",
@@ -477,7 +477,7 @@
           "main.func3.func"
         ]
       ],
-      "seconds": 0.0034
+      "seconds": 0.0055
     },
     {
       "category": "builtins",
@@ -495,7 +495,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0028
     },
     {
       "category": "classes",
@@ -513,7 +513,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0023
+      "seconds": 0.0034
     },
     {
       "category": "classes",
@@ -531,7 +531,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0029
+      "seconds": 0.0043
     },
     {
       "category": "classes",
@@ -549,7 +549,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0029
+      "seconds": 0.005
     },
     {
       "category": "classes",
@@ -567,7 +567,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0043
+      "seconds": 0.0069
     },
     {
       "category": "classes",
@@ -585,7 +585,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0033
     },
     {
       "category": "classes",
@@ -603,7 +603,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0034
     },
     {
       "category": "classes",
@@ -621,7 +621,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0027
     },
     {
       "category": "classes",
@@ -639,7 +639,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0041
     },
     {
       "category": "classes",
@@ -657,7 +657,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0023
+      "seconds": 0.0037
     },
     {
       "category": "classes",
@@ -675,7 +675,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0028
     },
     {
       "category": "classes",
@@ -693,7 +693,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0033
     },
     {
       "category": "classes",
@@ -711,7 +711,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0027
+      "seconds": 0.0035
     },
     {
       "category": "classes",
@@ -729,7 +729,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.004
+      "seconds": 0.0065
     },
     {
       "category": "classes",
@@ -747,7 +747,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0028
+      "seconds": 0.0049
     },
     {
       "category": "classes",
@@ -765,7 +765,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0041
     },
     {
       "category": "classes",
@@ -783,7 +783,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0035
     },
     {
       "category": "classes",
@@ -801,7 +801,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0034
+      "seconds": 0.0043
     },
     {
       "category": "classes",
@@ -819,7 +819,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0038
     },
     {
       "category": "classes",
@@ -837,7 +837,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0026
+      "seconds": 0.0037
     },
     {
       "category": "classes",
@@ -855,7 +855,7 @@
       "raw_fn": 1,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0031
     },
     {
       "category": "classes",
@@ -878,7 +878,7 @@
         ]
       ],
       "false_negatives": [],
-      "seconds": 0.0032
+      "seconds": 0.0048
     },
     {
       "category": "classes",
@@ -909,7 +909,7 @@
           "main.MyClass.func3"
         ]
       ],
-      "seconds": 0.0038
+      "seconds": 0.0046
     },
     {
       "category": "context_managers",
@@ -927,7 +927,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.003
+      "seconds": 0.0043
     },
     {
       "category": "context_managers",
@@ -945,7 +945,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0036
     },
     {
       "category": "context_managers",
@@ -963,7 +963,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.003
+      "seconds": 0.0047
     },
     {
       "category": "context_managers",
@@ -981,7 +981,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0024
+      "seconds": 0.0034
     },
     {
       "category": "decorators",
@@ -1008,7 +1008,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0028
     },
     {
       "category": "decorators",
@@ -1035,7 +1035,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0025
     },
     {
       "category": "decorators",
@@ -1062,7 +1062,7 @@
           "main.func.inner"
         ]
       ],
-      "seconds": 0.0022
+      "seconds": 0.0031
     },
     {
       "category": "decorators",
@@ -1101,7 +1101,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0024
+      "seconds": 0.0036
     },
     {
       "category": "decorators",
@@ -1132,7 +1132,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0018
+      "seconds": 0.0028
     },
     {
       "category": "decorators",
@@ -1159,7 +1159,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0019
+      "seconds": 0.003
     },
     {
       "category": "decorators",
@@ -1190,7 +1190,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0023
+      "seconds": 0.0039
     },
     {
       "category": "dicts",
@@ -1213,7 +1213,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0017
+      "seconds": 0.0026
     },
     {
       "category": "dicts",
@@ -1240,7 +1240,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.002
+      "seconds": 0.0029
     },
     {
       "category": "dicts",
@@ -1258,7 +1258,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0024
+      "seconds": 0.0031
     },
     {
       "category": "dicts",
@@ -1281,7 +1281,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0019
+      "seconds": 0.0029
     },
     {
       "category": "dicts",
@@ -1308,7 +1308,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0019
+      "seconds": 0.0029
     },
     {
       "category": "dicts",
@@ -1331,7 +1331,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0033
     },
     {
       "category": "dicts",
@@ -1349,7 +1349,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0031
     },
     {
       "category": "dicts",
@@ -1376,7 +1376,7 @@
           "main.func3"
         ]
       ],
-      "seconds": 0.0023
+      "seconds": 0.0042
     },
     {
       "category": "dicts",
@@ -1394,7 +1394,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.003
     },
     {
       "category": "dicts",
@@ -1412,7 +1412,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0029
     },
     {
       "category": "dicts",
@@ -1430,7 +1430,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0022
+      "seconds": 0.003
     },
     {
       "category": "dicts",
@@ -1457,7 +1457,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0033
     },
     {
       "category": "direct_calls",
@@ -1480,7 +1480,7 @@
           "main.return_func"
         ]
       ],
-      "seconds": 0.0019
+      "seconds": 0.0031
     },
     {
       "category": "direct_calls",
@@ -1503,7 +1503,7 @@
           "to_import.return_func"
         ]
       ],
-      "seconds": 0.002
+      "seconds": 0.0032
     },
     {
       "category": "direct_calls",
@@ -1530,7 +1530,7 @@
           "main.return_func.nested_return_func"
         ]
       ],
-      "seconds": 0.0023
+      "seconds": 0.0036
     },
     {
       "category": "direct_calls",
@@ -1548,7 +1548,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0023
+      "seconds": 0.0039
     },
     {
       "category": "exceptions",
@@ -1571,7 +1571,7 @@
           "main.A.__init__"
         ]
       ],
-      "seconds": 0.0016
+      "seconds": 0.0023
     },
     {
       "category": "exceptions",
@@ -1594,7 +1594,7 @@
           "main.A.__init__"
         ]
       ],
-      "seconds": 0.0016
+      "seconds": 0.0025
     },
     {
       "category": "exceptions",
@@ -1617,7 +1617,7 @@
           "main.A.B.__init__"
         ]
       ],
-      "seconds": 0.002
+      "seconds": 0.0026
     },
     {
       "category": "functions",
@@ -1635,7 +1635,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0023
     },
     {
       "category": "functions",
@@ -1653,7 +1653,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0026
     },
     {
       "category": "functions",
@@ -1671,7 +1671,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0013
+      "seconds": 0.0023
     },
     {
       "category": "functions",
@@ -1689,7 +1689,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0026
     },
     {
       "category": "generators",
@@ -1712,7 +1712,7 @@
           "main.Cls.__next__"
         ]
       ],
-      "seconds": 0.0035
+      "seconds": 0.0053
     },
     {
       "category": "generators",
@@ -1739,7 +1739,7 @@
           "main.func"
         ]
       ],
-      "seconds": 0.0034
+      "seconds": 0.0052
     },
     {
       "category": "generators",
@@ -1762,7 +1762,7 @@
           "main.func.__next__"
         ]
       ],
-      "seconds": 0.0038
+      "seconds": 0.0046
     },
     {
       "category": "generators",
@@ -1785,7 +1785,7 @@
           "main.Cls.__next__"
         ]
       ],
-      "seconds": 0.0031
+      "seconds": 0.0044
     },
     {
       "category": "generators",
@@ -1803,7 +1803,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0029
+      "seconds": 0.004
     },
     {
       "category": "generators",
@@ -1826,7 +1826,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0031
     },
     {
       "category": "imports",
@@ -1844,7 +1844,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0032
     },
     {
       "category": "imports",
@@ -1871,7 +1871,7 @@
           "from_module2.func2"
         ]
       ],
-      "seconds": 0.0022
+      "seconds": 0.0048
     },
     {
       "category": "imports",
@@ -1889,7 +1889,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0027
     },
     {
       "category": "imports",
@@ -1907,7 +1907,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0026
+      "seconds": 0.0027
     },
     {
       "category": "imports",
@@ -1925,7 +1925,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0034
     },
     {
       "category": "imports",
@@ -1948,7 +1948,7 @@
           "nested.nested.Smth.func"
         ]
       ],
-      "seconds": 0.0024
+      "seconds": 0.0041
     },
     {
       "category": "imports",
@@ -1966,7 +1966,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0035
     },
     {
       "category": "imports",
@@ -1984,7 +1984,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0015
+      "seconds": 0.0026
     },
     {
       "category": "imports",
@@ -2002,7 +2002,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0022
+      "seconds": 0.0038
     },
     {
       "category": "imports",
@@ -2020,7 +2020,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0025
     },
     {
       "category": "imports",
@@ -2038,7 +2038,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0037
     },
     {
       "category": "imports",
@@ -2065,7 +2065,7 @@
           "from_module.nested_module.func2"
         ]
       ],
-      "seconds": 0.0024
+      "seconds": 0.0033
     },
     {
       "category": "imports",
@@ -2083,7 +2083,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0032
     },
     {
       "category": "imports",
@@ -2101,7 +2101,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0035
     },
     {
       "category": "kwargs",
@@ -2119,7 +2119,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0029
     },
     {
       "category": "kwargs",
@@ -2137,7 +2137,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0023
+      "seconds": 0.0034
     },
     {
       "category": "kwargs",
@@ -2155,7 +2155,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0022
+      "seconds": 0.0035
     },
     {
       "category": "lambdas",
@@ -2173,7 +2173,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0014
+      "seconds": 0.0024
     },
     {
       "category": "lambdas",
@@ -2200,7 +2200,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0019
+      "seconds": 0.0036
     },
     {
       "category": "lambdas",
@@ -2218,7 +2218,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0034
+      "seconds": 0.0045
     },
     {
       "category": "lambdas",
@@ -2236,7 +2236,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0018
+      "seconds": 0.0029
     },
     {
       "category": "lambdas",
@@ -2254,7 +2254,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0027
     },
     {
       "category": "lists",
@@ -2272,7 +2272,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0029
     },
     {
       "category": "lists",
@@ -2290,7 +2290,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0031
     },
     {
       "category": "lists",
@@ -2313,7 +2313,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.002
+      "seconds": 0.0034
     },
     {
       "category": "lists",
@@ -2331,7 +2331,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0018
+      "seconds": 0.0028
     },
     {
       "category": "lists",
@@ -2349,7 +2349,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0035
     },
     {
       "category": "lists",
@@ -2372,7 +2372,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.003
     },
     {
       "category": "lists",
@@ -2395,7 +2395,7 @@
           "main.func4"
         ]
       ],
-      "seconds": 0.0032
+      "seconds": 0.0039
     },
     {
       "category": "lists",
@@ -2418,7 +2418,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.002
+      "seconds": 0.0033
     },
     {
       "category": "mro",
@@ -2441,7 +2441,7 @@
         ]
       ],
       "false_negatives": [],
-      "seconds": 0.0028
+      "seconds": 0.0042
     },
     {
       "category": "mro",
@@ -2464,7 +2464,7 @@
         ]
       ],
       "false_negatives": [],
-      "seconds": 0.0027
+      "seconds": 0.0042
     },
     {
       "category": "mro",
@@ -2482,7 +2482,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0031
+      "seconds": 0.005
     },
     {
       "category": "mro",
@@ -2505,7 +2505,7 @@
           "main.B.func"
         ]
       ],
-      "seconds": 0.0039
+      "seconds": 0.0051
     },
     {
       "category": "mro",
@@ -2532,7 +2532,7 @@
         ]
       ],
       "false_negatives": [],
-      "seconds": 0.0033
+      "seconds": 0.0046
     },
     {
       "category": "mro",
@@ -2555,7 +2555,7 @@
         ]
       ],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0035
     },
     {
       "category": "mro",
@@ -2573,7 +2573,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0027
+      "seconds": 0.0038
     },
     {
       "category": "new_arguments",
@@ -2591,7 +2591,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0041
     },
     {
       "category": "new_arguments",
@@ -2609,7 +2609,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0025
+      "seconds": 0.0039
     },
     {
       "category": "new_arguments",
@@ -2627,7 +2627,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0027
+      "seconds": 0.0035
     },
     {
       "category": "new_arguments",
@@ -2645,7 +2645,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0032
     },
     {
       "category": "new_assignments",
@@ -2663,7 +2663,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.002
+      "seconds": 0.0032
     },
     {
       "category": "new_assignments",
@@ -2681,7 +2681,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0016
+      "seconds": 0.0026
     },
     {
       "category": "new_assignments",
@@ -2699,7 +2699,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0018
+      "seconds": 0.0028
     },
     {
       "category": "new_assignments",
@@ -2717,7 +2717,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0018
+      "seconds": 0.0025
     },
     {
       "category": "new_control_flow",
@@ -2748,7 +2748,7 @@
           "insider.D.__init__"
         ]
       ],
-      "seconds": 0.0035
+      "seconds": 0.0051
     },
     {
       "category": "new_control_flow",
@@ -2766,7 +2766,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0038
+      "seconds": 0.0062
     },
     {
       "category": "new_control_flow",
@@ -2784,7 +2784,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0019
+      "seconds": 0.0031
     },
     {
       "category": "new_control_flow",
@@ -2802,7 +2802,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0038
+      "seconds": 0.0072
     },
     {
       "category": "new_direct_calls",
@@ -2820,7 +2820,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0029
+      "seconds": 0.0072
     },
     {
       "category": "new_direct_calls",
@@ -2848,7 +2848,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.004
+      "seconds": 0.0077
     },
     {
       "category": "new_direct_calls",
@@ -2866,7 +2866,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0032
+      "seconds": 0.0065
     },
     {
       "category": "new_direct_calls",
@@ -2894,7 +2894,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0027
+      "seconds": 0.0043
     },
     {
       "category": "new_direct_calls",
@@ -2922,7 +2922,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.0033
+      "seconds": 0.0057
     },
     {
       "category": "new_imports",
@@ -2945,7 +2945,7 @@
           "from_module_3.func"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0037
     },
     {
       "category": "new_imports",
@@ -2976,7 +2976,7 @@
           "from_module2.func3"
         ]
       ],
-      "seconds": 0.0023
+      "seconds": 0.0037
     },
     {
       "category": "new_imports",
@@ -2994,7 +2994,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0024
+      "seconds": 0.0032
     },
     {
       "category": "new_imports",
@@ -3012,7 +3012,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0017
+      "seconds": 0.0031
     },
     {
       "category": "new_imports",
@@ -3035,7 +3035,7 @@
           "from_module.func"
         ]
       ],
-      "seconds": 0.0021
+      "seconds": 0.0034
     },
     {
       "category": "returns",
@@ -3053,7 +3053,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0018
+      "seconds": 0.0028
     },
     {
       "category": "returns",
@@ -3071,7 +3071,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0021
+      "seconds": 0.0034
     },
     {
       "category": "returns",
@@ -3089,7 +3089,7 @@
       "raw_fn": 0,
       "false_positives": [],
       "false_negatives": [],
-      "seconds": 0.0022
+      "seconds": 0.004
     },
     {
       "category": "returns",
@@ -3112,7 +3112,7 @@
           "main.func2"
         ]
       ],
-      "seconds": 0.003
+      "seconds": 0.0045
     }
   ]
 }

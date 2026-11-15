@@ -1,34 +1,10 @@
+# Linux, Python 3.13. Analysis only (scan + symbols + graph). before = main c404b3c, after = final.
+## before
 {"target": "click", "seconds": 6.8, "rss_mb": 181, "edges": 4489, "implicit": 129, "resolved": 3131, "sites": 7084}
-{"target": "click", "seconds": 7.1, "rss_mb": 181, "edges": 4489, "implicit": 209, "resolved": 3131, "sites": 7084}
 {"target": "requests", "seconds": 4.3, "rss_mb": 97, "edges": 1925, "implicit": 147, "resolved": 1056, "sites": 2687}
-{"target": "requests", "seconds": 4.0, "rss_mb": 97, "edges": 1925, "implicit": 147, "resolved": 1056, "sites": 2687}
-Traceback (most recent call last):
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/scripts/time_engine.py", line 13, in <module>
-    g = annotate_call_statuses(reclassify_graph(build_graph(s), s), s)
-                                                ~~~~~~~~~~~^^^
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/base/graph_builder.py", line 31, in build_graph
-    return finish_graph(graph, data, resolver, call_policy=call_policy)
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/base/unified_graph.py", line 287, in finish_graph
-    hierarchy=nav.build_hierarchy({},projected,edges)
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/base/graph_navigation.py", line 412, in build_hierarchy
-    a, b = unit_of(lv, e["from"]), unit_of(lv, e["to"])
-           ~~~~~~~^^^^^^^^^^^^^^^
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/base/graph_navigation.py", line 389, in unit_of
-    n = nodes[nid]
-        ~~~~~^^^^^
-KeyError: None
-Traceback (most recent call last):
-  File "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/scripts/time_engine.py", line 13, in <module>
-    g = annotate_call_statuses(reclassify_graph(build_graph(s), s), s)
-                                                ~~~~~~~~~~~^^^
-  File "/home/user/teamknitcode/knitcode/graph_builder.py", line 31, in build_graph
-    return finish_graph(graph, data, resolver, call_policy=call_policy)
-  File "/home/user/teamknitcode/knitcode/unified_graph.py", line 287, in finish_graph
-    hierarchy=nav.build_hierarchy({},projected,edges)
-  File "/home/user/teamknitcode/knitcode/graph_navigation.py", line 412, in build_hierarchy
-    a, b = unit_of(lv, e["from"]), unit_of(lv, e["to"])
-           ~~~~~~~^^^^^^^^^^^^^^^
-  File "/home/user/teamknitcode/knitcode/graph_navigation.py", line 389, in unit_of
-    n = nodes[nid]
-        ~~~~~^^^^^
-KeyError: None
+{"target": "rich (rich/ folder only)", "seconds": 4.6, "rss_mb": 167, "edges": 1780, "implicit": 182, "resolved": 807, "sites": 4366}
+## after
+{"target": "click", "seconds": 12.5, "rss_mb": 192, "edges": 4543, "implicit": 785, "resolved": 3141, "sites": 7084}
+{"target": "requests", "seconds": 7.3, "rss_mb": 98, "edges": 1926, "implicit": 152, "resolved": 1057, "sites": 2687}
+{"target": "rich", "seconds": 6.8, "rss_mb": 168, "edges": 1808, "implicit": 203, "resolved": 831, "sites": 4366}
+## Rich whole repository: KeyError in graph_navigation.build_hierarchy before and after (pre-existing)

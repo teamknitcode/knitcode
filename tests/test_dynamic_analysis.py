@@ -74,6 +74,18 @@ class DynamicAnalysisTests(unittest.TestCase):
         self.assertEqual(sum(e['count'] for a, b, e in edges if (a, b) == ('recurse', 'recurse')), 2)
         self.assertTrue(all(n['file'] == 'app.py' for n in trace['nodes']))
 
+    def test_explicit_venv_interpreter_preserves_site_packages(self):
+        environment = self.base / 'venv'
+        subprocess.run([sys.executable, '-m', 'venv', '--without-pip', str(environment)],
+                       check=True, capture_output=True, timeout=30)
+        executable = environment / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
+        site = subprocess.check_output([
+            str(executable), '-c', 'import sysconfig; print(sysconfig.get_path("purelib"))'], text=True)
+        (Path(site.strip()) / 'knitcode_venv_marker.py').write_text('VALUE = 42\n')
+        self.write('app.py', 'from knitcode_venv_marker import VALUE\nassert VALUE == 42\n')
+        trace, _ = self.run_target('--script', 'app.py', '--calls-only', '--python', str(executable))
+        self.assertTrue(trace['complete'])
+
     def test_arguments_cwd_imports_and_source_encoding(self):
         app = self.root / 'sub' / 'app.py'
         app.parent.mkdir()

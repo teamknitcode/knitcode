@@ -39,3 +39,14 @@ python3 -m unittest discover -s tests -p test_dynamic_analysis.py -v
 
 Python 3.12에서는 opcode 추적을 켜기 전에 기존 프레임의 `f_trace_opcodes`를 설정해야 합니다.
 수집기는 설정 후 프레임 플래그를 원복합니다. [Python 공식 문서](https://docs.python.org/3.12/library/sys.html#sys.settrace)
+
+2026-11-16 인계 수정 검증(macOS, Python 3.12.2): opcode 초기화와 가상환경
+실행 파일 경로 보존을 수정하고 스레드·가상환경 회귀 검사를 포함했습니다.
+전체 검사는 다음 명령으로 570 passed, 7 skipped, 41 subtests passed를 확인했습니다.
+
+```bash
+PYTHONPATH=tests/jse_original python3 -m pytest tests -q --import-mode=importlib
+```
+
+위 명령은 macOS/Linux 기준입니다. 전체 정적 정확도 향상이나 다른 Python 버전의
+호환성을 이 검사만으로 보장하지 않습니다.

@@ -129,7 +129,9 @@ def record(root, out, *, script=None, module=None, python=None, cwd=None,
         if not path.is_dir() or not path.is_relative_to(root):
             raise ValueError(f'Invalid source root: {entry}')
         normalized_roots.append(path.relative_to(root).as_posix())
-    interpreter = str(Path(python).resolve()) if python and Path(python).is_file() else python
+    # Resolving a venv's executable symlink bypasses pyvenv.cfg and loses its
+    # installed packages. Make relative paths absolute without dereferencing.
+    interpreter = str(Path(python).absolute()) if python and Path(python).is_file() else python
     if child_wait < 0:
         raise ValueError('--child-wait must be non-negative')
     run_directory = out.parent / '.knitcode-runs' / uuid.uuid4().hex

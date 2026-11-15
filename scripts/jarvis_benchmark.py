@@ -190,8 +190,24 @@ def _builtin_decorator_pairs(symbols: dict) -> set:
     return pairs
 
 
+def _class_definition_pairs(symbols: dict) -> set:
+    """Executing a class statement runs its body: enclosing scope -> class.
+
+    JARVIS's macro ground truth has this edge for every class (as do the
+    PyCG and JARVIS outputs); its micro ground truth, inherited from PyCG,
+    does not, so this is a macro-only convention like 'imports'.
+    """
+    pairs = set()
+    for s in symbols['symbols']:
+        if s['kind'] == 'CLASS':
+            scope = s.get('scope') or '<module>'
+            caller = s['module'] if scope == '<module>' else f"{s['module']}.{pycg_scope(scope)}"
+            pairs.add((caller, pycg_scope(s['canonical_name'])))
+    return pairs
+
+
 MICRO_CONVENTIONS = ('class_body', 'builtin_decorators')
-MACRO_CONVENTIONS = ('class_body', 'imports', 'builtin_decorators')
+MACRO_CONVENTIONS = ('class_body', 'imports', 'builtin_decorators', 'class_definition')
 
 
 def knitcode_cg(symbols: dict, graph: dict, keep_library_calls=False, conventions=()) -> dict:
@@ -215,6 +231,8 @@ def knitcode_cg(symbols: dict, graph: dict, keep_library_calls=False, convention
         pairs |= _import_pairs(symbols, graph)
     if 'builtin_decorators' in conventions:
         pairs |= _builtin_decorator_pairs(symbols)
+    if 'class_definition' in conventions:
+        pairs |= _class_definition_pairs(symbols)
     return adjacency(pairs)
 
 

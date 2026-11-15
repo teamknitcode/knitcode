@@ -156,6 +156,9 @@ class ObjectFlow:
         self.reference_events = defaultdict(set)
         self._refs_cache = {}  # Static names only; never objects, heaps or returns.
         self._definition_index = None
+        self.closure_env = {}  # function id -> {free name: Value captured at its def}
+        self.closure_dirty = set()
+        self._free_names_cache = {}
         self.call_index = {(c['file'], c['line'], c['column'], c.get('end_line'), c.get('end_column')): c for c in resolver.calls}
         trees = resolver.syntax_trees
         functions_by_file = defaultdict(list)
@@ -514,7 +517,8 @@ class ObjectFlow:
             self.invalidate_escaped([*args, *kwargs.values()], replaced_heap)
             heap.clear(); heap.update(merge_maps(original_heap, replaced_heap))
             return value.join(UNKNOWN).tagged('return')
-        if self.is_generator(fn):
+        generator = self.is_generator(fn)
+        if generator and not self.enhanced:
             return UNKNOWN.tagged('return')
         if isinstance(fn, ast.AsyncFunctionDef) and not awaited:
             token = symbol['id'] + ':' + site
@@ -566,6 +570,9 @@ class ObjectFlow:
         for n in self.own_nodes(fn):
             if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store):
                 env.setdefault(n.id, UNKNOWN)
+            # Free variables of a closure: values captured where the def ran.
+        for name, value in self.closure_env.get(symbol['id'], {}).items():
+            env.setdefault(name, value)
         self.stack.append(symbol['id'])
         self.return_heaps.append([])
         _, result, live = self.block(fn.body, env, heap, context, mode, site)
@@ -589,9 +596,14 @@ class ObjectFlow:
             hinted=self.hint(fn.returns, context)
             result=result.join(Value(frozenset(Atom('advisory_object',a.name,a.site)
                                                for a in hinted.atoms if a.kind=='object'),hinted.tags))
+        if generator:
+            # The body runs while the caller iterates; its calls are may-calls in
+            # this caller's context. The call itself returns an iterator, not
+            # the body's return value.
+            result = UNKNOWN
         result = result.tagged('return:' + symbol['canonical_name']).tagged('return')
         self.summaries[symbol['id']] = self.summaries.get(symbol['id'], BOTTOM).join(result)
-        return result
+        return result    
 
     def own_nodes(self, fn):
         # invoke() revisits the same function many times; walk it once.
@@ -755,36 +767,74 @@ class ObjectFlow:
         return self._definition_index.get((file, node.lineno))
 
     def apply_decorators(self, stmt, env, heap, context, mode, site):
-        """`@dec` on a definition calls dec(definition) when the enclosing code runs.
+        """`@a @b def f` runs a(b(f)) when the enclosing code executes the definition.
 
-        Only bare (non-call) decorator expressions bound to project functions are
-        recorded; `@dec(...)` is an ordinary call site already. The decorator body
-        is interpreted with the defined function as its argument. Class bodies are
-        not interpreted here, but the decorators of their methods are applied while
-        the class statement runs (same caller as the class statement).
+        Decorators apply bottom-up and each receives the previous result, starting
+        from the undecorated function object (ORIGINAL_DEFINITION). A bare `@dec`
+        is evaluated as a name; `@factory(...)` evaluates the factory call (an
+        ordinary call site) and applies the function it returns. Only project
+        functions are interpreted; an unknown decorator makes the value unknown
+        for the decorators above it. Class bodies are not interpreted here, but
+        the decorators of their methods are applied while the class statement
+        runs (same caller as the class statement).
         """
         if not self.enhanced:
             return
+        defined = self._definition_symbol(context['file'], stmt)
+        value = one('reference', defined['id'], ORIGINAL_DEFINITION) if defined else UNKNOWN
+        child_mode = 'generic' if mode == 'generic' else 'specific'
         for decorator in reversed(stmt.decorator_list):
-            if isinstance(decorator, ast.Call):
-                continue
-            value = self.peek(decorator, env, heap, context, mode, site)
-            targets = [self.r.by_id.get(a.name) for a in value.atoms if a.kind == 'reference']
+            evaluate = self.expr if isinstance(decorator, ast.Call) else self.peek
+            decorator_value = evaluate(decorator, env, heap, context, mode, site)
+            targets = [self.r.by_id.get(a.name) for a in decorator_value.atoms if a.kind == 'reference']
             targets = [t for t in targets if t and t['kind'] in ('FUNCTION', 'LAMBDA') and self.r.safe_callable(t)]
             if not targets:
+                value = UNKNOWN
                 continue
             self.record_implicit(decorator, context, mode, 'decorator', 'decorator',
                                  {t['id'] for t in targets})
-            defined = self._definition_symbol(context['file'], stmt)
-            arg = one('reference', defined['id'], ORIGINAL_DEFINITION) if defined else UNKNOWN
             child_site = f"{context['file']}:{decorator.lineno}:{decorator.col_offset} > {site}"
+            result = BOTTOM
             for fn in targets:
                 if fn['id'] in self.functions:
-                    self.invoke(fn, [arg], {}, dict(heap), 'generic' if mode == 'generic' else 'specific', child_site)
+                    result = result.join(self.invoke(fn, [value], {}, dict(heap), child_mode, child_site))
+            value = result if result.atoms else UNKNOWN
         if isinstance(stmt, ast.ClassDef):
             for inner in stmt.body:
                 if isinstance(inner, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                     self.apply_decorators(inner, env, heap, context, mode, site)
+
+    def free_names(self, fn):
+        """Names a nested function reads from enclosing function scopes."""
+        if fn not in self._free_names_cache:
+            params = {a.arg for a in [*fn.args.posonlyargs, *fn.args.args, *fn.args.kwonlyargs,
+                                      *([fn.args.vararg] if fn.args.vararg else []),
+                                      *([fn.args.kwarg] if fn.args.kwarg else [])]}
+            own = self.own_nodes(fn)
+            local = {n.id for n in own if isinstance(n, ast.Name) and not isinstance(n.ctx, ast.Load)}
+            local |= {n.name for n in own if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))}
+            declared_global = {name for n in own if isinstance(n, ast.Global) for name in n.names}
+            loaded = {n.id for n in ast.walk(fn) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load)}
+            self._free_names_cache[fn] = frozenset(loaded - params - local - declared_global)
+        return self._free_names_cache[fn]
+
+    def capture_closure(self, stmt, env, context):
+        """Record the enclosing values a nested function will see (joined over
+        every execution of its def). Values are taken when the def runs; later
+        rebinding of the enclosing variable is not modeled."""
+        if not self.enhanced or not self.stack or not isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return
+        defined = self._definition_symbol(context['file'], stmt)
+        if not defined:
+            return
+        captured = self.closure_env.setdefault(defined['id'], {})
+        for name in self.free_names(stmt):
+            if name in env:
+                joined = captured.get(name, BOTTOM).join(env[name])
+                if joined != captured.get(name):
+                    captured[name] = joined
+                    self.closure_dirty.add(defined['id'])
+
 
     def implicit_operator(self, node, context, mode, left_name, right_name, left, right):
         self.implicit(node, context, mode, 'operator', left_name, left)
@@ -1293,6 +1343,9 @@ class ObjectFlow:
         callsite = f"{context['file']}:{node.lineno}:{node.col_offset}"
         child_site = callsite + ' > ' + site
         child_mode = 'generic' if mode == 'generic' else 'specific'
+        mutated = self.list_mutation(node, receiver, args, kwargs, targets, heap)
+        if mutated is not None:
+            return mutated
         if any(isinstance(arg, ast.Starred) for arg in node.args) or None in kwargs:
             self.invalidate_escaped([*args, *kwargs.values(), receiver or BOTTOM], heap)
             return UNKNOWN.tagged('return')
@@ -1353,7 +1406,132 @@ class ObjectFlow:
                 elif node.func.id=='enumerate':
                     result=result.join(Value(frozenset(Atom('collection_pair_object',a.name,a.site,'enumerate')
                         for a in args[0].atoms if a.kind=='collection_object'))).tagged('binding')
+                elif node.func.id=='getattr' and 2<=len(node.args)<=3 and not node.keywords:
+                    methods=self.dynamic_getattr(node.args[1],args[0],context)
+                    if methods is not None:
+                        fallback=args[2] if len(args)==3 else UNKNOWN
+                        result=methods.join(fallback).tagged('binding')
         return result
+
+    def list_mutation(self, node, receiver, args, kwargs, targets, heap):
+        """lst.append(v) / insert(i, v) / extend(xs) / pop() on a fully known list
+        literal: record the new element instead of forgetting the list.
+        Returns the call's value, or None when this is not such a call."""
+        if (not self.enhanced or targets or receiver is None or kwargs
+                or not isinstance(node.func, ast.Attribute)
+                or node.func.attr not in ('append', 'insert', 'extend', 'pop')
+                or any(isinstance(a, ast.Starred) for a in node.args)):
+            return None
+        lists = [a for a in receiver.atoms if a.kind == 'container' and a.name.startswith('list:')]
+        # A list value also carries element summaries (collection_* atoms);
+        # anything else (unknown, other containers, objects) disqualifies it.
+        others = [a for a in receiver.atoms if a not in lists and not a.kind.startswith('collection_')]
+        if not lists or others or any(heap.get((a.site, '*'), UNKNOWN).atoms for a in lists):
+            return None
+        def indices(site):
+            return [k[1] for (s, k) in heap if s == site and isinstance(k, tuple) and k[0] == 'index']
+        if node.func.attr == 'pop':
+            if len(args) > 1:
+                return None
+            result = BOTTOM
+            for a in lists:
+                for i in indices(a.site):
+                    result = result.join(heap[(a.site, ('index', i))])
+            return result if result.atoms else UNKNOWN.tagged('return')
+        expected = {'append': 1, 'insert': 2, 'extend': 1}[node.func.attr]
+        if len(args) != expected:
+            return None
+        if node.func.attr == 'extend':
+            added, known = BOTTOM, True
+            for atom in args[0].atoms:
+                if atom.kind == 'container' and atom.name.startswith(('list:', 'tuple:')) \
+                        and not heap.get((atom.site, '*'), UNKNOWN).atoms:
+                    for i in indices(atom.site):
+                        added = added.join(heap[(atom.site, ('index', i))])
+                elif atom.kind.startswith('collection_') and atom.kind != 'collection_unknown':
+                    added = added.join(Value(frozenset({Atom(atom.kind.removeprefix('collection_'), atom.name,
+                                                             atom.site, atom.receiver_class)})))
+                else:
+                    known = False
+        else:
+            added, known = args[-1], True
+        for a in lists:
+            if not known or len(indices(a.site)) >= 64:
+                heap[(a.site, '*')] = UNKNOWN
+                continue
+            if added.atoms:
+                position = max(indices(a.site), default=-1) + 1
+                heap[(a.site, ('index', position))] = added
+        return NONE
+
+
+    def dynamic_getattr(self, name_expr, receiver, context):
+        """getattr(obj, '<prefix>' + ...) -> bound methods of obj whose names fit.
+
+        Only a name expression with a static string prefix (concatenation,
+        f-string, str.format, optionally .lower()/.upper(), or a local variable
+        assigned once from one of those) is interpreted, and only for receivers
+        of known project classes. Returns None when the name is not static
+        enough; an exact constant name is left to the ordinary attribute logic.
+        """
+        pattern = self.attribute_name_pattern(name_expr, context)
+        if pattern is None:
+            return None
+        prefix, case = pattern
+        if len(prefix) < 2:
+            return None
+        atoms = set()
+        for atom in receiver.atoms:
+            cls = self.r.classes.get(atom.name) if atom.kind == 'object' else None
+            if not cls:
+                continue
+            order, status = self.r._mro(cls)
+            if status != 'complete':
+                continue
+            names = {s['name'] for k in order if k in self.r.classes
+                     for s in self.r.symbols if s['kind'] == 'METHOD' and s['module'] + '.' + s['scope'] == k}
+            for name in sorted(names):
+                fits = (name == name.lower() and name.startswith(prefix.lower())) if case == 'lower' else \
+                       (name == name.upper() and name.startswith(prefix.upper())) if case == 'upper' else \
+                       name.startswith(prefix)
+                if not fits:
+                    continue
+                methods, _ = self.r._find_method(cls, name)
+                atoms.update(Atom('bound_method', fn['id'], atom.site, atom.name) for fn in methods
+                             if all(d in ('classmethod', 'staticmethod') for d in fn.get('decorators', [])))
+        return Value(frozenset(atoms)) if atoms else None
+
+    def attribute_name_pattern(self, expr, context, depth=0):
+        """(static prefix, case) of a computed attribute name, or None."""
+        if depth > 2 or expr is None:
+            return None
+        if isinstance(expr, ast.Call) and isinstance(expr.func, ast.Attribute) and not expr.args and not expr.keywords:
+            if expr.func.attr in ('lower', 'upper'):
+                inner = self.attribute_name_pattern(expr.func.value, context, depth + 1)
+                return (inner[0], expr.func.attr) if inner else None
+            return None
+        if (isinstance(expr, ast.Call) and isinstance(expr.func, ast.Attribute) and expr.func.attr == 'format'
+                and isinstance(expr.func.value, ast.Constant) and isinstance(expr.func.value.value, str)):
+            text = expr.func.value.value
+            return (text.split('{')[0], None) if '{' in text else None
+        if isinstance(expr, ast.BinOp) and isinstance(expr.op, ast.Add):
+            left = expr.left
+            if isinstance(left, ast.Constant) and isinstance(left.value, str):
+                return (left.value, None)
+            inner = self.attribute_name_pattern(left, context, depth + 1)
+            return inner if inner and inner[1] is None else None
+        if isinstance(expr, ast.JoinedStr) and expr.values and isinstance(expr.values[0], ast.Constant):
+            return (str(expr.values[0].value), None)
+        if isinstance(expr, ast.Name):
+            fn = self.functions.get(context.get('caller_id'))
+            if fn is None:
+                return None
+            writes = [n for n in self.own_nodes(fn) if isinstance(n, (ast.Assign, ast.AnnAssign, ast.AugAssign))
+                      and any(isinstance(t, ast.Name) and t.id == expr.id
+                              for t in (n.targets if isinstance(n, ast.Assign) else [n.target]))]
+            if len(writes) == 1 and isinstance(writes[0], ast.Assign) and len(writes[0].targets) == 1:
+                return self.attribute_name_pattern(writes[0].value, context, depth + 1)
+        return None
 
     def note_builtin_callback(self, node, args, kwargs, context):
         """sorted's key / map's and filter's function are conditional callbacks,
@@ -1512,6 +1690,7 @@ class ObjectFlow:
                 return env, returns, True
             if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 self.apply_decorators(stmt, env, heap, context, mode, site)
+                self.capture_closure(stmt, env, context)
                 continue
             if isinstance(stmt, (ast.Import, ast.ImportFrom)):
                 for alias in stmt.names:
@@ -1816,9 +1995,22 @@ class ObjectFlow:
                 if symbol['kind'] != 'METHOD' or symbol['name'] == '__init__':
                     continue
                 cls = self.r.classes.get(symbol['module'] + '.' + symbol['scope'])
-                if not cls or symbol.get('decorators') not in ([], ['classmethod']):
+                if not cls:
                     continue
-                if symbol.get('decorators') == ['classmethod']:
+                decorators = symbol.get('decorators') or []
+                if decorators == ['staticmethod']:
+                    self.invoke(symbol, [], {}, {}, 'generic', 'root:' + symbol['id'], awaited=True)
+                    continue
+                if is_property(symbol) and len(decorators) == 1 and self.builtin_property(symbol):
+                    obj = one('object', cls['canonical_name'], 'root:' + symbol['id'])
+                    fn = self.functions.get(symbol['id'])
+                    extra = [UNKNOWN] * max(0, len([*fn.args.posonlyargs, *fn.args.args]) - 1) if fn else []
+                    self.invoke(symbol, [obj, *extra], {}, {}, 'generic', 'root:' + symbol['id'],
+                                awaited=True, property_access=True)
+                    continue
+                if decorators not in ([], ['classmethod']):
+                    continue
+                if decorators == ['classmethod']:
                     self.invoke(symbol, [one('reference', cls['id'])], {}, {}, 'generic', 'root:' + symbol['id'], awaited=True)
                     continue
                 obj = one('object', cls['canonical_name'], 'root:' + symbol['id'])
@@ -1835,6 +2027,16 @@ class ObjectFlow:
             self.root_steps = 0
             module = next((s['module'] for s in self.r.symbols if s['file'] == file), '')
             self.block(tree.body, {}, {}, {'file': file, 'module': module, 'scope': '<module>'}, 'root', 'module:' + file)
+            # Closures whose captured values appeared after their root analysis
+        # (e.g. a decorator's wrapper, applied at module level) run again.
+        for _ in range(3):
+            dirty, self.closure_dirty = self.closure_dirty, set()
+            for function_id in sorted(dirty):
+                symbol = self.r.by_id.get(function_id)
+                if symbol and symbol['kind'] == 'FUNCTION' and function_id in self.functions:
+                    self.invoke(symbol, [], {}, {}, 'root', 'root:' + function_id, awaited=True)
+            if not self.closure_dirty:
+                break
         result = {}
         for call in self.r.calls:
             owner = call.get('caller_id')

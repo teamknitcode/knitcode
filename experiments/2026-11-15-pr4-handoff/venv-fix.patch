@@ -1,0 +1,38 @@
+diff --git a/dynamic_analysis.py b/dynamic_analysis.py
+index ae7afbc..c9aa6db 100644
+--- a/dynamic_analysis.py
++++ b/dynamic_analysis.py
+@@ -129,7 +129,9 @@ def record(root, out, *, script=None, module=None, python=None, cwd=None,
+         if not path.is_dir() or not path.is_relative_to(root):
+             raise ValueError(f'Invalid source root: {entry}')
+         normalized_roots.append(path.relative_to(root).as_posix())
+-    interpreter = str(Path(python).resolve()) if python and Path(python).is_file() else python
++    # Resolving a venv's executable symlink bypasses pyvenv.cfg and loses its
++    # installed packages. Make relative paths absolute without dereferencing.
++    interpreter = str(Path(python).absolute()) if python and Path(python).is_file() else python
+     if child_wait < 0:
+         raise ValueError('--child-wait must be non-negative')
+     run_directory = out.parent / '.knitcode-runs' / uuid.uuid4().hex
+diff --git a/tests/test_dynamic_analysis.py b/tests/test_dynamic_analysis.py
+index 428b107..3e9dbfc 100644
+--- a/tests/test_dynamic_analysis.py
++++ b/tests/test_dynamic_analysis.py
+@@ -74,6 +74,18 @@ class DynamicAnalysisTests(unittest.TestCase):
+         self.assertEqual(sum(e['count'] for a, b, e in edges if (a, b) == ('recurse', 'recurse')), 2)
+         self.assertTrue(all(n['file'] == 'app.py' for n in trace['nodes']))
+ 
++    def test_explicit_venv_interpreter_preserves_site_packages(self):
++        environment = self.base / 'venv'
++        subprocess.run([sys.executable, '-m', 'venv', '--without-pip', str(environment)],
++                       check=True, capture_output=True, timeout=30)
++        executable = environment / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
++        site = subprocess.check_output([
++            str(executable), '-c', 'import sysconfig; print(sysconfig.get_path("purelib"))'], text=True)
++        (Path(site.strip()) / 'knitcode_venv_marker.py').write_text('VALUE = 42\n')
++        self.write('app.py', 'from knitcode_venv_marker import VALUE\nassert VALUE == 42\n')
++        trace, _ = self.run_target('--script', 'app.py', '--calls-only', '--python', str(executable))
++        self.assertTrue(trace['complete'])
++
+     def test_arguments_cwd_imports_and_source_encoding(self):
+         app = self.root / 'sub' / 'app.py'
+         app.parent.mkdir()

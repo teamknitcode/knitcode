@@ -1,0 +1,26 @@
+..............................................................x......... [ 16%]
+....x................................................................... [ 33%]
+........................................................................ [ 50%]
+........................................................................ [ 67%]
+..............................................x......................... [ 84%]
+....................................................................     [100%]
+425 passed, 3 xfailed in 36.82s
+Dynamic analysis: 621 nodes, 1286 observed edges -> <WORKSPACE>/out/jarvis-hybrid/sqlparse/full-2.json
+       38.17 real        37.98 user         0.17 sys
+           123666432  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               25095  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   7  voluntary context switches
+                 487  involuntary context switches
+          7945407307  instructions retired
+          1808482954  cycles elapsed
+           106398176  peak memory footprint

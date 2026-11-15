@@ -1,0 +1,64 @@
+[
+  {
+    "project": "sqlparse",
+    "jarvis_published_EA": {
+      "precision": 0.9942857142857143,
+      "recall": 0.49572649572649574,
+      "f1": 0.661596958174905,
+      "tp": 174,
+      "fp": 1,
+      "fn": 177,
+      "raw_pairs": 397,
+      "projected_pairs": 175,
+      "source_sha256": "de044c72fba917b4a3ea37e9c2b837539bdf6a3ebb12cca390ac34fbc7459d03",
+      "source_path": "<TMP>/knitcode-jarvis-artifact/Jarvis/reproducing_RQ2/macro_benchmark/sqlparse/jarvis/jarvis_EA.json"
+    },
+    "knitcode_static": {
+      "tp": 188,
+      "fp": 22,
+      "fn": 163,
+      "precision": 0.8952380952380953,
+      "recall": 0.5356125356125356,
+      "f1": 0.6702317290552586
+    },
+    "knitcode_hybrid": {
+      "tp": 343,
+      "fp": 46,
+      "fn": 8,
+      "precision": 0.8817480719794345,
+      "recall": 0.9772079772079773,
+      "f1": 0.9270270270270271
+    }
+  },
+  {
+    "project": "furl",
+    "jarvis_published_EA": {
+      "precision": 1.0,
+      "recall": 0.5026455026455027,
+      "f1": 0.6690140845070423,
+      "tp": 95,
+      "fp": 0,
+      "fn": 94,
+      "raw_pairs": 202,
+      "projected_pairs": 95,
+      "source_sha256": "70b4002b9b150de30287d112c9d5811dc31aacee9d4bde79037b6b56f95a5c76",
+      "source_path": "<TMP>/knitcode-jarvis-artifact/Jarvis/reproducing_RQ2/macro_benchmark/furl/jarvis/jarvis_EA.json"
+    },
+    "knitcode_static": {
+      "tp": 83,
+      "fp": 13,
+      "fn": 106,
+      "precision": 0.8645833333333334,
+      "recall": 0.43915343915343913,
+      "f1": 0.5824561403508771
+    },
+    "knitcode_hybrid": {
+      "tp": 163,
+      "fp": 64,
+      "fn": 26,
+      "precision": 0.7180616740088106,
+      "recall": 0.8624338624338624,
+      "f1": 0.7836538461538463
+    }
+  }
+]

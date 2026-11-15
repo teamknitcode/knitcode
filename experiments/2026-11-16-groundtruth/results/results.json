@@ -1,0 +1,242 @@
+[
+  {
+    "project": "autojump",
+    "commit": "06e082c91805cb022900819b2e0881eeae780d58",
+    "files": 4,
+    "lines": 2945,
+    "parse_errors": 0,
+    "truth_pairs": 535,
+    "static_seconds": 0.5969713749364018,
+    "static": {
+      "official": {
+        "precision": 0.9646464646464646,
+        "recall": 0.7113594040968343,
+        "f1": 0.8188638799571275,
+        "tp": 382,
+        "fp": 14,
+        "fn": 153
+      },
+      "precision": 0.9646464646464646,
+      "recall": 0.7140186915887851,
+      "f1": 0.82062298603652,
+      "tp": 382,
+      "fp": 14,
+      "fn": 153
+    },
+    "modes": {
+      "baseline": {
+        "median_seconds": 0.1337157089728862,
+        "median_max_rss_bytes": 31719424
+      },
+      "calls-only": {
+        "median_seconds": 0.6160645000636578,
+        "median_max_rss_bytes": 45662208,
+        "score": {
+          "official": {
+            "precision": 0.9646464646464646,
+            "recall": 0.7113594040968343,
+            "f1": 0.8188638799571275,
+            "tp": 382,
+            "fp": 14,
+            "fn": 153
+          },
+          "precision": 0.9646464646464646,
+          "recall": 0.7140186915887851,
+          "f1": 0.82062298603652,
+          "tp": 382,
+          "fp": 14,
+          "fn": 153
+        },
+        "added_tp": 0,
+        "added_fp": 0,
+        "median_trace_bytes": 29788,
+        "stable_scores": true
+      },
+      "full": {
+        "median_seconds": 0.7250016250181943,
+        "median_max_rss_bytes": 43991040,
+        "score": {
+          "official": {
+            "precision": 0.9646464646464646,
+            "recall": 0.7113594040968343,
+            "f1": 0.8188638799571275,
+            "tp": 382,
+            "fp": 14,
+            "fn": 153
+          },
+          "precision": 0.9646464646464646,
+          "recall": 0.7140186915887851,
+          "f1": 0.82062298603652,
+          "tp": 382,
+          "fp": 14,
+          "fn": 153
+        },
+        "added_tp": 0,
+        "added_fp": 0,
+        "median_trace_bytes": 326548,
+        "stable_scores": true
+      }
+    },
+    "truth_entries": 537
+  },
+  {
+    "project": "asciinema",
+    "commit": "350d5e9d8b7cee1be5db4091815942c9d035e7dc",
+    "files": 24,
+    "lines": 1553,
+    "parse_errors": 0,
+    "truth_pairs": 340,
+    "static_seconds": 0.3198389171157032,
+    "static": {
+      "official": {
+        "precision": 0.9205776173285198,
+        "recall": 0.750733137829912,
+        "f1": 0.8270252807743227,
+        "tp": 255,
+        "fp": 22,
+        "fn": 85
+      },
+      "precision": 0.9205776173285198,
+      "recall": 0.75,
+      "f1": 0.826580226904376,
+      "tp": 255,
+      "fp": 22,
+      "fn": 85
+    },
+    "modes": {
+      "baseline": {
+        "median_seconds": 0.16981008392758667,
+        "median_max_rss_bytes": 47644672
+      },
+      "calls-only": {
+        "median_seconds": 0.7266187909990549,
+        "median_max_rss_bytes": 58408960,
+        "score": {
+          "official": {
+            "precision": 0.9205776173285198,
+            "recall": 0.750733137829912,
+            "f1": 0.8270252807743227,
+            "tp": 255,
+            "fp": 22,
+            "fn": 85
+          },
+          "precision": 0.9205776173285198,
+          "recall": 0.75,
+          "f1": 0.826580226904376,
+          "tp": 255,
+          "fp": 22,
+          "fn": 85
+        },
+        "added_tp": 0,
+        "added_fp": 0,
+        "median_trace_bytes": 182917,
+        "stable_scores": true
+      },
+      "full": {
+        "median_seconds": 0.869575124932453,
+        "median_max_rss_bytes": 59719680,
+        "score": {
+          "official": {
+            "precision": 0.9205776173285198,
+            "recall": 0.750733137829912,
+            "f1": 0.8270252807743227,
+            "tp": 255,
+            "fp": 22,
+            "fn": 85
+          },
+          "precision": 0.9205776173285198,
+          "recall": 0.75,
+          "f1": 0.826580226904376,
+          "tp": 255,
+          "fp": 22,
+          "fn": 85
+        },
+        "added_tp": 0,
+        "added_fp": 0,
+        "median_trace_bytes": 670358,
+        "stable_scores": true
+      }
+    },
+    "truth_entries": 341
+  },
+  {
+    "project": "fabric",
+    "commit": "34edfe4a1cc9e3d72c3cc41490673db29afe7bbb",
+    "files": 20,
+    "lines": 2888,
+    "parse_errors": 0,
+    "truth_pairs": 381,
+    "truth_entries": 381,
+    "static_seconds": 0.36081587499938905,
+    "static": {
+      "official": {
+        "precision": 0.9218106995884774,
+        "recall": 0.5879265091863517,
+        "f1": 0.717948717948718,
+        "tp": 224,
+        "fp": 19,
+        "fn": 157
+      },
+      "precision": 0.9218106995884774,
+      "recall": 0.5879265091863517,
+      "f1": 0.717948717948718,
+      "tp": 224,
+      "fp": 19,
+      "fn": 157
+    },
+    "modes": {
+      "baseline": {
+        "median_seconds": 0.2853259169496596,
+        "median_max_rss_bytes": 56131584
+      },
+      "calls-only": {
+        "median_seconds": 1.3490766671020538,
+        "median_max_rss_bytes": 76873728,
+        "score": {
+          "official": {
+            "precision": 0.9109311740890689,
+            "recall": 0.5905511811023622,
+            "f1": 0.7165605095541401,
+            "tp": 225,
+            "fp": 22,
+            "fn": 156
+          },
+          "precision": 0.9109311740890689,
+          "recall": 0.5905511811023622,
+          "f1": 0.7165605095541401,
+          "tp": 225,
+          "fp": 22,
+          "fn": 156
+        },
+        "added_tp": 1,
+        "added_fp": 3,
+        "median_trace_bytes": 432779,
+        "stable_scores": true
+      },
+      "full": {
+        "median_seconds": 1.714608209207654,
+        "median_max_rss_bytes": 80789504,
+        "score": {
+          "official": {
+            "precision": 0.9109311740890689,
+            "recall": 0.5905511811023622,
+            "f1": 0.7165605095541401,
+            "tp": 225,
+            "fp": 22,
+            "fn": 156
+          },
+          "precision": 0.9109311740890689,
+          "recall": 0.5905511811023622,
+          "f1": 0.7165605095541401,
+          "tp": 225,
+          "fp": 22,
+          "fn": 156
+        },
+        "added_tp": 1,
+        "added_fp": 3,
+        "median_trace_bytes": 1643849,
+        "stable_scores": true
+      }
+    }
+  }
+]

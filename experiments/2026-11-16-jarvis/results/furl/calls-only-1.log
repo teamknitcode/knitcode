@@ -1,0 +1,22 @@
+........................................................................ [ 96%]
+...                                                                      [100%]
+75 passed, 2 deselected in 63.45s (0:01:03)
+Dynamic analysis: 260 nodes, 2113 observed edges -> <WORKSPACE>/out/jarvis-hybrid/furl/calls-only-1.json
+       64.16 real        64.02 user         0.11 sys
+           112427008  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               12521  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 136  voluntary context switches
+                 687  involuntary context switches
+          1470798488  instructions retired
+           361577273  cycles elapsed
+            25674136  peak memory footprint

@@ -1,0 +1,26 @@
+.........................                                                [100%]
+=============================== warnings summary ===============================
+../../../../../../..<TMP>/knitcode-groundtruth-venv/lib/python3.11/site-packages/nose/importer.py:12
+  <TMP>/knitcode-groundtruth-venv/lib/python3.11/site-packages/nose/importer.py:12: DeprecationWarning: the imp module is deprecated in favour of importlib and slated for removal in Python 3.12; see the module's documentation for alternative uses
+    from imp import find_module, load_module, acquire_lock, release_lock
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+25 passed, 1 warning in 0.07s
+        0.18 real         0.14 user         0.03 sys
+            47644672  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                5648  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   6  voluntary context switches
+                  51  involuntary context switches
+          1704862544  instructions retired
+           652954438  cycles elapsed
+            33784456  peak memory footprint

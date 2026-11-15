@@ -53,6 +53,25 @@ targets/
 out/
 .venv-validate/
 
+# Local dynamic-analysis inputs and generated traces
+/test_code/
+trace.json
+trace-*.json
+trace_*.json
+hybrid_graph.json
+dynamic_comparison.json
+*.prof
+*.pstats
+.knitcode-runs/
+
+# Additional local Python environments and test artifacts
+.venv-*/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.egg-info/
+
 # VS Code extension packages (build with scripts/package_extension.py)
 dist/
 benchmarks/

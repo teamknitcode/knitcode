@@ -16,7 +16,8 @@ from flow_viewer import write_flow_html
 
 def run(repo: str | Path, output_dir: str | Path = 'output', *,
         analyze_deps: bool = False, dep_roots=(), max_dep_files: int = 300,
-        source_roots: list[str] | None = None, analysis_profile=None, call_policy=None):
+        source_roots: list[str] | None = None, analysis_profile=None, call_policy=None,
+        dynamic_trace: str | Path | None = None):
     ast_data = scan_repository(repo, source_roots=source_roots)
     try:
         head = subprocess.run(
@@ -48,6 +49,10 @@ def run(repo: str | Path, output_dir: str | Path = 'output', *,
         dep_result = analyze_dependencies(symbols, graph, roots=dep_roots, max_files=max_dep_files)
         write_dependency_results(dep_result, out)
         print('Dependency source analysis:', dep_result['summary'])
+    if dynamic_trace is not None:
+        from runtime_validation.runtime_bridge import compare
+        hybrid = compare(out, dynamic_trace, out / 'hybrid_graph.json')
+        print('Dynamic observations:', hybrid['summary'])
     print('=== KnitCode static call graph v2.9 (object flow + implicit calls + OVERRIDDEN_BY + external classification) ===')
     print(f"Commit          : {head or 'not a git repo'}")
     print(f"Python files    : {ast_data['python_file_count']}")
@@ -99,6 +104,7 @@ if __name__ == '__main__':
                              'use "." to disable automatic src-layout detection.')
     parser.add_argument('--analysis-profile', choices=('baseline', 'integrated'), default=None)
     parser.add_argument('--call-policy', choices=('primary', 'augmented', 'supported'), default=None)
+    parser.add_argument('--dynamic-trace', help='Saved sys.setprofile trace to map into hybrid_graph.json')
     parser.add_argument('--analyze-deps', action='store_true',
                         help='Inspect stdlib and installed/external imported source using AST only')
     parser.add_argument('--dep-root', action='append', default=[],
@@ -112,7 +118,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     results = run(args.repo, args.output_dir, analyze_deps=args.analyze_deps,
         dep_roots=args.dep_root, max_dep_files=max(1, args.max_dep_files),
-        source_roots=args.source_root, analysis_profile=args.analysis_profile, call_policy=args.call_policy)
+        source_roots=args.source_root, analysis_profile=args.analysis_profile, call_policy=args.call_policy,
+        dynamic_trace=args.dynamic_trace)
     if args.git_validation:
         from git_validation.auto_integration import generate
         if not 1 <= args.git_commits <= 300:

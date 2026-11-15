@@ -1,0 +1,2 @@
+# Archived patches retain required context-line and mail signature spaces.
+*.patch whitespace=-blank-at-eol,-blank-at-eof

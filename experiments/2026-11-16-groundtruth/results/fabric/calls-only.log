@@ -1,5 +1,5 @@
 
-Transfer 
+Transfer
 
     init
 
@@ -73,7 +73,7 @@ Transfer
             preserves local mode by default
             allows disabling local mode preservation
 
-Group 
+Group
 
     init
 
@@ -89,7 +89,7 @@ Group
 
         not implemented in base class
 
-SerialGroup 
+SerialGroup
 
     run
 
@@ -97,7 +97,7 @@ SerialGroup
         errors in execution capture and continue til end
         returns results mapping
 
-ThreadingGroup 
+ThreadingGroup
 
     run
 
@@ -106,7 +106,7 @@ ThreadingGroup
         bubbles up errors within threads
         returns results mapping
 
-Config 
+Config
 
     defaults to merger of global defaults
     our global defaults can override invokes

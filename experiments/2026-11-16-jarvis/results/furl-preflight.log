@@ -10,11 +10,11 @@ self = <test_furl.TestFurl testMethod=test_hosts>
         url = 'http:///index.html'
         f = furl.furl(url)
         assert f.host == '' and furl.furl(url).url == url
-    
+
         # Valid IPv4 and IPv6 addresses.
         f = furl.furl('http://192.168.1.101')
         f = furl.furl('http://[2001:db8:85a3:8d3:1319:8a2e:370:7348]/')
-    
+
         # Host strings are always lowercase.
         f = furl.furl('http://wWw.PuMpS.com')
         assert f.host == 'www.pumps.com'
@@ -22,19 +22,19 @@ self = <test_furl.TestFurl testMethod=test_hosts>
         assert f.host == 'yep.nope'
         f.set(host='FeE.fIe.FoE.fUm')
         assert f.host == 'fee.fie.foe.fum'
-    
+
         # Invalid IPv4 addresses shouldn't raise an exception because
         # urlparse.urlsplit() doesn't raise an exception on invalid IPv4
         # addresses.
         f = furl.furl('http://1.2.3.4.5.6/')
-    
+
         # Invalid, but well-formed, IPv6 addresses shouldn't raise an
         # exception because urlparse.urlsplit() doesn't raise an
         # exception on invalid IPv6 addresses.
 >       furl.furl('http://[0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999]/')
 
-tests/test_furl.py:1661: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_furl.py:1661:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 furl/furl.py:1380: in __init__
     self.load(url)  # Raises ValueError on invalid URL.
 furl/furl.py:1405: in load
@@ -45,36 +45,36 @@ furl/furl.py:312: in urlsplit
     _check_bracketed_host(bracketed_host)
 <PYTHON_PREFIX>/lib/python3.11/urllib/parse.py:446: in _check_bracketed_host
     ip = ipaddress.ip_address(hostname) # Throws Value Error if not IPv6 or IPv4
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 address = '0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999'
 
     def ip_address(address):
         """Take an IP string/int and return an object of the correct type.
-    
+
         Args:
             address: A string or integer, the IP address.  Either IPv4 or
               IPv6 addresses may be supplied; integers less than 2**32 will
               be considered to be IPv4 by default.
-    
+
         Returns:
             An IPv4Address or IPv6Address object.
-    
+
         Raises:
             ValueError: if the *address* passed isn't either a v4 or a v6
               address
-    
+
         """
         try:
             return IPv4Address(address)
         except (AddressValueError, NetmaskValueError):
             pass
-    
+
         try:
             return IPv6Address(address)
         except (AddressValueError, NetmaskValueError):
             pass
-    
+
 >       raise ValueError(f'{address!r} does not appear to be an IPv4 or IPv6 address')
 E       ValueError: '0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999' does not appear to be an IPv4 or IPv6 address
 
@@ -90,12 +90,12 @@ self = <test_furl.TestFurl testMethod=test_netloc>
         assert f.netloc == netloc
         assert f.host == '1.2.3.4.5.6'
         assert f.port == 999
-    
+
         netloc = '[0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999]:888'
 >       f.netloc = netloc
 
-tests/test_furl.py:1688: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_furl.py:1688:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 furl/furl.py:1888: in __setattr__
     object.__setattr__(self, attr, value)
 furl/furl.py:1503: in netloc
@@ -104,36 +104,36 @@ furl/furl.py:1503: in netloc
     _check_bracketed_host(bracketed_host)
 <PYTHON_PREFIX>/lib/python3.11/urllib/parse.py:446: in _check_bracketed_host
     ip = ipaddress.ip_address(hostname) # Throws Value Error if not IPv6 or IPv4
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 address = '0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999'
 
     def ip_address(address):
         """Take an IP string/int and return an object of the correct type.
-    
+
         Args:
             address: A string or integer, the IP address.  Either IPv4 or
               IPv6 addresses may be supplied; integers less than 2**32 will
               be considered to be IPv4 by default.
-    
+
         Returns:
             An IPv4Address or IPv6Address object.
-    
+
         Raises:
             ValueError: if the *address* passed isn't either a v4 or a v6
               address
-    
+
         """
         try:
             return IPv4Address(address)
         except (AddressValueError, NetmaskValueError):
             pass
-    
+
         try:
             return IPv6Address(address)
         except (AddressValueError, NetmaskValueError):
             pass
-    
+
 >       raise ValueError(f'{address!r} does not appear to be an IPv4 or IPv6 address')
 E       ValueError: '0:0:0:0:0:0:0:1:1:1:1:1:1:1:1:9999999999999' does not appear to be an IPv4 or IPv6 address
 

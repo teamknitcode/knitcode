@@ -81,6 +81,11 @@ BOTTOM = Value()
 # Atom site of the undecorated function object handed to its decorator.
 ORIGINAL_DEFINITION = 'original_definition'
 
+def atom_order(atom):
+    """Deterministic order for atoms. frozenset iteration follows string hashes,
+    which differ between processes; interpretation order matters once the
+    analysis budget is reached, so every loop that invokes code sorts first."""
+    return (atom.kind, atom.name, atom.site, atom.receiver_class)
 
 def one(kind, name='', site=''):
     return Value(frozenset({Atom(kind, name, site)}))
@@ -156,6 +161,7 @@ class ObjectFlow:
         self.reference_events = defaultdict(set)
         self._refs_cache = {}  # Static names only; never objects, heaps or returns.
         self._definition_index = None
+        self.yield_values = []  # one Value per generator invocation in progress
         self.closure_env = {}  # function id -> {free name: Value captured at its def}
         self.closure_dirty = set()
         self._free_names_cache = {}
@@ -573,6 +579,8 @@ class ObjectFlow:
             # Free variables of a closure: values captured where the def ran.
         for name, value in self.closure_env.get(symbol['id'], {}).items():
             env.setdefault(name, value)
+        if generator:
+            self.yield_values.append(BOTTOM)
         self.stack.append(symbol['id'])
         self.return_heaps.append([])
         _, result, live = self.block(fn.body, env, heap, context, mode, site)
@@ -598,9 +606,12 @@ class ObjectFlow:
                                                for a in hinted.atoms if a.kind=='object'),hinted.tags))
         if generator:
             # The body runs while the caller iterates; its calls are may-calls in
-            # this caller's context. The call itself returns an iterator, not
-            # the body's return value.
-            result = UNKNOWN
+            # this caller's context. The call returns an iterator over the
+            # yielded values (plus anything unmodeled), not the body's return.
+            yielded = self.yield_values.pop()
+            result = Value(frozenset(Atom('collection_' + a.kind, a.name, a.site, a.receiver_class)
+                                    for a in yielded.atoms
+                                    if a.kind in ('object', 'reference', 'bound_method'))).join(UNKNOWN)
         result = result.tagged('return:' + symbol['canonical_name']).tagged('return')
         self.summaries[symbol['id']] = self.summaries.get(symbol['id'], BOTTOM).join(result)
         return result    
@@ -795,7 +806,7 @@ class ObjectFlow:
                                  {t['id'] for t in targets})
             child_site = f"{context['file']}:{decorator.lineno}:{decorator.col_offset} > {site}"
             result = BOTTOM
-            for fn in targets:
+            for fn in sorted(targets, key=lambda t: t['id']):
                 if fn['id'] in self.functions:
                     result = result.join(self.invoke(fn, [value], {}, dict(heap), child_mode, child_site))
             value = result if result.atoms else UNKNOWN
@@ -1089,6 +1100,15 @@ class ObjectFlow:
             return self.reference(node,result,context,mode)
         if isinstance(node, ast.Call):
             return self.call(node, env, heap, context, mode, site)
+        if self.enhanced and isinstance(node, (ast.Yield, ast.YieldFrom)) and self.yield_values:
+            # Record what the running generator produces for its caller's loop.
+            value = self.expr(node.value, env, heap, context, mode, site) if node.value is not None else NONE
+            if isinstance(node, ast.YieldFrom):
+                value = Value(frozenset(Atom(a.kind.removeprefix('collection_'), a.name, a.site, a.receiver_class)
+                                        for a in value.atoms if a.kind.startswith('collection_')
+                                        and a.kind != 'collection_unknown'))
+            self.yield_values[-1] = self.yield_values[-1].join(value)
+            return UNKNOWN
         # Same evaluation order as the generic walk below, plus implicit calls.
         if self.enhanced and isinstance(node, ast.FormattedValue):
             value=self.expr(node.value,env,heap,context,mode,site)
@@ -1273,6 +1293,10 @@ class ObjectFlow:
             managed |= bool(function.tags & {'binding', 'indexed', 'context', 'lambda'})
             managed |= (isinstance(node.func, ast.Name) and node.func.id in env
                         and any(a.kind == 'reference' for a in function.atoms))
+             # `f()()`: the callee is the value a project call returned; only
+            # object flow knows it (static name resolution cannot).
+            managed |= (self.enhanced and isinstance(node.func, ast.Call)
+                        and any(a.kind in ('reference', 'bound_method') for a in function.atoms))
             for atom in function.atoms:
                 if atom.kind in ('external_reference', 'external_bound'):
                     external.append((atom.name, atom.kind))
@@ -1352,6 +1376,7 @@ class ObjectFlow:
         result = BOTTOM
         start_heap = dict(heap)
         outcomes = []
+        bindings = sorted(bindings, key=lambda b: (b[0]['id'], sorted(map(atom_order, b[1].atoms)) if b[1] else []))
         for fn, bound in bindings:
             branch_heap = dict(start_heap)
             if fn['kind'] == 'CLASS':
@@ -1418,10 +1443,12 @@ class ObjectFlow:
         literal: record the new element instead of forgetting the list.
         Returns the call's value, or None when this is not such a call."""
         if (not self.enhanced or targets or receiver is None or kwargs
-                or not isinstance(node.func, ast.Attribute)
-                or node.func.attr not in ('append', 'insert', 'extend', 'pop')
-                or any(isinstance(a, ast.Starred) for a in node.args)):
+        or not isinstance(node.func, ast.Attribute)
+        or node.func.attr not in ('append', 'insert', 'extend', 'pop', 'update')
+        or any(isinstance(a, ast.Starred) for a in node.args)):
             return None
+        if node.func.attr == 'update':
+            return NONE if self.dict_update(receiver, args, heap) else None
         lists = [a for a in receiver.atoms if a.kind == 'container' and a.name.startswith('list:')]
         # A list value also carries element summaries (collection_* atoms);
         # anything else (unknown, other containers, objects) disqualifies it.
@@ -1599,7 +1626,8 @@ class ObjectFlow:
             self.expr(target.slice, env, heap, context, mode, site)
             if record:
                 self.implicit(target, context, mode, 'subscript', '__setitem__', container)
-            self.invalidate_containers(container, heap)
+            if not (self.enhanced and self.store_item(container, literal_key(target.slice), value, heap)):
+                self.invalidate_containers(container, heap)
         elif isinstance(target, ast.Attribute) and self.fields:
             receiver = self.expr(target.value, env, heap, context, mode, site)
             if record:
@@ -1620,8 +1648,123 @@ class ObjectFlow:
                 values=Value(frozenset(Atom('object',a.name,a.site) for a in pairs)).join(UNKNOWN).tagged('annotation')
                 self.assign(target.elts[1],values,env,heap,context,mode,site,record)
                 return
-            for part in target.elts:
-                self.assign(part, UNKNOWN, env, heap, context, mode, site, record)
+            parts = self.destructure(target, value, heap, context, site) if self.enhanced else None
+            if parts is None:
+                parts = [UNKNOWN] * len(target.elts)
+            for part, part_value in zip(target.elts, parts):
+                if isinstance(part, ast.Starred):
+                    part = part.value
+                self.assign(part, part_value, env, heap, context, mode, site, record)
+
+    @staticmethod
+    def known_containers(value, heap, kinds):
+        """Fully known containers of the given kinds in value, or None when value
+        may also be anything else (element summaries are ignored)."""
+        containers = []
+        for atom in value.atoms:
+            if atom.kind.startswith('collection_'):
+                continue
+            if (atom.kind != 'container' or not atom.name.startswith(kinds)
+                    or heap.get((atom.site, '*'), UNKNOWN).atoms):
+                return None
+            containers.append(atom)
+        return containers or None
+
+    def store_item(self, container, key, value, heap):
+        """`c[k] = v` with a literal key on fully known dicts/lists: record v at k.
+        One container is a strong update; several are joined. Returns False when
+        the store cannot be modeled (the caller then forgets the container)."""
+        containers = self.known_containers(container, heap, ('dict', 'list:'))
+        if key is None or not containers:
+            return False
+        strong = len(containers) == 1
+        for atom in containers:
+            actual = key
+            if atom.name.startswith('list:'):
+                indices = [k[1] for (s, k) in heap if s == atom.site and isinstance(k, tuple) and k[0] == 'index']
+                if type(key[1]) is not int:
+                    return False
+                position = key[1] + len(indices) if key[1] < 0 else key[1]
+                if position not in indices:
+                    continue  # IndexError at runtime: this alternative stores nothing
+                actual = ('index', position)
+            previous = heap.get((atom.site, actual), BOTTOM)
+            heap[(atom.site, actual)] = value if strong else previous.join(value)
+        return True
+
+    def dict_update(self, receiver, args, heap):
+        """d.update(other) with both fully known dicts: copy other's keys."""
+        targets = self.known_containers(receiver, heap, ('dict',))
+        sources = self.known_containers(args[0], heap, ('dict',)) if len(args) == 1 else None
+        if not targets or not sources:
+            return False
+        items = {}
+        for source in sources:
+            for (s, k), v in list(heap.items()):
+                if s == source.site and k != '*':
+                    items[k] = items.get(k, BOTTOM).join(v)
+        strong = len(targets) == 1 and len(sources) == 1
+        for target in targets:
+            for k, v in items.items():
+                heap[(target.site, k)] = v if strong else heap.get((target.site, k), BOTTOM).join(v)
+        return True
+
+    def destructure(self, target, value, heap, context, site):
+        """Values for each element of `a, (b, c), *d = value` when value holds
+        fully known tuple/list literals; None when nothing is known.
+
+        Each known container contributes its element at that position; a
+        starred target receives a new list of the remaining elements. Any other
+        possibility in `value` (unknown, other iterables) is joined as UNKNOWN.
+        """
+        names = target.elts
+        starred = [i for i, t in enumerate(names) if isinstance(t, ast.Starred)]
+        if len(starred) > 1:
+            return None
+        containers, other = [], False
+        for atom in value.atoms:
+            if atom.kind.startswith('collection_'):
+                continue
+            if (atom.kind == 'container' and atom.name.startswith(('tuple:', 'list:'))
+                    and not heap.get((atom.site, '*'), UNKNOWN).atoms):
+                containers.append(atom)
+            else:
+                other = True
+        if not containers:
+            return None
+        parts = [BOTTOM] * len(names)
+        for atom in containers:
+            indices = sorted(k[1] for (s, k) in heap if s == atom.site and isinstance(k, tuple) and k[0] == 'index')
+            items = [heap[(atom.site, ('index', i))] for i in indices]
+            if indices != list(range(len(items))):
+                other = True
+                continue
+            if not starred:
+                if len(items) != len(names):
+                    continue  # this alternative would raise ValueError
+                for i, item in enumerate(items):
+                    parts[i] = parts[i].join(item)
+                continue
+            star = starred[0]
+            after = len(names) - star - 1
+            if len(items) < len(names) - 1:
+                continue
+            middle = items[star:len(items) - after]
+            for i in range(star):
+                parts[i] = parts[i].join(items[i])
+            for i in range(after):
+                parts[star + 1 + i] = parts[star + 1 + i].join(items[len(items) - after + i])
+            allocation = f"container:{context['file']}:{target.lineno}:{target.col_offset}:star:{atom.site}"
+            heap[(allocation, '*')] = BOTTOM
+            summary = BOTTOM
+            for i, item in enumerate(middle):
+                heap[(allocation, ('index', i))] = item
+                summary = summary.join(Value(frozenset(Atom('collection_' + a.kind, a.name, a.site, a.receiver_class)
+                                                       for a in item.atoms), item.tags))
+            parts[star] = parts[star].join(summary).join(one('container', f'list:{len(middle)}', allocation))
+        if other:
+            parts = [p.join(UNKNOWN) for p in parts]
+        return [p if p.atoms else UNKNOWN for p in parts]
 
     def context_protocol(self, receiver, name, args, heap, mode, site):
         """Interpret a source-backed special method without inventing a call site.
@@ -1631,7 +1774,7 @@ class ObjectFlow:
         Unknown implementations cannot certify a yielded object or stale fields.
         """
         result, outcomes = BOTTOM, []
-        for atom in receiver.atoms:
+        for atom in sorted(receiver.atoms, key=atom_order):
             branch = dict(heap)
             cls = self.r.classes.get(atom.name) if atom.kind == 'object' else None
             methods, _ = self.r._find_method(cls, name) if cls else ([], [])

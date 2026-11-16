@@ -583,6 +583,287 @@ class ListFieldAndGeneratorTests(Helpers, unittest.TestCase):
             ''', 'app.run')
         self.assertNotIn('app.A.go', calls)
 
+class DestructuringTests(Helpers, unittest.TestCase):
+    """Step 4 F1: tuple/list unpacking of known literals keeps element values."""
+
+    def test_nested_and_starred_unpacking(self):
+        calls = self.calls('''
+            def f1():
+                pass
+            def f2():
+                pass
+            def f3():
+                pass
+            def f4():
+                pass
+            def run():
+                a, (b, c) = f1, (f2, f3)
+                a(); b(); c()
+                first, *middle, last = f1, f2, f3, f4
+                middle[0](); middle[1](); last()
+            ''', 'app.run')
+        self.assertEqual(calls & {'app.f1', 'app.f2', 'app.f3', 'app.f4'},
+                         {'app.f1', 'app.f2', 'app.f3', 'app.f4'})
+
+    def test_unpacked_bound_methods_and_function_results(self):
+        calls = self.calls('''
+            class Box:
+                def first(self):
+                    pass
+                def second(self):
+                    pass
+            def pair():
+                return 1, Box()
+            def run():
+                box = Box()
+                x, (y,) = box.first, (box.second,)
+                x(); y()
+                idx, token = pair()
+                token.first()
+            ''', 'app.run')
+        self.assertTrue({'app.Box.first', 'app.Box.second'} <= calls)
+
+    def test_wrong_length_or_unknown_value_assigns_nothing_known(self):
+        calls = self.calls('''
+            def f1():
+                pass
+            def f2():
+                pass
+            def f3():
+                pass
+            def run(things):
+                a, b = f1, f2, f3
+                a(); b()
+                c, d = things
+                c(); d()
+            ''', 'app.run')
+        # `a, b = f1, f2, f3` raises ValueError; `things` is unknown.
+        self.assertEqual(calls & {'app.f1', 'app.f2', 'app.f3'}, set())
+
+class SubscriptStoreTests(Helpers, unittest.TestCase):
+    """Step 4 F2: literal-key stores and dict.update on fully known containers."""
+
+    def test_dict_and_list_item_stores(self):
+        calls = self.calls('''
+            def f1():
+                pass
+            def f2():
+                pass
+            def f3():
+                pass
+            def run():
+                d = {}
+                d["a"] = f1
+                d["a"]()
+                nested = {"x": {"y": f1}}
+                nested["x"]["y"] = f2
+                nested["x"]["y"]()
+                items = [None]
+                items[0] = f3
+                items[-1]()
+            ''', 'app.run')
+        self.assertEqual(calls & {'app.f1', 'app.f2', 'app.f3'}, {'app.f1', 'app.f2', 'app.f3'})
+
+    def test_strong_update_replaces_the_old_value(self):
+        calls = self.calls('''
+            def old():
+                pass
+            def new():
+                pass
+            def run():
+                d = {"a": old}
+                d["a"] = new
+                d["a"]()
+            ''', 'app.run')
+        self.assertIn('app.new', calls)
+        self.assertNotIn('app.old', calls)
+
+    def test_dict_update_copies_known_keys(self):
+        calls = self.calls('''
+            def f1():
+                pass
+            def f2():
+                pass
+            def run():
+                d = {"a": f1}
+                d.update({"a": f2})
+                d["a"]()
+            ''', 'app.run')
+        self.assertIn('app.f2', calls)
+
+    def test_unknown_key_or_out_of_range_index_is_not_modeled(self):
+        calls = self.calls('''
+            def f1():
+                pass
+            def f2():
+                pass
+            def run(key):
+                d = {"a": f1}
+                d[key] = f2
+                d["a"]()
+                items = [f1]
+                items[5] = f2
+            ''', 'app.run')
+        # d[key] may overwrite "a": nothing definite remains for d["a"].
+        self.assertEqual(calls & {'app.f1', 'app.f2'}, set())
+
+class ReturnedValueCallTests(Helpers, unittest.TestCase):
+    """Step 4 F3: calling what a call returned; values a generator yields."""
+
+    def test_call_of_a_returned_function(self):
+        data, graph = self.analyze({
+            'helpers.py': '''
+                def leaf():
+                    pass
+                def make():
+                    def inner():
+                        pass
+                    return inner
+                def pick():
+                    return make
+                def give():
+                    return leaf
+            ''',
+            'app.py': '''
+                from helpers import pick, give
+                def run():
+                    pick()()()
+                    give()()
+            '''})
+        calls = set(knitcode_cg(data, graph)['app.run'])
+        self.assertTrue({'helpers.pick', 'helpers.make', 'helpers.make.inner',
+                         'helpers.give', 'helpers.leaf'} <= calls)
+
+    def test_call_of_an_unknown_result_adds_nothing(self):
+        calls = self.calls('''
+            from somewhere import factory
+            def leaf():
+                pass
+            def run():
+                factory()()
+            ''', 'app.run')
+        self.assertNotIn('app.leaf', calls)
+
+    def test_loop_over_a_generator_sees_yielded_values(self):
+        calls = self.calls('''
+            class Job:
+                def go(self):
+                    pass
+            def task():
+                pass
+            def produce(n):
+                for _ in range(n):
+                    yield task
+                yield Job()
+            def run():
+                for item in produce(3):
+                    item()
+                for job in produce(1):
+                    job.go()
+            ''', 'app.run')
+        self.assertTrue({'app.task', 'app.Job.go'} <= calls)
+
+    def test_generator_of_unknown_values_yields_nothing_definite(self):
+        calls = self.calls('''
+            def task():
+                pass
+            def produce(things):
+                for thing in things:
+                    yield thing
+            def run(things):
+                for item in produce(things):
+                    item()
+            ''', 'app.run')
+        self.assertNotIn('app.task', calls)
+
+class StarImportTests(Helpers, unittest.TestCase):
+    """Step 4 F4: `from m import *` binds m's public names; later bindings win."""
+
+    def test_later_star_import_shadows_earlier(self):
+        data, graph = self.analyze({
+            'first.py': 'def shared():\n    pass\ndef only_first():\n    pass\n',
+            'second.py': 'def shared():\n    pass\n',
+            'app.py': 'from first import *\nfrom second import *\ndef run():\n    shared()\n    only_first()\n'})
+        calls = set(knitcode_cg(data, graph)['app.run'])
+        self.assertEqual(calls & {'first.shared', 'second.shared', 'first.only_first'},
+                         {'second.shared', 'first.only_first'})
+
+    def test_star_reexport_chain_and_relative_package(self):
+        data, graph = self.analyze({
+            'pkg/__init__.py': 'from .impl import *\n',
+            'pkg/impl.py': 'def work():\n    pass\n',
+            'hub.py': 'from pkg import *\n',
+            'app.py': 'from hub import work\ndef run():\n    work()\n'})
+        self.assertIn('pkg.impl.work', knitcode_cg(data, graph)['app.run'])
+
+    def test_private_names_and_explicit_all(self):
+        data, graph = self.analyze({
+            'lib.py': '__all__ = ["public"]\ndef public():\n    pass\ndef hidden():\n    pass\ndef _private():\n    pass\n',
+            'other.py': 'def _secret():\n    pass\n',
+            'app.py': 'from lib import *\nfrom other import *\ndef run():\n    public()\n    hidden()\n    _secret()\n'})
+        calls = set(knitcode_cg(data, graph)['app.run'])
+        self.assertIn('lib.public', calls)
+        self.assertFalse({'lib.hidden', 'lib._private', 'other._secret'} & calls)
+
+    def test_local_definition_after_star_import_wins(self):
+        data, graph = self.analyze({
+            'lib.py': 'def helper():\n    pass\n',
+            'app.py': 'from lib import *\ndef helper():\n    pass\ndef run():\n    helper()\n'})
+        calls = set(knitcode_cg(data, graph)['app.run'])
+        self.assertIn('app.helper', calls)
+        self.assertNotIn('lib.helper', calls)
+
+class DeterminismTests(unittest.TestCase):
+    """The call graph must not depend on PYTHONHASHSEED (set iteration order).
+
+    Each item.go(W()) has eight candidate receivers, and w.work() is resolved
+    only inside the caller-specific interpretation of go(). With a tiny
+    analysis budget, which candidates are interpreted before the budget runs
+    out is visible in the result unless candidates are visited in a fixed order.
+    """
+
+    SOURCE = '\n'.join(
+        [line for c in 'ABCDEFGH' for line in (
+            f'class W{c}:', '    def work(self):', '        pass',
+            f'class {c}:', '    def go(self, w):', '        w.work()', '        w.work()', '        w.work()')]
+        + ['def produce():'] + [f'    yield {c}()' for c in 'ABCDEFGH']
+        + ['def run():'] + [f'    for item in produce():\n        item.go(W{c}())' for c in 'ABCDEFGH']) + '\n'
+
+    SCRIPT = textwrap.dedent('''
+        import contextlib, io, json, sys
+        from pathlib import Path
+        sys.path[:0] = [sys.argv[2], sys.argv[2] + '/scripts']
+        import object_flow
+        original = object_flow.ObjectFlow.__init__
+        def small_budget(self, *args, **kwargs):
+            original(self, *args, **kwargs)
+            self.root_step_limit = 40
+        object_flow.ObjectFlow.__init__ = small_budget
+        from jarvis_benchmark import analyze, knitcode_cg
+        with contextlib.redirect_stdout(io.StringIO()):
+            _, symbols, graph = analyze(Path(sys.argv[1]))
+        print(json.dumps(knitcode_cg(symbols, graph), sort_keys=True))
+        ''')
+
+    def test_same_graph_for_different_hash_seeds(self):
+        import os
+        import subprocess
+        root_dir = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / 'repo'
+            project.mkdir()
+            (project / 'app.py').write_text(self.SOURCE, encoding='utf-8')
+            script = Path(tmp) / 'run.py'
+            script.write_text(self.SCRIPT, encoding='utf-8')
+            outputs = set()
+            for seed in ('0', '1', '2', '3', '4', '5'):
+                result = subprocess.run([sys.executable, str(script), str(project), str(root_dir)],
+                                        capture_output=True, text=True, timeout=120,
+                                        env={**os.environ, 'PYTHONHASHSEED': seed})
+                self.assertEqual(result.returncode, 0, result.stderr)
+                outputs.add(result.stdout)
+        self.assertEqual(len(outputs), 1, f'{len(outputs)} different call graphs for 6 hash seeds')
+
 class JarvisAdapterTests(Helpers, unittest.TestCase):
     def test_builtin_type_notation(self):
         self.assertEqual(jarvis_name('<**PyStr**>.join', False), '<str>.join')

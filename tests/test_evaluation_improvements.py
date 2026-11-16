@@ -127,8 +127,10 @@ class ImprovementsTests(unittest.TestCase):
                 self.expect(f'def go(external):\n    obj={expression}; obj.run()\n', [])
 
     def test_list_alias_mutation_invalidates_index(self):
+        # alias and values are the same list: the stale A() must not be used.
+        # Since literal-key stores are modeled, the new element B() is known.
         self.expect('def go():\n    values=[A()]; alias=values; alias[0]=B()\n'
-                    '    obj=values[0]; obj.run()\n', [])
+                    '    obj=values[0]; obj.run()\n', ['METHOD:app.B.run'])
 
     def test_list_method_mutation_invalidates_index(self):
         self.expect('def go():\n    values=[A()]; values.clear()\n'

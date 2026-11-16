@@ -10,27 +10,29 @@
 
 최신 연구 JARVIS(arXiv 2305.05949)의 공개 벤치마크(micro 138개, macro 6개)로 KnitCode를 평가하는 `scripts/jarvis_benchmark.py`를 추가했다. 아티팩트에 들어 있는 PyCG·JARVIS 출력을 같은 채점기로 다시 채점해 논문 표를 재현한 뒤, 같은 조건(E.A.: 모든 함수를 진입점으로, 앱 코드만)에서 비교한다. 아래 수치는 모두 같은 채점기로 잰 `main`(`c404b3c`) 엔진 대비 값이다.
 
-| macro 6개 합산 | 정밀도 | 재현율 |
-|---|---:|---:|
-| PyCG | 0.993 | 0.724 |
-| JARVIS | 0.994 | 0.776 |
-| KnitCode `main` | 0.916 | 0.748 |
-| **KnitCode 개선 후** | **0.878** | **0.837** |
+| | macro 6개 합산 정밀도 / 재현율 | JARVIS micro 놓친 호출 | PyCG micro Sound |
+|---|---|---:|---:|
+| PyCG | 0.993 / 0.724 | 27 | 103 (논문) |
+| JARVIS | 0.994 / 0.776 | 9 | — |
+| KnitCode `main` | 0.916 / 0.748 | 81 | 71 |
+| **KnitCode 개선 후** | **0.877 / 0.838** | **25** | **94** |
 
-- **엔진 개선 12가지:** 데코레이터 적용 호출, `raise A`, 클래스 본문 별칭, f-string `__str__`·반복 `__next__`, `map`/`filter` 콜백, 사용자 정의 `__setattr__`, `six.add_metaclass(abc.ABCMeta)`, 항등 데코레이터 증명, 클로저·데코레이터 연쇄, property·staticmethod 본문 해석, `getattr` 접두사 디스패치, 목록 `append` 추적과 제너레이터 해석. 각 규칙에 반례 테스트를 붙였다(`tests/test_jarvis_improvements.py`, 35개).
-- **엔진 개선과 채점 관례를 구분한다.** JARVIS 정답은 모듈 import·클래스 정의 등도 호출로 센다. 정답을 보지 않는 관례 맞춤 규칙을 적용한 점수가 위 표이고, 관례 맞춤 없는 원점수 재현율은 0.621 → 0.709다. 재현율이 JARVIS보다 높다는 것은 관례를 맞춘 점수 기준이다.
-- **정밀도는 두 도구보다 낮게 측정된다.** 오탐 표본 50개(무작위 26개, 단계별 신규 24개)는 모두 소스상 실행될 수 있는 호출이었다(property 접근, `with`, sqlparse `group()`의 리스트 호출 등). JARVIS 정답의 누락이 의심되지만, 오탐 전체를 검수하기 전에는 KnitCode가 더 정확하다고 결론 내리지 않는다.
-- **micro:** JARVIS 기준 누락 없는 예제 92 → 104/138, 놓친 호출 81 → 56(오탐 9 그대로). PyCG 기준 Sound 71 → 82/112, 놓친 호출 72 → 49(오탐 1 그대로). JARVIS(134/138)·PyCG(126/138)에는 아직 못 미친다.
-- **PyCG 공식 macro F1:** asciinema 82.70 → 83.08, autojump 81.89 → 82.05, 나머지 3개는 동일.
-- **비용:** 데코레이터·제너레이터 본문까지 해석해 분석 시간이 늘었다(Click 6.8 → 12.0초, Requests 4.3 → 7.1초, Linux 기준).
-- **보류:** 장식된 함수를 감싼 함수로 연결(두 정답의 관례가 충돌), 제너레이터 원소 타입 + 분석 예산 확대(sqlparse 0.73 → 0.80이지만 시간 +40%), 내장 타입 메서드 추론. 매개변수 타입을 모르는 호출은 동적 분석 통합으로 보완하는 방향을 검토한다.
+- **엔진 개선 17가지:** 데코레이터 적용·항등 데코레이터 증명·클로저와 데코레이터 연쇄, `raise A`, 클래스 본문 별칭, f-string `__str__`·반복 `__next__`, `map`/`filter` 콜백, 사용자 정의 `__setattr__`, `six.add_metaclass(abc.ABCMeta)`, property·staticmethod 본문 해석, `getattr` 접두사 디스패치, 목록 `append` 추적과 제너레이터 해석, 튜플 언패킹, 첨자 대입·`dict.update`, 호출 결과 호출, 제너레이터 `yield` 값, `from m import *`. 각 규칙에 반례 테스트를 붙였다(`tests/test_jarvis_improvements.py`, 51개).
+- **엔진 개선과 채점 관례를 구분한다.** JARVIS 정답은 모듈 import·클래스 정의 등도 호출로 센다. 정답을 보지 않는 관례 맞춤 규칙을 적용한 점수가 위 표이고, 관례 맞춤 없는 원점수 재현율은 0.621 → 0.710다. 재현율이 JARVIS보다 높다는 것은 관례를 맞춘 점수 기준이다.
+- **정밀도는 두 도구보다 낮게 측정된다.** 오탐 표본 50개(무작위 26개, 단계별 신규 24개)는 모두 소스상 실행될 수 있는 호출이었다(property 접근, `with`, sqlparse `group()`의 리스트 호출 등). JARVIS 정답의 누락이 의심되지만, 오탐 전체를 검수하기 전에는 KnitCode가 더 정확하다고 결론 내리지 않는다. micro 오탐은 한 번도 늘지 않았다(JARVIS 9, PyCG 1).
+- **micro:** JARVIS 기준 누락 없는 예제 92 → 118/138, 놓친 호출 81 → 25(PyCG 27보다 적음). PyCG 기준 Sound 71 → 94/112, 놓친 호출 72 → 24. 누락 없는 예제 수는 JARVIS(134)·PyCG(126)에 아직 못 미친다.
+- **PyCG 공식 macro F1:** asciinema 82.70 → 83.08, autojump 81.89 → 82.18, 나머지 3개는 동일.
+- **재현성:** 해시 시드에 따라 결과가 흔들리던 문제를 찾아 해석 순서를 고정했다. 모든 벤치마크가 시드와 상관없이 간선까지 같고, 회귀 테스트로 지킨다.
+- **동적 분석(PR #5)과 결합:** PR #5와 같은 범위(앱 함수끼리의 호출)에서, 개선한 정적 분석만으로 furl F1이 58.3% → 77.2%가 되어 PR #5의 정적+동적(78.4%)에 근접한다. 둘을 합치면 79.9%다. PR #5가 저장한 실행 기록을 재사용한 결과다.
+- **비용:** 데코레이터·제너레이터 본문까지 해석해 분석 시간이 늘었다(Click 6.8 → 8.8~12.5초, Requests 4.3 → 5.3~7.3초, Linux 기준).
+- **보류:** 장식된 함수를 감싼 함수로 연결(두 정답의 관례가 충돌), 분석 예산 확대(sqlparse 0.73 → 0.80이지만 시간 +40%), 내장 타입 메서드 추론, 이름 기반 메서드 추정(프로젝트에 따라 정밀도 급락). 매개변수 타입을 모르는 호출은 동적 분석 통합으로 보완하는 방향을 검토한다.
 
 ```bash
 python scripts/jarvis_benchmark.py micro --jarvis <pythonJaRvis.github.io/Jarvis 경로> --output out/jarvis/micro.json
 python scripts/jarvis_benchmark.py macro --jarvis <pythonJaRvis.github.io/Jarvis 경로> --output out/jarvis/macro
 ```
 
-[실험 보고서](experiments/2026-11-15-jarvis-benchmark/REPORT_KO.md)에 1차 결과의 채점 규칙, 관례 맞춤, 정답 감사, 재현 명령을 적었다. Windows(Python 3.12)와 Linux(Python 3.13)에서 같은 점수가 재현됐다. PyCG·JARVIS를 전반적으로 능가한 상태는 아니다.
+[실험 보고서](experiments/2026-11-15-jarvis-benchmark/REPORT_KO.md)에 채점 규칙, 관례 맞춤, 엔진 변경 17가지의 규칙과 제한, 정답 감사, 재현성 수정, 동적 분석 결합, 재현 명령을 적었다. Windows(Python 3.12)와 Linux(Python 3.13)에서 같은 점수가 재현됐다. PyCG·JARVIS를 전반적으로 능가한 상태는 아니다.
 
 
 ## 2026-10-25 — 기본 분석 경로를 단일 엔진으로 통합

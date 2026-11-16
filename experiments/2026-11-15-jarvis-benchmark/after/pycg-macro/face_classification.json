@@ -2,7 +2,7 @@
   "project": "face_classification",
   "files": 20,
   "parse_errors": 0,
-  "seconds": 0.63,
+  "seconds": 0.54,
   "skipped": {
     "class_instantiation_without_init": 0,
     "non_dotted_external": 5

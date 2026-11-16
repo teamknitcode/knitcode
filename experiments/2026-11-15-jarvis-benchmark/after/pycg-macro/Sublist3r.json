@@ -2,7 +2,7 @@
   "project": "Sublist3r",
   "files": 4,
   "parse_errors": 0,
-  "seconds": 0.83,
+  "seconds": 0.52,
   "skipped": {
     "class_instantiation_without_init": 0,
     "non_dotted_external": 6

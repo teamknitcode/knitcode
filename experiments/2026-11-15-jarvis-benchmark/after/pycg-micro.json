@@ -1,17 +1,17 @@
 {
-  "engine_module": "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/proto/graph_builder.py",
-  "adapter_module": "/tmp/claude-0/-home-user/f85cf09f-355c-5609-a4e3-7cadbcb5909a/scratchpad/proto/pycg_adapter.py",
+  "engine_module": "/home/user/teamknitcode/knitcode/graph_builder.py",
+  "adapter_module": "/home/user/teamknitcode/knitcode/pycg_adapter.py",
   "include_implicit": true,
   "cases": 112,
   "complete": 111,
-  "sound": 82,
+  "sound": 94,
   "categories": {
     "assignments": {
       "cases": 4,
       "complete": 4,
-      "sound": 2,
+      "sound": 4,
       "strict_no_extra_edges": 4,
-      "all_truth_edges_found": 2
+      "all_truth_edges_found": 4
     },
     "builtins": {
       "cases": 3,
@@ -23,9 +23,9 @@
     "classes": {
       "cases": 22,
       "complete": 22,
-      "sound": 21,
+      "sound": 22,
       "strict_no_extra_edges": 22,
-      "all_truth_edges_found": 21
+      "all_truth_edges_found": 22
     },
     "decorators": {
       "cases": 7,
@@ -37,16 +37,16 @@
     "dicts": {
       "cases": 12,
       "complete": 11,
-      "sound": 5,
+      "sound": 6,
       "strict_no_extra_edges": 11,
-      "all_truth_edges_found": 5
+      "all_truth_edges_found": 6
     },
     "direct_calls": {
       "cases": 4,
       "complete": 4,
-      "sound": 0,
+      "sound": 4,
       "strict_no_extra_edges": 4,
-      "all_truth_edges_found": 0
+      "all_truth_edges_found": 4
     },
     "exceptions": {
       "cases": 3,
@@ -65,16 +65,16 @@
     "generators": {
       "cases": 6,
       "complete": 6,
-      "sound": 4,
+      "sound": 5,
       "strict_no_extra_edges": 6,
-      "all_truth_edges_found": 4
+      "all_truth_edges_found": 5
     },
     "imports": {
       "cases": 14,
       "complete": 14,
-      "sound": 11,
+      "sound": 13,
       "strict_no_extra_edges": 14,
-      "all_truth_edges_found": 11
+      "all_truth_edges_found": 13
     },
     "kwargs": {
       "cases": 3,
@@ -93,9 +93,9 @@
     "lists": {
       "cases": 8,
       "complete": 8,
-      "sound": 4,
+      "sound": 5,
       "strict_no_extra_edges": 8,
-      "all_truth_edges_found": 4
+      "all_truth_edges_found": 5
     },
     "mro": {
       "cases": 7,
@@ -138,77 +138,47 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.01782020000001694
+      "seconds": 0.021772662999996584
     },
     {
       "case": "assignments/recursive_tuple",
       "category": "assignments",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 3,
+      "all_truth_edges_found": true,
+      "tp": 6,
       "fp": 0,
-      "fn": 3,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func2"
-        ],
-        [
-          "main",
-          "main.func3"
-        ],
-        [
-          "main",
-          "main.func4"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.005018569999975853
+      "seconds": 0.005681226000000095
     },
     {
       "case": "assignments/starred",
       "category": "assignments",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 0,
+      "all_truth_edges_found": true,
+      "tp": 4,
       "fp": 0,
-      "fn": 4,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func1"
-        ],
-        [
-          "main",
-          "main.func2"
-        ],
-        [
-          "main",
-          "main.func3"
-        ],
-        [
-          "main",
-          "main.func4"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003852260000002161
+      "seconds": 0.004403940999999634
     },
     {
       "case": "assignments/tuple",
@@ -228,7 +198,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003544868000005863
+      "seconds": 0.004017304999997862
     },
     {
       "case": "builtins/functions",
@@ -248,7 +218,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002468898999978819
+      "seconds": 0.0025905379999997535
     },
     {
       "case": "builtins/map",
@@ -285,7 +255,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004752300000006926
+      "seconds": 0.004858909000002853
     },
     {
       "case": "builtins/types",
@@ -305,7 +275,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029211140000029445
+      "seconds": 0.0032751269999984345
     },
     {
       "case": "classes/assigned_call",
@@ -325,7 +295,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0031974579999882735
+      "seconds": 0.003091233999999332
     },
     {
       "case": "classes/assigned_self_call",
@@ -345,7 +315,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0034104249999984404
+      "seconds": 0.003770920000000899
     },
     {
       "case": "classes/base_class_attr",
@@ -365,7 +335,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.003724774000005482
+      "seconds": 0.004484134999998446
     },
     {
       "case": "classes/base_class_calls_child",
@@ -385,7 +355,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0062511380000103145
+      "seconds": 0.006127130999999508
     },
     {
       "case": "classes/call",
@@ -405,7 +375,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0027642519999915294
+      "seconds": 0.0032598949999993465
     },
     {
       "case": "classes/direct_call",
@@ -425,7 +395,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026632699999993292
+      "seconds": 0.0033833290000018224
     },
     {
       "case": "classes/imported_attr_access",
@@ -445,7 +415,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002603308000004745
+      "seconds": 0.0031562250000014558
     },
     {
       "case": "classes/imported_call",
@@ -465,7 +435,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003269599000020662
+      "seconds": 0.0038962510000004613
     },
     {
       "case": "classes/imported_call_without_init",
@@ -485,7 +455,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029542229999890424
+      "seconds": 0.003495150999999197
     },
     {
       "case": "classes/imported_nested_attr_access",
@@ -505,7 +475,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0031201500000008764
+      "seconds": 0.0037334340000008126
     },
     {
       "case": "classes/instance",
@@ -525,7 +495,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002953936000011481
+      "seconds": 0.003289454999997332
     },
     {
       "case": "classes/nested_call",
@@ -545,7 +515,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0037488759999746435
+      "seconds": 0.003733488000001728
     },
     {
       "case": "classes/nested_class_calls",
@@ -565,7 +535,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.005613708999987921
+      "seconds": 0.005966243999999676
     },
     {
       "case": "classes/parameter_call",
@@ -585,7 +555,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.0038543880000077024
+      "seconds": 0.004478780999999543
     },
     {
       "case": "classes/return_call",
@@ -605,7 +575,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.00336445700000354
+      "seconds": 0.004277697999999219
     },
     {
       "case": "classes/return_call_direct",
@@ -625,7 +595,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.02112566499999957
+      "seconds": 0.0037230490000013106
     },
     {
       "case": "classes/self_assign_func",
@@ -645,7 +615,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.006912448000008453
+      "seconds": 0.0043918090000012455
     },
     {
       "case": "classes/self_assignment",
@@ -665,7 +635,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0055657260000145925
+      "seconds": 0.004531749999998169
     },
     {
       "case": "classes/self_call",
@@ -685,7 +655,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0056840459999989434
+      "seconds": 0.004420459000002097
     },
     {
       "case": "classes/static_method_call",
@@ -705,7 +675,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0035971709999955692
+      "seconds": 0.0027963759999991566
     },
     {
       "case": "classes/super_class_return",
@@ -725,40 +695,27 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.006674866999986762
+      "seconds": 0.004586272000000946
     },
     {
       "case": "classes/tuple_assignment",
       "category": "classes",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 2,
+      "all_truth_edges_found": true,
+      "tp": 5,
       "fp": 0,
-      "fn": 3,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.MyClass.func1"
-        ],
-        [
-          "main",
-          "main.MyClass.func2"
-        ],
-        [
-          "main",
-          "main.MyClass.func3"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.007712951000002022
+      "seconds": 0.005283709000000414
     },
     {
       "case": "decorators/assigned",
@@ -778,7 +735,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004318990000001577
+      "seconds": 0.003102444999999676
     },
     {
       "case": "decorators/call",
@@ -798,7 +755,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0038422809999758556
+      "seconds": 0.00297043700000188
     },
     {
       "case": "decorators/nested",
@@ -818,7 +775,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004947370999985878
+      "seconds": 0.003740042000000443
     },
     {
       "case": "decorators/nested_decorators",
@@ -847,7 +804,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.006199472000020023
+      "seconds": 0.004955559999999082
     },
     {
       "case": "decorators/param_call",
@@ -867,7 +824,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0041493489999879785
+      "seconds": 0.004101434000002513
     },
     {
       "case": "decorators/return",
@@ -887,7 +844,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004359735999997838
+      "seconds": 0.003535109000001313
     },
     {
       "case": "decorators/return_different_func",
@@ -912,32 +869,27 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.005549309000002722
+      "seconds": 0.004362779999997457
     },
     {
       "case": "dicts/add_key",
       "category": "dicts",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 0,
+      "all_truth_edges_found": true,
+      "tp": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003642336000012847
+      "seconds": 0.0030297160000003487
     },
     {
       "case": "dicts/assign",
@@ -946,18 +898,14 @@
       "sound": false,
       "strict_no_extra_edges": true,
       "all_truth_edges_found": false,
-      "tp": 0,
+      "tp": 1,
       "fp": 0,
-      "fn": 2,
+      "fn": 1,
       "false_positives": [],
       "false_negatives": [
         [
           "main",
           "main.func1"
-        ],
-        [
-          "main",
-          "main.func2"
         ]
       ],
       "missing_nodes": [],
@@ -966,7 +914,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003848358999988477
+      "seconds": 0.0033078740000007656
     },
     {
       "case": "dicts/call",
@@ -986,7 +934,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004127267000001211
+      "seconds": 0.0035496300000019687
     },
     {
       "case": "dicts/ext_key",
@@ -1011,7 +959,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004199499000009155
+      "seconds": 0.0036372229999983574
     },
     {
       "case": "dicts/nested",
@@ -1020,18 +968,14 @@
       "sound": false,
       "strict_no_extra_edges": true,
       "all_truth_edges_found": false,
-      "tp": 0,
+      "tp": 1,
       "fp": 0,
-      "fn": 2,
+      "fn": 1,
       "false_positives": [],
       "false_negatives": [
         [
           "main",
           "main.func1"
-        ],
-        [
-          "main",
-          "main.func2"
         ]
       ],
       "missing_nodes": [],
@@ -1040,7 +984,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002835338000011234
+      "seconds": 0.004163960999999716
     },
     {
       "case": "dicts/new_key_param",
@@ -1065,7 +1009,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030034119999982067
+      "seconds": 0.0037613319999998396
     },
     {
       "case": "dicts/param",
@@ -1085,7 +1029,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026792209999939587
+      "seconds": 0.0033690420000027643
     },
     {
       "case": "dicts/param_key",
@@ -1114,7 +1058,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0037301770000226497
+      "seconds": 0.003907810999997707
     },
     {
       "case": "dicts/return",
@@ -1134,7 +1078,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026948590000017703
+      "seconds": 0.0034999989999988657
     },
     {
       "case": "dicts/return_assign",
@@ -1154,7 +1098,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002597494000013967
+      "seconds": 0.003526194999999177
     },
     {
       "case": "dicts/type_coercion",
@@ -1174,7 +1118,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0026469050000059724
+      "seconds": 0.003028156000002724
     },
     {
       "case": "dicts/update",
@@ -1183,9 +1127,9 @@
       "sound": false,
       "strict_no_extra_edges": false,
       "all_truth_edges_found": false,
-      "tp": 0,
+      "tp": 1,
       "fp": 1,
-      "fn": 2,
+      "fn": 1,
       "false_positives": [
         [
           "main",
@@ -1196,10 +1140,6 @@
         [
           "main",
           "main.func1"
-        ],
-        [
-          "main",
-          "main.func2"
         ]
       ],
       "missing_nodes": [],
@@ -1208,111 +1148,87 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029163619999792445
+      "seconds": 0.0035752590000015516
     },
     {
       "case": "direct_calls/assigned_call",
       "category": "direct_calls",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.return_func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0027712210000174764
+      "seconds": 0.004237802999998763
     },
     {
       "case": "direct_calls/imported_return_call",
       "category": "direct_calls",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "to_import.return_func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029241909999768723
+      "seconds": 0.003523395000001983
     },
     {
       "case": "direct_calls/return_call",
       "category": "direct_calls",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 3,
       "fp": 0,
-      "fn": 2,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.return_func"
-        ],
-        [
-          "main",
-          "main.return_func.nested_return_func"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0032475479999902745
+      "seconds": 0.00377120099999928
     },
     {
       "case": "direct_calls/with_parameters",
       "category": "direct_calls",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 2,
+      "all_truth_edges_found": true,
+      "tp": 3,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func2"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0033774359999938497
+      "seconds": 0.003617905999998783
     },
     {
       "case": "exceptions/raise",
@@ -1332,7 +1248,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0023034380000126475
+      "seconds": 0.0028068470000022216
     },
     {
       "case": "exceptions/raise_assigned",
@@ -1352,7 +1268,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0023739779999800703
+      "seconds": 0.0029066929999999047
     },
     {
       "case": "exceptions/raise_attr",
@@ -1372,7 +1288,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0023940250000009655
+      "seconds": 0.0029322399999998083
     },
     {
       "case": "functions/assigned_call",
@@ -1392,7 +1308,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0021997089999956643
+      "seconds": 0.0027628300000017703
     },
     {
       "case": "functions/assigned_call_lit_param",
@@ -1412,7 +1328,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002374059000004536
+      "seconds": 0.0027352969999974164
     },
     {
       "case": "functions/call",
@@ -1432,7 +1348,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.00207237499998314
+      "seconds": 0.0017472440000005918
     },
     {
       "case": "functions/imported_call",
@@ -1452,7 +1368,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025239020000071832
+      "seconds": 0.0020434609999995246
     },
     {
       "case": "generators/iter_param",
@@ -1472,7 +1388,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.005134529000002885
+      "seconds": 0.003769988000001945
     },
     {
       "case": "generators/iter_return",
@@ -1497,7 +1413,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004609611000006453
+      "seconds": 0.0037101939999999445
     },
     {
       "case": "generators/iterable",
@@ -1517,7 +1433,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004471096000003172
+      "seconds": 0.003978364000001733
     },
     {
       "case": "generators/iterable_assigned",
@@ -1537,7 +1453,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0042071530000100665
+      "seconds": 0.003387512999999842
     },
     {
       "case": "generators/no_iter",
@@ -1557,32 +1473,27 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004012843000026578
+      "seconds": 0.003231947999999818
     },
     {
       "case": "generators/yield",
       "category": "generators",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 1,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func2"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003617222999992009
+      "seconds": 0.0024761929999996823
     },
     {
       "case": "imports/chained_import",
@@ -1602,36 +1513,27 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003254335999997693
+      "seconds": 0.0026879480000019385
     },
     {
       "case": "imports/import_all",
       "category": "imports",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 0,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 2,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "from_module.func1"
-        ],
-        [
-          "main",
-          "from_module.func2"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0028034509999770307
+      "seconds": 0.002267521000000272
     },
     {
       "case": "imports/import_as",
@@ -1651,7 +1553,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002292398999998113
+      "seconds": 0.0019209489999987284
     },
     {
       "case": "imports/import_from",
@@ -1671,7 +1573,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025415510000073027
+      "seconds": 0.00251734700000128
     },
     {
       "case": "imports/init_func_import",
@@ -1691,7 +1593,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003266849999988608
+      "seconds": 0.0026246039999975324
     },
     {
       "case": "imports/init_import",
@@ -1716,7 +1618,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.003664772000007588
+      "seconds": 0.0031593259999986856
     },
     {
       "case": "imports/parent_import",
@@ -1736,7 +1638,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0035798840000040855
+      "seconds": 0.0027743999999998437
     },
     {
       "case": "imports/relative_import",
@@ -1756,7 +1658,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029244379999795456
+      "seconds": 0.0019499490000001174
     },
     {
       "case": "imports/relative_import_with_name",
@@ -1776,7 +1678,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0036608970000031604
+      "seconds": 0.0028320189999995193
     },
     {
       "case": "imports/simple_import",
@@ -1796,7 +1698,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0032623599999794806
+      "seconds": 0.0019826149999992992
     },
     {
       "case": "imports/submodule_import",
@@ -1816,36 +1718,27 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003715895999988561
+      "seconds": 0.0026323939999990387
     },
     {
       "case": "imports/submodule_import_all",
       "category": "imports",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 0,
+      "all_truth_edges_found": true,
+      "tp": 2,
       "fp": 0,
-      "fn": 2,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "from_module.nested_module.func1"
-        ],
-        [
-          "main",
-          "from_module.nested_module.func2"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030490450000115743
+      "seconds": 0.003866555000001881
     },
     {
       "case": "imports/submodule_import_as",
@@ -1865,7 +1758,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002781986999991659
+      "seconds": 0.002301763999998485
     },
     {
       "case": "imports/submodule_import_from",
@@ -1885,7 +1778,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030833780000136812
+      "seconds": 0.0025222940000020344
     },
     {
       "case": "kwargs/assigned_call",
@@ -1905,7 +1798,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002876107999981059
+      "seconds": 0.0022609579999972595
     },
     {
       "case": "kwargs/call",
@@ -1925,7 +1818,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004683013000004621
+      "seconds": 0.002673284000000109
     },
     {
       "case": "kwargs/chained_call",
@@ -1950,7 +1843,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0031555389999766703
+      "seconds": 0.0024959859999995615
     },
     {
       "case": "lambdas/call",
@@ -1970,7 +1863,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002137180000005401
+      "seconds": 0.0017539339999999015
     },
     {
       "case": "lambdas/calls_parameter",
@@ -1999,7 +1892,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003072658999997202
+      "seconds": 0.002778382999998996
     },
     {
       "case": "lambdas/chained_calls",
@@ -2019,7 +1912,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004339909999998781
+      "seconds": 0.0034114949999981548
     },
     {
       "case": "lambdas/parameter_call",
@@ -2039,7 +1932,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002723820999989357
+      "seconds": 0.0021648069999997688
     },
     {
       "case": "lambdas/return_call",
@@ -2059,7 +1952,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0024650650000239693
+      "seconds": 0.0019552570000023195
     },
     {
       "case": "lists/comprehension_if",
@@ -2079,7 +1972,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0023701519999974607
+      "seconds": 0.0019463639999983684
     },
     {
       "case": "lists/comprehension_val",
@@ -2099,7 +1992,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030176699999913126
+      "seconds": 0.0020094790000015905
     },
     {
       "case": "lists/ext_index",
@@ -2124,7 +2017,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002995895999987397
+      "seconds": 0.0024201359999977967
     },
     {
       "case": "lists/nested",
@@ -2144,7 +2037,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025000900000122783
+      "seconds": 0.002524102999998945
     },
     {
       "case": "lists/nested_comprehension",
@@ -2164,7 +2057,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002818615999984786
+      "seconds": 0.002308978999998601
     },
     {
       "case": "lists/param_index",
@@ -2189,32 +2082,27 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002871754000011606
+      "seconds": 0.002379523999998412
     },
     {
       "case": "lists/simple",
       "category": "lists",
       "complete": true,
-      "sound": false,
+      "sound": true,
       "strict_no_extra_edges": true,
-      "all_truth_edges_found": false,
-      "tp": 3,
+      "all_truth_edges_found": true,
+      "tp": 4,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "false_positives": [],
-      "false_negatives": [
-        [
-          "main",
-          "main.func4"
-        ]
-      ],
+      "false_negatives": [],
       "missing_nodes": [],
       "parse_errors": [],
       "skipped": {
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003763765000002195
+      "seconds": 0.0028604090000001747
     },
     {
       "case": "lists/slice",
@@ -2239,7 +2127,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0032034900000041944
+      "seconds": 0.0023777450000004308
     },
     {
       "case": "mro/basic",
@@ -2259,7 +2147,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.003413754999996854
+      "seconds": 0.0022783779999997478
     },
     {
       "case": "mro/basic_init",
@@ -2279,7 +2167,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0031174709999959305
+      "seconds": 0.002866285999999718
     },
     {
       "case": "mro/parents_same_superclass",
@@ -2299,7 +2187,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0038943429999847012
+      "seconds": 0.0030574630000010927
     },
     {
       "case": "mro/self_assignment",
@@ -2324,7 +2212,7 @@
         "class_instantiation_without_init": 1,
         "non_dotted_external": 0
       },
-      "seconds": 0.004553599000018949
+      "seconds": 0.0035251330000001246
     },
     {
       "case": "mro/super_call",
@@ -2344,7 +2232,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.004032822999988639
+      "seconds": 0.0032472170000019673
     },
     {
       "case": "mro/two_parents",
@@ -2364,7 +2252,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003898364000008314
+      "seconds": 0.002737087999999943
     },
     {
       "case": "mro/two_parents_method_defined",
@@ -2384,7 +2272,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0036501259999965896
+      "seconds": 0.003380686999999938
     },
     {
       "case": "parameters/assigned_call",
@@ -2404,7 +2292,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0027692930000000615
+      "seconds": 0.002185094000001442
     },
     {
       "case": "parameters/call",
@@ -2424,7 +2312,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0025891969999918274
+      "seconds": 0.002019103000002076
     },
     {
       "case": "parameters/imported_assigned_call",
@@ -2444,7 +2332,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003293984999999111
+      "seconds": 0.0025930199999990577
     },
     {
       "case": "parameters/imported_call",
@@ -2464,7 +2352,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0030601539999963734
+      "seconds": 0.0023874030000001767
     },
     {
       "case": "parameters/nested_call",
@@ -2484,7 +2372,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003256035999982032
+      "seconds": 0.0024974689999979205
     },
     {
       "case": "parameters/param_call",
@@ -2504,7 +2392,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.003447020999999495
+      "seconds": 0.002326325999998602
     },
     {
       "case": "returns/call",
@@ -2524,7 +2412,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.002613722999996071
+      "seconds": 0.002033042999997292
     },
     {
       "case": "returns/imported_call",
@@ -2544,7 +2432,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0029961479999940366
+      "seconds": 0.0028228039999973475
     },
     {
       "case": "returns/nested_import_call",
@@ -2564,7 +2452,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0033734499999980017
+      "seconds": 0.0026555170000008843
     },
     {
       "case": "returns/return_complex",
@@ -2589,7 +2477,7 @@
         "class_instantiation_without_init": 0,
         "non_dotted_external": 0
       },
-      "seconds": 0.0038760280000076364
+      "seconds": 0.0029988069999973277
     }
   ]
 }

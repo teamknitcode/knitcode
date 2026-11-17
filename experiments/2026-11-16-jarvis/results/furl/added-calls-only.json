@@ -1,0 +1,657 @@
+[
+  {
+    "caller": "furl.furl.Fragment.__bool__",
+    "callee": "furl.furl.Path.__bool__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__bool__",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__bool__",
+    "callee": "furl.furl.Query.__bool__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__bool__",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__eq__",
+    "callee": "furl.furl.Fragment.__str__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__init__",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__init__",
+    "callee": "furl.furl.Fragment.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__init__",
+    "callee": "furl.furl.FragmentPathCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__init__",
+    "callee": "furl.furl.QueryCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__ne__",
+    "callee": "furl.furl.Fragment.__eq__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__setattr__",
+    "callee": "furl.furl.PathCompositionInterface.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__setattr__",
+    "callee": "furl.furl.QueryCompositionInterface.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__str__",
+    "callee": "furl.furl.Path.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.__str__",
+    "callee": "furl.furl.Query.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.add",
+    "callee": "furl.furl.Path.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.add",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.add",
+    "callee": "furl.furl.Query.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.add",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.asdict",
+    "callee": "furl.furl.Fragment.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.asdict",
+    "callee": "furl.furl.Path.asdict",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.asdict",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.asdict",
+    "callee": "furl.furl.Query.asdict",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.asdict",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.load",
+    "callee": "furl.furl.Path.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.load",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.load",
+    "callee": "furl.furl.Query.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.load",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.remove",
+    "callee": "furl.furl.Fragment.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Fragment.remove",
+    "callee": "furl.furl.Path.remove",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.remove",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.remove",
+    "callee": "furl.furl.Query.remove",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.remove",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.set",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.set",
+    "callee": "furl.furl.Path.load",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.set",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.set",
+    "callee": "furl.furl.Query.load",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Fragment.set",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.FragmentCompositionInterface.__init__",
+    "callee": "furl.furl.Fragment.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.FragmentCompositionInterface.__init__",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.FragmentCompositionInterface.__setattr__",
+    "callee": "furl.furl.Fragment.load",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.FragmentCompositionInterface.__setattr__",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.FragmentPathCompositionInterface.__init__",
+    "callee": "furl.furl.PathCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path.__truediv__",
+    "callee": "furl.furl.Path.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path._segments_from_path",
+    "callee": "furl.furl.is_valid_encoded_path_segment",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path.isabsolute",
+    "callee": "furl.furl.FragmentPathCompositionInterface._force_absolute",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path.isabsolute",
+    "callee": "furl.furl.URLPathCompositionInterface._force_absolute",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path.load",
+    "callee": "furl.furl.FragmentPathCompositionInterface._force_absolute",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Path.load",
+    "callee": "furl.furl.Path.__bool__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.Path.load",
+    "callee": "furl.furl.URLPathCompositionInterface._force_absolute",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.PathCompositionInterface.__init__",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.PathCompositionInterface.__init__",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.PathCompositionInterface.__setattr__",
+    "callee": "furl.furl.Path.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Query._extract_items_from_querystr",
+    "callee": "furl.furl.is_valid_encoded_query_key",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Query._extract_items_from_querystr",
+    "callee": "furl.furl.is_valid_encoded_query_value",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Query.add",
+    "callee": "furl.omdict1D.omdict1D.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.Query.params",
+    "callee": "furl.omdict1D.omdict1D.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.QueryCompositionInterface.__init__",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.QueryCompositionInterface.__init__",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.QueryCompositionInterface.__setattr__",
+    "callee": "furl.furl.Query.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.URLPathCompositionInterface.__init__",
+    "callee": "furl.furl.PathCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.URLPathCompositionInterface._force_absolute",
+    "callee": "furl.furl.Path.__bool__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.FragmentCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.QueryCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.URLPathCompositionInterface.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.furl.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__init__",
+    "callee": "furl.furl.furl.set",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__ne__",
+    "callee": "furl.furl.furl.__eq__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.FragmentCompositionInterface.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.PathCompositionInterface.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.QueryCompositionInterface.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.host",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.netloc",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.origin",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.port",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.scheme",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__setattr__",
+    "callee": "furl.furl.furl.url",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.__truediv__",
+    "callee": "furl.furl.furl.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__truediv__",
+    "callee": "furl.furl.furl.copy",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.__unicode__",
+    "callee": "furl.furl.furl.tostr",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.Fragment.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.Path.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.Query.add",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.add",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.Fragment.asdict",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.Path.asdict",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.Query.asdict",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.copy",
+    "callee": "furl.furl.furl.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.host",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.host",
+    "callee": "furl.furl.is_valid_host",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.join",
+    "callee": "furl.furl.furl.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.Fragment.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.Path.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.Query.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.netloc",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.origin",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.port",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.Fragment.remove",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.Path.remove",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.Query.remove",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.remove",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.scheme",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.Fragment.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.Path.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.Query.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.furl.__setattr__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.furl.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.Fragment.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.FragmentCompositionInterface.fragment",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.Path.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.PathCompositionInterface.path",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.Query.encode",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.QueryCompositionInterface.query",
+    "in_gt": false
+  },
+  {
+    "caller": "furl.furl.furl.url",
+    "callee": "furl.furl.furl.load",
+    "in_gt": true
+  },
+  {
+    "caller": "furl.furl.get_scheme",
+    "callee": "furl.furl.is_valid_scheme",
+    "in_gt": true
+  }
+]

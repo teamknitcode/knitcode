@@ -1,0 +1,168 @@
+
+Transfer
+
+    init
+
+        requires connection
+
+    is remote dir
+
+        returns bool of stat ISDIR flag
+        returns False if stat raises IOError
+
+    get
+
+        basics
+
+            accepts single remote path posarg
+            accepts local and remote kwargs
+            returns rich Result object
+
+        path arg edge cases
+
+            local None uses remote filename
+            local empty string uses remote filename
+            remote arg is required
+            remote arg cannot be None
+            remote arg cannot be empty string
+
+        file like local paths
+
+            remote path to local StringIO
+            result contains fd for local path
+
+        mode concerns
+
+            preserves remote mode by default
+            allows disabling remote mode preservation
+
+    put
+
+        basics
+
+            accepts single local path posarg
+            accepts local and remote kwargs
+            returns rich Result object
+
+        remote end is directory
+
+            appends local file basename
+
+            file like local objects
+
+                name attribute present appends like basename
+                no name attribute raises ValueError
+
+        path arg edge cases
+
+            remote None uses local filename
+            remote empty string uses local filename
+            remote cant be empty if local file like
+            local arg is required
+            local arg cannot be None
+            local arg cannot be empty string
+
+        file like local paths
+
+            remote path from local StringIO
+            local FLOs are rewound before putting
+            result contains fd for local path
+
+        mode concerns
+
+            preserves local mode by default
+            allows disabling local mode preservation
+
+Group
+
+    init
+
+        may be empty
+        takes splat arg of host strings
+
+    from connections
+
+        inits from iterable of Connections
+    acts like an iterable of Connections
+
+    run
+
+        not implemented in base class
+
+SerialGroup
+
+    run
+
+        executes arguments on contents run serially
+        errors in execution capture and continue til end
+        returns results mapping
+
+ThreadingGroup
+
+    run
+
+        executes arguments on contents run via threading
+        queue used to return results
+        bubbles up errors within threads
+        returns results mapping
+
+Config
+
+    defaults to merger of global defaults
+    our global defaults can override invokes
+    has various Fabric specific default keys
+    overrides some Invoke defaults
+    uses Fabric prefix
+
+ssh config loading
+
+    defaults to empty sshconfig obj if no files found
+    object can be given explicitly via ssh config kwarg
+    when config obj given default paths are not sought
+    config obj prevents loading runtime path too
+    when runtime path given other paths are not sought
+    runtime path can be given via config itself
+    runtime path does not die silently
+    default file paths match openssh
+    system path loads ok
+    user path loads ok
+    both paths loaded if both exist with user winning
+    runtime path subject to user expansion
+    user path subject to user expansion
+
+    core ssh load option allows skipping ssh config loading
+
+        skips default paths
+        does not affect explicit object
+        does not skip loading runtime path
+
+    lazy loading and explicit methods
+
+        may use lazy plus explicit methods to control flow
+                                                                         [100%]
+=============================== warnings summary ===============================
+tests/config.py::ssh_config_loading::runtime_path_subject_to_user_expansion
+tests/config.py::ssh_config_loading::runtime_path_subject_to_user_expansion
+  <frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+66 passed, 2 warnings in 0.75 seconds
+Dynamic analysis: 198 nodes, 202 observed edges -> <WORKSPACE>/out/groundtruth-fabric/fabric/calls-only-0.json
+        1.34 real         1.27 user         0.06 sys
+            76873728  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19050  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  17  voluntary context switches
+                  92  involuntary context switches
+           687767128  instructions retired
+           207677862  cycles elapsed
+            16875952  peak memory footprint

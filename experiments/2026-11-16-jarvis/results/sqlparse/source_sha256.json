@@ -1,0 +1,23 @@
+{
+  "sqlparse/__init__.py": "5a2a5d9a9fbd67395d7b16b73b56309613fd83dfdc0c8a100a1924ef0cc51723",
+  "sqlparse/__main__.py": "d6385514b1e566ce0d509a00b87bd040a5a0ca43d54dd81e13c5785c1e56433c",
+  "sqlparse/cli.py": "f37807816d264d05c96eff88b6900465aabbfb696f5a28f49a0d9c5661baeca0",
+  "sqlparse/engine/__init__.py": "8bd921d1448c8e4d5bc0a3c54e7e8ad0f282e791ceaaf9e4a311e2d6ded871c1",
+  "sqlparse/engine/filter_stack.py": "70877dbe7cf42a9b618379637675f621debebf3d33a4a1e8315fc5a84604b185",
+  "sqlparse/engine/grouping.py": "dc50b0362c74968164d8d6171d43363eeaabfb46840cb2eab95e53c9d825860d",
+  "sqlparse/engine/statement_splitter.py": "fa29e31644c250a42d8762372b53e0b8590490f0a2025c64cd957ae3f08c9740",
+  "sqlparse/exceptions.py": "43267d4ca4efce0726b90d5c264c408fd4a8030e0cd36f817f409250d58d0ca3",
+  "sqlparse/filters/__init__.py": "3dc4bb0a494dfaaa667d8848778a064f251bedabb5034683fb6d513ff6ec7d06",
+  "sqlparse/filters/aligned_indent.py": "92f3794d5331a2fc97e9c0e79b117eb7e294cf6467cdb4357c8433748c586368",
+  "sqlparse/filters/others.py": "368f1185d513f2d77a234afdbb133a1ae23f6a50ec13d16115fb5c669abce7a7",
+  "sqlparse/filters/output.py": "38c49a9523efab7b37fabdbaf138eff809ad8d33427e12dac96b5014ee68c951",
+  "sqlparse/filters/reindent.py": "cb4f74b13ecc738e01c3d2272aa275bbf07351373cd56d0bd4df8154b569abca",
+  "sqlparse/filters/right_margin.py": "1e297af76241dd992230fa4f3d970c5224548c3a668458ae01152ee7f8a6ca6f",
+  "sqlparse/filters/tokens.py": "099c03c0ccf339dab4aaf4d120889cef0e7d839e108701603363a9f7ddf666f9",
+  "sqlparse/formatter.py": "8960cf4210f826a6e20388d9a4ad90059cc4a95002c376d1c1d2e03c899ae251",
+  "sqlparse/keywords.py": "6f6387826a3f6331c6a8b15e1d34329affb07c8b8b294a34fea3948604657f0b",
+  "sqlparse/lexer.py": "dc4de35407af660a59a58eaf5cfb557bd89f4da39ed78281ec1a4c752de1622b",
+  "sqlparse/sql.py": "12c4e281d29f98fd4f1cbe231adcc9d21c28a87cc8f53eb142dcf5c440d9d423",
+  "sqlparse/tokens.py": "34c51d061dd73ca93e0feb989ffb6a2aa76c0ffb975595b39281c8cb4bc41290",
+  "sqlparse/utils.py": "54eda2712d2de2faa0f66a5925452b98fd11a9f22b0be4115a8460a047b2f6bf"
+}

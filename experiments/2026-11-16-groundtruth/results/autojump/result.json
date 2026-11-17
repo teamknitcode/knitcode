@@ -1,0 +1,80 @@
+{
+  "project": "autojump",
+  "commit": "06e082c91805cb022900819b2e0881eeae780d58",
+  "files": 4,
+  "lines": 2945,
+  "parse_errors": 0,
+  "truth_pairs": 535,
+  "static_seconds": 0.5969713749364018,
+  "static": {
+    "official": {
+      "precision": 0.9646464646464646,
+      "recall": 0.7113594040968343,
+      "f1": 0.8188638799571275,
+      "tp": 382,
+      "fp": 14,
+      "fn": 153
+    },
+    "precision": 0.9646464646464646,
+    "recall": 0.7140186915887851,
+    "f1": 0.82062298603652,
+    "tp": 382,
+    "fp": 14,
+    "fn": 153
+  },
+  "modes": {
+    "baseline": {
+      "median_seconds": 0.1337157089728862,
+      "median_max_rss_bytes": 31719424
+    },
+    "calls-only": {
+      "median_seconds": 0.6160645000636578,
+      "median_max_rss_bytes": 45662208,
+      "score": {
+        "official": {
+          "precision": 0.9646464646464646,
+          "recall": 0.7113594040968343,
+          "f1": 0.8188638799571275,
+          "tp": 382,
+          "fp": 14,
+          "fn": 153
+        },
+        "precision": 0.9646464646464646,
+        "recall": 0.7140186915887851,
+        "f1": 0.82062298603652,
+        "tp": 382,
+        "fp": 14,
+        "fn": 153
+      },
+      "added_tp": 0,
+      "added_fp": 0,
+      "median_trace_bytes": 29788,
+      "stable_scores": true
+    },
+    "full": {
+      "median_seconds": 0.7250016250181943,
+      "median_max_rss_bytes": 43991040,
+      "score": {
+        "official": {
+          "precision": 0.9646464646464646,
+          "recall": 0.7113594040968343,
+          "f1": 0.8188638799571275,
+          "tp": 382,
+          "fp": 14,
+          "fn": 153
+        },
+        "precision": 0.9646464646464646,
+        "recall": 0.7140186915887851,
+        "f1": 0.82062298603652,
+        "tp": 382,
+        "fp": 14,
+        "fn": 153
+      },
+      "added_tp": 0,
+      "added_fp": 0,
+      "median_trace_bytes": 326548,
+      "stable_scores": true
+    }
+  },
+  "truth_entries": 537
+}

@@ -214,6 +214,8 @@ python pycg_benchmark.py --benchmark ..\pycg-evaluation --output out\pycg --pycg
 
 ## 실행 기반 검증 도구 (`trace_recall.py`, 2026-10-22)
 
+정적 분석을 호출 중심·전체 추적으로 보강한 성능 및 정답 기반 비교는 [동적 보조 분석 실험 자료](experiments/DYNAMIC_ANALYSIS_EXPERIMENTS_KO.md)를 참고하세요. 실험 흐름·결과표·평가 범위와 재현 방법을 포함합니다.
+
 로컬 파일·모듈의 호출·타입·실행 경로 분석과 정적 그래프 비교는 [동적 분석 실행 안내](runtime_validation/README.md)를 참고하세요.
 
 분석 대상의 테스트를 실제로 실행해 관찰한 함수 간 호출과 정적 그래프를 비교합니다. 팀원 누구나 같은 커밋·같은 명령으로 같은 숫자를 재현할 수 있습니다. **절차·지표 정의·기준 수치: [`RUNTIME_VALIDATION_KO.md`](RUNTIME_VALIDATION_KO.md)**

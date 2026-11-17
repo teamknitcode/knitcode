@@ -1,0 +1,42 @@
+[
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "callee": "sqlparse.utils.offset",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "callee": "sqlparse.utils.indent",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.utils.offset",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.utils.indent",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.utils.offset",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_parenthesis",
+    "callee": "sqlparse.utils.indent",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_parenthesis",
+    "callee": "sqlparse.utils.offset",
+    "caller_observed": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_where",
+    "callee": "sqlparse.utils.indent",
+    "caller_observed": true
+  }
+]

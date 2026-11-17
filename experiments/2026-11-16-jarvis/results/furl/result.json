@@ -1,0 +1,50 @@
+{
+  "project": "furl",
+  "files": 6,
+  "lines": 2104,
+  "source_functions": 118,
+  "raw_truth_pairs": 319,
+  "truth_pairs": 189,
+  "excluded_truth_pairs": 130,
+  "static_pairs": 96,
+  "parse_errors": [],
+  "gt_sha256": "de2e4a01c439a924f7fdb780f927e4983e48afacd1e73aa5a8634f8451d92b02",
+  "static_seconds": 0.32899120915681124,
+  "static": {
+    "tp": 83,
+    "fp": 13,
+    "fn": 106,
+    "precision": 0.8645833333333334,
+    "recall": 0.43915343915343913,
+    "f1": 0.5824561403508771
+  },
+  "modes": {
+    "baseline": {
+      "median_seconds": 2.3134809168986976,
+      "median_max_rss_bytes": 29786112
+    },
+    "calls-only": {
+      "median_seconds": 65.30951391695999,
+      "median_max_rss_bytes": 112656384,
+      "score": {
+        "tp": 163,
+        "fp": 64,
+        "fn": 26,
+        "precision": 0.7180616740088106,
+        "recall": 0.8624338624338624,
+        "f1": 0.7836538461538463
+      },
+      "added_tp": 80,
+      "added_fp": 51,
+      "observed_pairs": 206,
+      "median_trace_bytes": 1528283,
+      "total_seconds": 65.67594845895655,
+      "stable_scores": true
+    },
+    "full": {
+      "status": "timeout",
+      "limit_seconds": 240,
+      "completed_repeats": 0
+    }
+  }
+}

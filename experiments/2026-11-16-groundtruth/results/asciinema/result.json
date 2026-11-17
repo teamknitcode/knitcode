@@ -1,0 +1,80 @@
+{
+  "project": "asciinema",
+  "commit": "350d5e9d8b7cee1be5db4091815942c9d035e7dc",
+  "files": 24,
+  "lines": 1553,
+  "parse_errors": 0,
+  "truth_pairs": 340,
+  "static_seconds": 0.3198389171157032,
+  "static": {
+    "official": {
+      "precision": 0.9205776173285198,
+      "recall": 0.750733137829912,
+      "f1": 0.8270252807743227,
+      "tp": 255,
+      "fp": 22,
+      "fn": 85
+    },
+    "precision": 0.9205776173285198,
+    "recall": 0.75,
+    "f1": 0.826580226904376,
+    "tp": 255,
+    "fp": 22,
+    "fn": 85
+  },
+  "modes": {
+    "baseline": {
+      "median_seconds": 0.16981008392758667,
+      "median_max_rss_bytes": 47644672
+    },
+    "calls-only": {
+      "median_seconds": 0.7266187909990549,
+      "median_max_rss_bytes": 58408960,
+      "score": {
+        "official": {
+          "precision": 0.9205776173285198,
+          "recall": 0.750733137829912,
+          "f1": 0.8270252807743227,
+          "tp": 255,
+          "fp": 22,
+          "fn": 85
+        },
+        "precision": 0.9205776173285198,
+        "recall": 0.75,
+        "f1": 0.826580226904376,
+        "tp": 255,
+        "fp": 22,
+        "fn": 85
+      },
+      "added_tp": 0,
+      "added_fp": 0,
+      "median_trace_bytes": 182917,
+      "stable_scores": true
+    },
+    "full": {
+      "median_seconds": 0.869575124932453,
+      "median_max_rss_bytes": 59719680,
+      "score": {
+        "official": {
+          "precision": 0.9205776173285198,
+          "recall": 0.750733137829912,
+          "f1": 0.8270252807743227,
+          "tp": 255,
+          "fp": 22,
+          "fn": 85
+        },
+        "precision": 0.9205776173285198,
+        "recall": 0.75,
+        "f1": 0.826580226904376,
+        "tp": 255,
+        "fp": 22,
+        "fn": 85
+      },
+      "added_tp": 0,
+      "added_fp": 0,
+      "median_trace_bytes": 670358,
+      "stable_scores": true
+    }
+  },
+  "truth_entries": 341
+}

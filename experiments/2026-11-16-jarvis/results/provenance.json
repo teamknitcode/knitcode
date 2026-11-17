@@ -1,0 +1,12 @@
+{
+  "data_zip_sha256": "2f7abc4bae71e07ef468e27106e29c3e1bca2f2b47e6554a7cf26d94d422c9d2",
+  "data_zip_git_blob": "8aa5fb75618d604c1e9f99f6456e1edbb8604e12",
+  "artifact_commit": "8871b86494a1aec0095686ffa543994a7361af88",
+  "data_source": "https://github.com/pythonJaRvis/pythonJaRvis.github.io",
+  "declared_upstream_commits": {
+    "sqlparse": "9f44d54c07180b826a6276d3acf5e1458b507c3f",
+    "furl": "774846234ff803606fdd289a7549f9b50b2b3677"
+  },
+  "note": "Evaluation uses source snapshot and EA.json from the pinned artifact repository, not the separately downloaded legacy data.zip.",
+  "evaluation_script_sha256": "d3f381e59ffa73fe260fdeb629e0e38a7561372eee9bdbf960c4caa3a70e8e2a"
+}

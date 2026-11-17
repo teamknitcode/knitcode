@@ -1,0 +1,22 @@
+[
+  {
+    "caller": "fabric.connection.opens",
+    "callee": "fabric.connection.Connection.open",
+    "in_ground_truth": false
+  },
+  {
+    "caller": "fabric.connection.opens",
+    "callee": "fabric.connection.Connection.sftp",
+    "in_ground_truth": true
+  },
+  {
+    "caller": "fabric.group.Group.__init__",
+    "callee": "fabric.connection.Connection.__init__",
+    "in_ground_truth": false
+  },
+  {
+    "caller": "fabric.group.SerialGroup.run",
+    "callee": "fabric.connection.Connection.__hash__",
+    "in_ground_truth": false
+  }
+]

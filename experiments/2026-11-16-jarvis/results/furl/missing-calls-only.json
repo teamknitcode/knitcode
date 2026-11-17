@@ -1,0 +1,132 @@
+[
+  {
+    "caller": "furl.compat.UnicodeMixin.__str__",
+    "callee": "furl.furl.furl.__unicode__",
+    "caller_observed": false
+  },
+  {
+    "caller": "furl.furl.Fragment.__setattr__",
+    "callee": "furl.furl.Fragment.__setattr__",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.Path.isabsolute",
+    "callee": "furl.furl.PathCompositionInterface._force_absolute",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.Path.load",
+    "callee": "furl.furl.PathCompositionInterface._force_absolute",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.URLPathCompositionInterface._force_absolute",
+    "callee": "furl.furl.furl.netloc",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.host",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.netloc",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.origin",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.port",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.asdict",
+    "callee": "furl.furl.furl.url",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.join",
+    "callee": "furl.furl.furl.url",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.compat.UnicodeMixin.__str__",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.furl.port",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.load",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.netloc",
+    "callee": "furl.furl.furl.host",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.netloc",
+    "callee": "furl.furl.furl.port",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.netloc",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.origin",
+    "callee": "furl.furl.furl.host",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.origin",
+    "callee": "furl.furl.furl.port",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.origin",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.port",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.set",
+    "callee": "furl.furl.furl.url",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.furl.netloc",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.tostr",
+    "callee": "furl.furl.furl.scheme",
+    "caller_observed": true
+  },
+  {
+    "caller": "furl.furl.furl.url",
+    "callee": "furl.furl.furl.tostr",
+    "caller_observed": true
+  }
+]

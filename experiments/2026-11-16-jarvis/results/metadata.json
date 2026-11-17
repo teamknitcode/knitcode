@@ -1,0 +1,26 @@
+{
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "python": "Python 3.11.8",
+  "artifact_commit": "8871b86494a1aec0095686ffa543994a7361af88",
+  "tool_commit": "b0eaa8a5737cffb0e3c92d291fef4207ea729c7b",
+  "dependencies": [
+    "iniconfig==2.3.1",
+    "orderedmultidict==1.0.2",
+    "packaging==26.3",
+    "pluggy==1.7.0",
+    "pytest==7.4.4",
+    "six==1.17.0"
+  ],
+  "workloads": {
+    "sqlparse": [
+      "tests"
+    ],
+    "furl": [
+      "tests",
+      "--deselect=tests/test_furl.py::TestFurl::test_hosts",
+      "--deselect=tests/test_furl.py::TestFurl::test_netloc"
+    ]
+  },
+  "rounds": 3,
+  "scope": "both endpoints are source-declared app functions; independent AST vocabulary"
+}

@@ -1,0 +1,8 @@
+{
+  "furl/__init__.py": "0549eeaa8c05fcbfc58e9deb20cff7992993177b65d43f138b236fde786101a2",
+  "furl/__version__.py": "224e3391de407462d8574c1e90d80ed74e0ca428dba8e5ebf9b613c74515ccbb",
+  "furl/common.py": "f202b401228554cdb2f424b8dfc0f268103d98958c63229f0b6517390c7d20c1",
+  "furl/compat.py": "bafb221a368ad30752eb67ca5efdad87c542dcf6882eec505693e0e93cc07aba",
+  "furl/furl.py": "84ac167ba3f6f99279375246420fdbf18bd343a3b6124c3ab87bdd9d5253881f",
+  "furl/omdict1D.py": "2bc8a495e667b1cb1f5a8e5ea6195444b0fa94fdf2a89c1176a87a312424d1c6"
+}

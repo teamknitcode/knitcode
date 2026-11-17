@@ -1,0 +1,897 @@
+[
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.engine.statement_splitter.StatementSplitter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.others.SerializerUnicode.process",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.others.SpacesAroundOperatorsFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.others.StripCommentsFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.others.StripWhitespaceFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.output.OutputFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.reindent.ReindentFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.filter_stack.FilterStack.run",
+    "callee": "sqlparse.filters.right_margin.RightMarginFilter.process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group",
+    "callee": "sqlparse.sql.TokenList.__iter__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group_matching",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group_matching",
+    "callee": "sqlparse.sql.TokenList.__iter__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping._group_matching",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.align_comments",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.align_comments",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.align_comments",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group",
+    "callee": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_aliased",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_aliased",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_aliased",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_assignment.match",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_assignment.post",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_assignment.valid",
+    "callee": "sqlparse.tokens._TokenType.__contains__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_comments",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_comments",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_comments",
+    "callee": "sqlparse.sql.TokenList.token_not_matching",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_comments",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_functions",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_functions",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_functions",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_identifier",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_identifier",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_identifier_list.match",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_operator.post",
+    "callee": "sqlparse.sql.TokenList.__getitem__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_operator.valid",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_order",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_order",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_order",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_period.match",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_period.post",
+    "callee": "sqlparse.sql.TokenList.__getitem__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_typecasts.match",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_typed_literal.valid_final",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_typed_literal.valid_next",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_tzcasts.valid_next",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_values",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_values",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_values",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_where",
+    "callee": "sqlparse.sql.Parenthesis._groupable_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_where",
+    "callee": "sqlparse.sql.TokenList._groupable_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_where",
+    "callee": "sqlparse.sql.TokenList.group_tokens",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_where",
+    "callee": "sqlparse.sql.TokenList.token_index",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.grouping.group_where",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.engine.statement_splitter.StatementSplitter._change_splitlevel",
+    "callee": "sqlparse.tokens._TokenType.__contains__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.statement_splitter.StatementSplitter.process",
+    "callee": "sqlparse.filters.tokens.IdentifierCaseFilter.process",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.statement_splitter.StatementSplitter.process",
+    "callee": "sqlparse.filters.tokens.TruncateStringFilter.process",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.statement_splitter.StatementSplitter.process",
+    "callee": "sqlparse.filters.tokens._CaseFilter.process",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.engine.statement_splitter.StatementSplitter.process",
+    "callee": "sqlparse.lexer.Lexer.get_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._next_token",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_identifierlist",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process",
+    "callee": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_statement",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "callee": "sqlparse.sql.Case.get_cases",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "callee": "sqlparse.sql.Token.__str__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.insert_after",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "callee": "sqlparse.sql.TokenList.get_sublists",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "callee": "sqlparse.sql.TokenList.token_index",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_default",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.IdentifierList.get_identifiers",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "callee": "sqlparse.sql.TokenList.__getitem__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "callee": "sqlparse.sql.TokenList.insert_after",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._process_parenthesis",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._split_kwds",
+    "callee": "sqlparse.sql.Token.__str__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._split_kwds",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.aligned_indent.AlignedIndentFilter._split_kwds",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
+    "callee": "sqlparse.sql.TokenList.insert_after",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.SpacesAroundOperatorsFilter._process",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.others.StripCommentsFilter._process",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.StripCommentsFilter._process",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.StripCommentsFilter._process",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.StripCommentsFilter._process.get_next_comment",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.StripWhitespaceFilter._stripws",
+    "callee": "sqlparse.filters.others.StripWhitespaceFilter._stripws_default",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.others.StripWhitespaceFilter._stripws",
+    "callee": "sqlparse.filters.others.StripWhitespaceFilter._stripws_identifierlist",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.others.StripWhitespaceFilter._stripws",
+    "callee": "sqlparse.filters.others.StripWhitespaceFilter._stripws_parenthesis",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.output.OutputFilter.process",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._flatten_up_to_token",
+    "callee": "sqlparse.sql.TokenList.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._get_offset",
+    "callee": "sqlparse.sql.Token.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._next_token",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_default",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_function",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_parenthesis",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_values",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process",
+    "callee": "sqlparse.filters.reindent.ReindentFilter._process_where",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.Case.get_cases",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.Token.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.__getitem__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_case",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_default",
+    "callee": "sqlparse.sql.TokenList.get_sublists",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_function",
+    "callee": "sqlparse.sql.TokenList.__getitem__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.IdentifierList.get_identifiers",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.Token.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.Token.within",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.__iter__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.insert_after",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.token_index",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.token_next",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_identifierlist",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_parenthesis",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_values",
+    "callee": "sqlparse.sql.TokenList.insert_after",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_values",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_values",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_where",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._process_where",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_kwds",
+    "callee": "sqlparse.sql.Token.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_kwds",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_kwds",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_kwds",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_statements",
+    "callee": "sqlparse.sql.TokenList.insert_before",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_statements",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter._split_statements",
+    "callee": "sqlparse.sql.TokenList.token_prev",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.reindent.ReindentFilter.process",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.filters.tokens.IdentifierCaseFilter.process",
+    "callee": "sqlparse.filters.tokens._CaseFilter.process",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.tokens.IdentifierCaseFilter.process",
+    "callee": "sqlparse.lexer.Lexer.get_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.tokens.TruncateStringFilter.process",
+    "callee": "sqlparse.lexer.Lexer.get_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.tokens._CaseFilter.process",
+    "callee": "sqlparse.lexer.Lexer.get_tokens",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.filters.tokens._CaseFilter.process",
+    "callee": "sqlparse.tokens._TokenType.__contains__",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.lexer.Lexer.get_tokens",
+    "callee": "sqlparse.keywords.is_keyword",
+    "in_gt": false
+  },
+  {
+    "caller": "sqlparse.parse",
+    "callee": "sqlparse.engine.filter_stack.FilterStack.run",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Case.get_cases",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Case.get_cases",
+    "callee": "sqlparse.tokens._TokenType.__contains__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.IdentifierList.get_identifiers",
+    "callee": "sqlparse.sql.Token.match",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.NameAliasMixin.get_alias",
+    "callee": "sqlparse.sql.TokenList._get_first_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.NameAliasMixin.get_alias",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.NameAliasMixin.get_real_name",
+    "callee": "sqlparse.sql.TokenList._get_first_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.NameAliasMixin.get_real_name",
+    "callee": "sqlparse.sql.TokenList.token_next_by",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Token.__init__",
+    "callee": "sqlparse.tokens._TokenType.__contains__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Token.__repr__",
+    "callee": "sqlparse.sql.TokenList._get_repr_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Token._get_repr_name",
+    "callee": "sqlparse.tokens._TokenType.__repr__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.Token._get_repr_value",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._get_first_name",
+    "callee": "sqlparse.sql.NameAliasMixin.get_real_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._get_first_name",
+    "callee": "sqlparse.sql.TokenList.get_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._pprint_tree",
+    "callee": "sqlparse.sql.Token._get_repr_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._pprint_tree",
+    "callee": "sqlparse.sql.Token._get_repr_value",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._pprint_tree",
+    "callee": "sqlparse.sql.TokenList._get_repr_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._pprint_tree",
+    "callee": "sqlparse.sql.TokenList._pprint_tree",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._token_matching",
+    "callee": "sqlparse.sql.TokenList.token_first.matcher",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList._token_matching",
+    "callee": "sqlparse.sql.TokenList.token_next.matcher",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.flatten",
+    "callee": "sqlparse.filters.output.OutputPHPFilter._process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.flatten",
+    "callee": "sqlparse.filters.output.OutputPythonFilter._process",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.flatten",
+    "callee": "sqlparse.sql.TokenList.flatten",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.get_name",
+    "callee": "sqlparse.sql.NameAliasMixin.get_alias",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.get_name",
+    "callee": "sqlparse.sql.NameAliasMixin.get_real_name",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.group_tokens",
+    "callee": "sqlparse.sql.TokenList.__init__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.group_tokens",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.sql.TokenList.has_alias",
+    "callee": "sqlparse.sql.NameAliasMixin.get_alias",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.align_comments",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.group_aliased",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.group_comments",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.group_functions",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.group_identifier",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.engine.grouping.group_where",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.recurse.wrap.wrapped_f",
+    "callee": "sqlparse.sql.TokenList.get_sublists",
+    "in_gt": true
+  },
+  {
+    "caller": "sqlparse.utils.split_unquoted_newlines",
+    "callee": "sqlparse.sql.TokenList.__str__",
+    "in_gt": true
+  }
+]

@@ -1,0 +1,25 @@
+..............................................................x......... [ 16%]
+....x................................................................... [ 33%]
+........................................................................ [ 50%]
+........................................................................ [ 67%]
+..............................................x......................... [ 84%]
+....................................................................     [100%]
+425 passed, 3 xfailed in 0.29s
+        0.38 real         0.32 user         0.04 sys
+            33701888  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                5157  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   8  voluntary context switches
+                  60  involuntary context switches
+          4272082489  instructions retired
+          1316103550  cycles elapsed
+            28459560  peak memory footprint

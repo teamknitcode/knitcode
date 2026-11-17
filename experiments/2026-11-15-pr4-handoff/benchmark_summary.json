@@ -1,0 +1,139 @@
+{
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "rounds": 3,
+  "tool_commit": "5d5c63deb4e16d3146445fa0cd2062ff09ba40da",
+  "target_commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+  "python": "Python 3.12.2",
+  "summary": [
+    {
+      "target": "dispatch",
+      "mode": "baseline",
+      "median_seconds": 0.015463083982467651,
+      "slowdown": 1.0,
+      "median_max_rss_bytes": 13008896,
+      "median_trace_bytes": 0,
+      "comparison": null
+    },
+    {
+      "target": "dispatch",
+      "mode": "calls-only",
+      "median_seconds": 0.1057781670242548,
+      "slowdown": 6.840690197646741,
+      "median_max_rss_bytes": 24756224,
+      "median_trace_bytes": 9794,
+      "comparison": {
+        "mapped_nodes": 6,
+        "unmapped_nodes": 0,
+        "runtime_edges": 5,
+        "static_call_relations": 2,
+        "observed_mapped_relations": 3,
+        "confirmed_relations": 2,
+        "additional_relations": 1,
+        "unmapped_runtime_edges": 0,
+        "scope_entry_edges": 2,
+        "observed_relation_recall": 0.6666666666666666,
+        "observed_function_relations": 2,
+        "confirmed_function_relations": 1,
+        "observed_function_relation_recall": 0.5
+      }
+    },
+    {
+      "target": "dispatch",
+      "mode": "full",
+      "median_seconds": 0.22391849989071488,
+      "slowdown": 14.480843546125604,
+      "median_max_rss_bytes": 24920064,
+      "median_trace_bytes": 25671,
+      "comparison": {
+        "mapped_nodes": 6,
+        "unmapped_nodes": 0,
+        "runtime_edges": 5,
+        "static_call_relations": 2,
+        "observed_mapped_relations": 3,
+        "confirmed_relations": 2,
+        "additional_relations": 1,
+        "unmapped_runtime_edges": 0,
+        "scope_entry_edges": 2,
+        "observed_relation_recall": 0.6666666666666666,
+        "observed_function_relations": 2,
+        "confirmed_function_relations": 1,
+        "observed_function_relation_recall": 0.5
+      }
+    },
+    {
+      "target": "requests",
+      "mode": "baseline",
+      "median_seconds": 0.15228662500157952,
+      "slowdown": 1.0,
+      "median_max_rss_bytes": 43466752,
+      "median_trace_bytes": 0,
+      "comparison": null
+    },
+    {
+      "target": "requests",
+      "mode": "calls-only",
+      "median_seconds": 0.9073846670798957,
+      "slowdown": 5.958400267065373,
+      "median_max_rss_bytes": 78610432,
+      "median_trace_bytes": 220080,
+      "comparison": {
+        "mapped_nodes": 110,
+        "unmapped_nodes": 5,
+        "runtime_edges": 87,
+        "static_call_relations": 1193,
+        "observed_mapped_relations": 28,
+        "confirmed_relations": 11,
+        "additional_relations": 17,
+        "unmapped_runtime_edges": 8,
+        "scope_entry_edges": 48,
+        "observed_relation_recall": 0.39285714285714285,
+        "observed_function_relations": 24,
+        "confirmed_function_relations": 7,
+        "observed_function_relation_recall": 0.2916666666666667
+      }
+    },
+    {
+      "target": "requests",
+      "mode": "full",
+      "median_seconds": 1.9743713331408799,
+      "slowdown": 12.96483741182393,
+      "median_max_rss_bytes": 88276992,
+      "median_trace_bytes": 1808419,
+      "comparison": {
+        "mapped_nodes": 110,
+        "unmapped_nodes": 5,
+        "runtime_edges": 85,
+        "static_call_relations": 1193,
+        "observed_mapped_relations": 28,
+        "confirmed_relations": 11,
+        "additional_relations": 17,
+        "unmapped_runtime_edges": 8,
+        "scope_entry_edges": 48,
+        "observed_relation_recall": 0.39285714285714285,
+        "observed_function_relations": 24,
+        "confirmed_function_relations": 7,
+        "observed_function_relation_recall": 0.2916666666666667
+      }
+    }
+  ],
+  "tool_source_sha256": {
+    "dynamic_analysis.py": "6813e7373b46c4c8acc16f278eb969f9346700bfc70d36e811d17f5c823a6cf3",
+    "runtime_validation/calltrace_plugin.py": "c5ed02cf51068ba98e37f39d435e1fad618d3fc2750d3535298e8fb51c8694e8",
+    "runtime_validation/process_results.py": "b969f842b1dc3c2626186d988dd559bf2055c63ed50b485bafb66e6788ed5b7b",
+    "runtime_validation/profile_collector.py": "df5babf9ab67fc12454128653087a31f6d1211decb8f76ca5f5c29d774c28933",
+    "runtime_validation/python_execution.py": "f563519687cdd2893289d37d77878b633b741566d26882a9d672382d0c090211",
+    "runtime_validation/runtime_bridge.py": "32d25eea91848de87d5ab288de0261fc9646e7747d026dd927ed8cb228bb8001",
+    "runtime_validation/runtime_session.py": "392af14f6f6fa866ea732a3c934b7c8a444a3a378165463d3f0bd69555416915"
+  },
+  "dependencies": [
+    "certifi==2026.10.23",
+    "charset-normalizer==3.5.2",
+    "idna==3.20",
+    "iniconfig==2.3.1",
+    "packaging==26.3",
+    "pluggy==1.7.0",
+    "Pygments==2.21.0",
+    "pytest==9.2.0",
+    "urllib3==2.8.0"
+  ]
+}

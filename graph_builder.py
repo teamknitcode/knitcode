@@ -1537,7 +1537,12 @@ class Resolver:
         collection_sites = {edge['evidence']['call_id'] for edge in edges
                             if edge.get('evidence', {}).get('call_id') and
                             'flow_collection_' in edge['evidence'].get('rule', '')}
+        value_flow = None
+        if getattr(self, 'enhanced', False):
+            from value_flow import export as export_value_flow
+            value_flow = export_value_flow(object_flow, edges)
         return {"repository": self.data.get('repository'),
+                "value_flow": value_flow,
                 "node_count": len(nodes), "edge_count": len(edges),
                 "total_call_sites": len(self.calls), "resolved_call_sites": len(resolved_sites),
                 "unresolved_call_sites": len(unresolved),

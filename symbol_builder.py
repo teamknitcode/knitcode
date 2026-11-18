@@ -294,6 +294,9 @@ def build_symbol_result(ast_result: dict[str, Any]) -> dict[str, Any]:
                 "contained_call_ids": contained_call_ids,
                 **location(assignment),
             })
+    source_modules = {module_name_from_file(normalize_path(f.get("file", "")), repository, source_roots)
+                      for f in ast_result.get("files", [])}
+    imports = expand_star_imports(imports, symbols, assignments, source_modules)
 
     return SourceSnapshot({
         "repository": repository,
@@ -311,6 +314,82 @@ def build_symbol_result(ast_result: dict[str, Any]) -> dict[str, Any]:
     }, syntax_trees=getattr(ast_result, 'syntax_trees', None),
        metadata_sources=ast_result.get('metadata_sources', getattr(ast_result, 'metadata_sources', {})))
 
+def _star_source(imp: dict[str, Any]) -> str:
+    """Absolute module a `from ... import *` reads (relative levels resolved)."""
+    if not imp.get('level'):
+        return imp.get('imported_module') or ''
+    from import_resolution import canonical_import
+    return canonical_import({**imp, 'imported_name': None})
+
+
+def expand_star_imports(imports, symbols, assignments, modules):
+    """Expand `from m import *` of project modules into one import per name.
+
+    The names are m's module-level functions, classes, assignment targets and
+    imported names (re-exports, including m's own star imports), without names
+    starting with "_"; a literal `__all__ = [...]` in m replaces that rule. Each
+    expanded entry keeps the star import's position, so a later import or
+    definition still wins. The original `*` entry is kept.
+    """
+    import ast as _ast
+    defined = {}
+    for s in symbols:
+        if s.get('scope') == '<module>' and s['kind'] in ('FUNCTION', 'CLASS'):
+            defined.setdefault(s['module'], set()).add(s['name'])
+    explicit_all = {}
+    for a in assignments:
+        if a.get('scope') != '<module>':
+            continue
+        for target in a.get('targets', []):
+            if target.isidentifier():
+                defined.setdefault(a['module'], set()).add(target)
+            if target == '__all__' and not a.get('control_depth'):
+                try:
+                    names = _ast.literal_eval(a.get('value') or '')
+                except (ValueError, SyntaxError):
+                    names = None
+                if isinstance(names, (list, tuple)) and all(isinstance(n, str) for n in names):
+                    explicit_all[a['module']] = list(names)
+    by_module = {}
+    for imp in imports:
+        if imp.get('scope') == '<module>':
+            by_module.setdefault(imp['module'], []).append(imp)
+    exports_cache = {}
+
+    def exports(module, active=frozenset()):
+        if module in exports_cache:
+            return exports_cache[module]
+        if module in active:
+            return set()
+        names = set(defined.get(module, set()))
+        for imp in by_module.get(module, []):
+            if imp.get('local_name') == '*':
+                source = _star_source(imp)
+                if source in modules:
+                    names |= exports(source, active | {module})
+            elif imp.get('local_name'):
+                names.add(imp['local_name'])
+        if module in explicit_all:
+            names = set(explicit_all[module])
+        else:
+            names = {n for n in names if not n.startswith('_')}
+        exports_cache[module] = names
+        return names
+
+    expanded = []
+    for imp in imports:
+        expanded.append(imp)
+        if imp.get('type') != 'IMPORT_FROM' or imp.get('local_name') != '*':
+            continue
+        source = _star_source(imp)
+        if source not in modules:
+            continue
+        for name in sorted(exports(source)):
+            expanded.append({**imp, 'id': f"{imp['id']}:{name}", 'imported_module': source,
+                             'imported_name': name, 'local_name': name,
+                             'imported_canonical': f'{source}.{name}', 'level': 0,
+                             'star_import': imp['id']})
+    return expanded
 
 def main() -> None:
     import argparse

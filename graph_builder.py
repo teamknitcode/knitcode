@@ -185,8 +185,110 @@ class Resolver:
             return False
         if symbol['kind'] == 'CLASS':
             return True
-        return all(d in ('classmethod', 'staticmethod') and symbol['kind'] == 'METHOD'
-                   for d in symbol.get('decorators', []))
+        return all((d in ('classmethod', 'staticmethod') and symbol['kind'] == 'METHOD')
+            or self.identity_decorator(symbol, d)
+            for d in symbol.get('decorators', []))
+
+    def identity_decorator(self, symbol: dict, text: str) -> bool:
+        """True when decorator `text` on `symbol` provably returns the function
+        it receives, so the decorated name still binds the original definition.
+
+        Proven from source: `@dec` where every candidate `dec` is an undecorated
+        project function whose every `return` returns its first parameter
+        unchanged, or `@factory(...)` where every `return` of `factory` returns
+        such a nested function. Side effects (registration, setattr) are allowed.
+        """
+        key = (symbol['id'], text)
+        cache = self.__dict__.setdefault('_identity_decorator_cache', {})
+        if key not in cache:
+            cache[key] = self._identity_decorator(symbol, text)
+        return cache[key]
+
+    def _identity_decorator(self, symbol: dict, text: str) -> bool:
+        try:
+            expr = ast.parse(text or '', mode='eval').body
+        except SyntaxError:
+            return False
+        factory = isinstance(expr, ast.Call)
+        if factory:
+            expr = expr.func
+        if not isinstance(expr, (ast.Name, ast.Attribute)):
+            return False
+        name = ast.unparse(expr)
+        context = {'file': symbol['file'], 'module': symbol['module'],
+                   'scope': symbol.get('scope') or '<module>', 'line': symbol.get('line') or 0, 'column': 0}
+        imports = self.imports_at(context)
+        functions = self._decorator_functions(context, name, imports)
+        if not functions:
+            return False
+        for fn in functions:
+            if fn['kind'] != 'FUNCTION' or fn.get('decorators') or fn['id'] in self.mutated_methods:
+                return False
+            candidates = self._returned_nested_functions(fn) if factory else [fn]
+            if not candidates or not all(self._returns_first_parameter(c) for c in candidates):
+                return False
+        return True
+
+    def _decorator_functions(self, context: dict, name: str, imports: dict[str, str]) -> list[dict]:
+        """Project definitions a decorator name may denote at the decorated line."""
+        if '.' not in name:
+            if self._find_binding(context, name):
+                refs, _ = self._resolve_binding(context, name, imports)
+                return refs
+            for scope in self.lexical_scopes(context['scope'], context['module']):
+                refs = [s for s in self._lookup(f"{context['module']}.{scope}.{name}")
+                        if (s.get('line') or 0) < context['line']]
+                if refs:
+                    return refs
+        return self._resolve_reference(name, context['module'], imports)
+
+    def _function_node(self, fn: dict):
+        tree = self.syntax_trees.get(fn['file'])
+        if tree is None:
+            return None
+        return next((n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                     and n.lineno == fn.get('line') and n.name == fn['name']), None)
+
+    @staticmethod
+    def _own_nodes(node):
+        pending, own = list(node.body), []
+        while pending:
+            child = pending.pop()
+            own.append(child)
+            if not isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+                pending.extend(ast.iter_child_nodes(child))
+        return own
+
+    def _returns_first_parameter(self, fn: dict) -> bool:
+        node = self._function_node(fn)
+        if node is None or isinstance(node, ast.AsyncFunctionDef):
+            return False
+        params = [*node.args.posonlyargs, *node.args.args]
+        if not params:
+            return False
+        param = params[0].arg
+        own = self._own_nodes(node)
+        returns = [n for n in own if isinstance(n, ast.Return)]
+        rebound = any(isinstance(n, ast.Name) and n.id == param and not isinstance(n.ctx, ast.Load)
+                      or isinstance(n, (ast.Global, ast.Nonlocal)) and param in n.names
+                      for n in own)
+        return (bool(returns) and not rebound
+                and not any(isinstance(n, (ast.Yield, ast.YieldFrom)) for n in own)
+                and all(isinstance(r.value, ast.Name) and r.value.id == param for r in returns))
+
+    def _returned_nested_functions(self, fn: dict) -> list[dict]:
+        """Nested functions a factory returns by name; empty if any return is other."""
+        node = self._function_node(fn)
+        if node is None:
+            return []
+        nested = {child.name for child in node.body if isinstance(child, ast.FunctionDef)}
+        returns = [n for n in self._own_nodes(node) if isinstance(n, ast.Return)]
+        if not returns or not all(isinstance(r.value, ast.Name) and r.value.id in nested for r in returns):
+            return []
+        found = []
+        for r in returns:
+            found.extend(s for s in self._lookup(f"{fn['canonical_name']}.{r.value.id}") if s['kind'] == 'FUNCTION')
+        return found
 
     def _collect_class_mutations(self):
         # Deliberately project-wide: ordering across imports/entry points is
@@ -557,8 +659,19 @@ class Resolver:
                 return None
             return '.'.join([imports[root], *name.split('.')[1:]])
 
-        if any(stdlib_name(d, allow_call=True) not in self._TRANSPARENT_CLASS_DECORATORS
-               for d in cls.get('decorators') or []):
+        def transparent(decorator):
+            name = stdlib_name(decorator, allow_call=True)
+            if name in self._TRANSPARENT_CLASS_DECORATORS:
+                return True
+            # six.add_metaclass(M) rebuilds the class from its own namespace with
+            # metaclass M (methods unchanged). Trusted only for a safe M.
+            if name == 'six.add_metaclass':
+                call = ast.parse(decorator, mode='eval').body
+                return (isinstance(call, ast.Call) and len(call.args) == 1 and not call.keywords
+                        and stdlib_name(ast.unparse(call.args[0]), allow_call=False) in self._SAFE_METACLASSES)
+            return False
+
+        if not all(transparent(d) for d in cls.get('decorators') or []):
             return False
         values = cls.get('class_keyword_values') or {}
         return all(kw == 'metaclass' and stdlib_name(values.get(kw), allow_call=False) in self._SAFE_METACLASSES
@@ -734,13 +847,35 @@ class Resolver:
         self._mro_cache[key] = result
         return result
 
+    def class_alias(self, cls: dict, name: str) -> list[dict] | None:
+        """`name = other` in the class body, where `other` is a method defined
+        earlier in the same body: the alias is that method (e.g. `l = left`).
+        None when the latest class-body write of `name` is anything else."""
+        writes = [a for a in self.assignments.get((cls['file'], cls['qualified_name']), [])
+                  if name in a.get('targets', [])]
+        if not writes:
+            return None
+        last = max(writes, key=lambda a: a['line'])
+        value = (last.get('value') or '').strip()
+        if (len(writes) != 1 or last.get('control_depth') or last.get('type') != 'ASSIGN'
+                or last.get('targets') != [name] or not value.isidentifier() or value == name):
+            return None
+        methods = [s for s in self._lookup(cls['canonical_name'] + '.' + value)
+                   if s['kind'] == 'METHOD' and not s.get('control_depth') and s['line'] < last['line']
+                   and all(d in ('staticmethod', 'classmethod') for d in s.get('decorators', []))]
+        # The aliased name itself must not be rebound in the class body.
+        rebound = any(value in a.get('targets', []) for a in
+                      self.assignments.get((cls['file'], cls['qualified_name']), []))
+        return methods if methods and not rebound else None
+
     def _local_method(self, cls: dict, name: str) -> tuple[list[dict], bool]:
         local = self._lookup(cls['canonical_name'] + '.' + name)
         assignments = [a for a in self.assignments.get((cls['file'], cls['qualified_name']), [])
                        if name in a.get('targets', [])]
         # Non-method class attributes and descriptors stop inheritance lookup.
         if assignments and (not local or max(a['line'] for a in assignments) >= max(s['line'] for s in local)):
-            return [], True
+            alias = None if local else self.class_alias(cls, name)
+            return (alias or []), True
         if local:
             methods = [s for s in local if s['kind'] == 'METHOD'
                        and not s.get('control_depth')
@@ -1202,11 +1337,15 @@ class Resolver:
             targets = object_flow.callback_events.get(call['id'])
             if not targets:
                 continue
+            builtin = call.get('callee_text')
             results.append({'file': call['file'], 'line': call['line'], 'column': call.get('column'),
                             'end_line': call.get('end_line'), 'end_column': call.get('end_column'),
-                            'kind': 'callback', 'member': 'key', 'owner': call.get('caller_id'),
+                            'kind': 'callback', 'member': 'key' if builtin == 'sorted' else 'function',
+                            'owner': call.get('caller_id'),
                             'module': call['module'], 'targets': sorted(targets), 'receivers': [],
-                            'evidence': {'trigger_call_id': call['id'], 'rule': 'builtin_sorted_key_callback',
+                            'evidence': {'trigger_call_id': call['id'],
+                                         'rule': 'builtin_sorted_key_callback' if builtin == 'sorted'
+                                         else f'builtin_{builtin}_function_callback',
                                          'certainty': 'callback_may_execute',
                                          'note': ('Key may execute for non-empty valid input; callback '
                                                   'body/return values are not interpreted. The sorted '
@@ -1280,7 +1419,10 @@ class Resolver:
             # external bases still permit a source-backed class candidate.
             targets = [t for t in targets if not (
                 t['kind'] == 'CLASS' and self._mro(t)[1].startswith('invalid'))]
-            safe = [t for t in targets if self.safe_callable(t)]
+            # object_flow proved the callee is the undecorated function object
+            # a decorator received (see ObjectFlow.apply_decorators).
+            original = 'original_definition' in (trace or [])
+            safe = [t for t in targets if original or self.safe_callable(t)]
             if len(safe) != len(targets):
                 targets, reason = safe, 'decorated_or_mutated_binding_unknown'
             if top_level:

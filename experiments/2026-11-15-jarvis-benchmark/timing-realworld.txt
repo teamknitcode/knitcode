@@ -1,0 +1,10 @@
+# Linux, Python 3.13. Analysis only (scan + symbols + graph). before = main c404b3c, after = final.
+## before
+{"target": "click", "seconds": 6.8, "rss_mb": 181, "edges": 4489, "implicit": 129, "resolved": 3131, "sites": 7084}
+{"target": "requests", "seconds": 4.3, "rss_mb": 97, "edges": 1925, "implicit": 147, "resolved": 1056, "sites": 2687}
+{"target": "rich (rich/ folder only)", "seconds": 4.6, "rss_mb": 167, "edges": 1780, "implicit": 182, "resolved": 807, "sites": 4366}
+## after (final, step 4 + deterministic order)
+{"target": "click", "seconds": 8.8, "rss_mb": 193, "edges": 4548, "implicit": 785, "resolved": 3146, "sites": 7084}
+{"target": "requests", "seconds": 5.3, "rss_mb": 98, "edges": 1926, "implicit": 152, "resolved": 1057, "sites": 2687}
+{"target": "rich", "seconds": 5.4, "rss_mb": 169, "edges": 1808, "implicit": 205, "resolved": 831, "sites": 4366}
+## Rich whole repository: KeyError in graph_navigation.build_hierarchy before and after (pre-existing)

@@ -14,7 +14,8 @@ from call_status import annotate_call_statuses
 from vscode_history import read_history
 from vscode_changes import read_changes
 from project_intro import project_intro
-
+from architecture_evidence import analyze_architecture, architecture_call_context
+from architecture_hierarchy import build_architecture_hierarchy
 
 def export_project(root, days=90, limit=300, *, analysis_profile=None, call_policy=None):
     root = Path(root).resolve(strict=True)
@@ -52,7 +53,16 @@ def export_project(root, days=90, limit=300, *, analysis_profile=None, call_poli
     for node in nodes:
         node['callers'] = len(callers.get(node['id'], set()))
         node['changes'] = history['changes'].get(node['file'], 0)
+
+    architecture_roles = architecture_call_context(
+    analyze_architecture(root, files), nodes, edges
+    )
+    architecture_hierarchy = build_architecture_hierarchy(
+    root, files, nodes, edges
+)
     return dict(nodes=nodes, edges=edges, history=history,
+                architecture_roles=architecture_roles,
+                architecture_hierarchy=architecture_hierarchy,
                 project=project_intro(root),
                 working_changes=read_changes(root, nodes, edges),
                 summary=dict(files=len(files), resolved=graph['resolved_call_sites'],
@@ -66,7 +76,8 @@ def export_project(root, days=90, limit=300, *, analysis_profile=None, call_poli
                 analysis_profile=graph.get('analysis_profile'), call_graph_policy=graph.get('call_graph_policy'),
                 entry_points=graph.get('entry_points', []), reading_order=graph.get('reading_order', {}),
                 hierarchy=graph.get('hierarchy', {}), import_cycles=graph.get('import_cycles', []),
-                dynamic_calls=graph.get('dynamic_calls', []))
+                dynamic_calls=graph.get('dynamic_calls', []),
+                )
 
 
 if __name__ == '__main__':

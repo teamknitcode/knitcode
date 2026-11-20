@@ -162,6 +162,8 @@ class ObjectFlow:
         self._refs_cache = {}  # Static names only; never objects, heaps or returns.
         self._definition_index = None
         self.yield_values = []  # one Value per generator invocation in progress
+        from value_flow import ValueRecorder
+        self.values = ValueRecorder()  # observed parameter / argument values (value_flow.py)
         self.closure_env = {}  # function id -> {free name: Value captured at its def}
         self.closure_dirty = set()
         self._free_names_cache = {}
@@ -576,6 +578,11 @@ class ObjectFlow:
         for n in self.own_nodes(fn):
             if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store):
                 env.setdefault(n.id, UNKNOWN)
+        if self.enhanced and mode == 'specific':
+            # Only real caller contexts: root/generic runs fill parameters
+            # from hints or UNKNOWN, which would echo the declaration back.
+            for param in [*params, *fn.args.kwonlyargs]:
+                self.values.parameter(self, symbol['id'], param.arg, env[param.arg], heap)
             # Free variables of a closure: values captured where the def ran.
         for name, value in self.closure_env.get(symbol['id'], {}).items():
             env.setdefault(name, value)
@@ -614,6 +621,8 @@ class ObjectFlow:
                                     if a.kind in ('object', 'reference', 'bound_method'))).join(UNKNOWN)
         result = result.tagged('return:' + symbol['canonical_name']).tagged('return')
         self.summaries[symbol['id']] = self.summaries.get(symbol['id'], BOTTOM).join(result)
+        if self.enhanced and mode == 'specific':
+            self.values.returned(self, symbol['id'], result, heap)
         return result    
 
     def own_nodes(self, fn):
@@ -1155,6 +1164,7 @@ class ObjectFlow:
     def call(self, node, env, heap, context, mode, site):
         original = set()  # ids passed as the undecorated function object (apply_decorators)
         receiver = None
+        static_names = False  # value_flow: targets came from name resolution only
         targets = []
         bindings = []
         managed = False
@@ -1285,6 +1295,7 @@ class ObjectFlow:
                                     bindings.append((fn, bound))
                 if not targets and not managed:
                     refs = self.refs(ast.unparse(node.func), context, node)
+                    static_names = bool(refs)  # value_flow: binding not tracked
                     for ref in refs:
                         targets.append(ref); bindings.append((ref, None))
         else:
@@ -1337,6 +1348,16 @@ class ObjectFlow:
             bindings = [(fn, bound) for fn, bound in bindings if safe(fn)]
         args = [self.expr(a, env, heap, context, mode, site) for a in node.args]
         kwargs = {k.arg: self.expr(k.value, env, heap, context, mode, site) for k in node.keywords}
+        if self.enhanced and not any(isinstance(a, ast.Starred) for a in node.args) and None not in kwargs:
+            call = self.call_index.get((context['file'], node.lineno, node.col_offset, node.end_lineno, node.end_col_offset))
+            if call:
+                for fn, bound in bindings:
+                    self.values.binding(call['id'], fn['id'], None if static_names else bound is not None)
+                for i, value in enumerate(args):
+                    self.values.argument(self, call['id'], ('pos', i), ast.unparse(node.args[i]), value, heap)
+                for keyword in node.keywords:
+                    self.values.argument(self, call['id'], ('kw', keyword.arg), ast.unparse(keyword.value),
+                                         kwargs[keyword.arg], heap)
         if (not targets and args and isinstance(node.func, ast.Name)
                 and node.func.id in _PROTOCOL_BUILTINS and node.func.id not in env):
             self.implicit(node, context, mode, 'protocol_builtin', _PROTOCOL_BUILTINS[node.func.id], args[0])

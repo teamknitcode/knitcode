@@ -62,6 +62,7 @@ def export_project(root, days=90, limit=300, *, analysis_profile=None, call_poli
                                for c in graph['call_statuses']],
                 warnings=[f"{relative(e['file'])}: {e['message']}" for e in facts['parse_errors']],
                 flow=graph.get('object_flow_stats', {}),
+                value_flow=graph.get('value_flow'),
                 analysis_profile=graph.get('analysis_profile'), call_graph_policy=graph.get('call_graph_policy'),
                 entry_points=graph.get('entry_points', []), reading_order=graph.get('reading_order', {}),
                 hierarchy=graph.get('hierarchy', {}), import_cycles=graph.get('import_cycles', []),

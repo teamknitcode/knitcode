@@ -150,6 +150,16 @@ class ValueFlowTests(unittest.TestCase):
         '''})
         arg = argument(flow, 'METHOD:app.Port.__init__', 'number')
         self.assertTrue(arg['mismatch'])
+        
+    def test_rebound_builtin_name_is_not_judged(self):
+        for header in ('str = bytes\n', 'from os import PathLike as str\n'):
+            flow = value_flow({'app.py': header + 'def read(x: str):\n    return x\nread(b"ok")\n'})
+            x = flow['functions']['FUNCTION:app.read']['parameters']['x']
+            self.assertEqual(x['declared_types'], [])
+            self.assertFalse(x['mismatch'])
+        # A rebinding inside another function does not change the module's `str`.
+        flow = value_flow({'app.py': 'def g():\n    str = 1\ndef read(x: str):\n    return x\nread(b"ok")\n'})
+        self.assertTrue(flow['functions']['FUNCTION:app.read']['parameters']['x']['mismatch'])
 
 
 class VSCodeExportTests(unittest.TestCase):

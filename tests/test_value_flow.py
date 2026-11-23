@@ -151,16 +151,32 @@ class ValueFlowTests(unittest.TestCase):
         arg = argument(flow, 'METHOD:app.Port.__init__', 'number')
         self.assertTrue(arg['mismatch'])
         
-    def test_rebound_builtin_name_is_not_judged(self):
-        for header in ('str = bytes\n', 'from os import PathLike as str\n'):
-            flow = value_flow({'app.py': header + 'def read(x: str):\n    return x\nread(b"ok")\n'})
-            x = flow['functions']['FUNCTION:app.read']['parameters']['x']
-            self.assertEqual(x['declared_types'], [])
-            self.assertFalse(x['mismatch'])
+    def test_rebound_builtin_name(self):
+        def x_of(source):
+            flow = value_flow({'app.py': source})
+            return flow['functions']['FUNCTION:app.read']['parameters']['x']
+        # One unconditional assignment before the definition: the annotation means bytes.
+        x = x_of('str = bytes\ndef read(x: str):\n    return x\nread(b"ok")\n')
+        self.assertEqual(x['declared_types'], ['bytes'])
+        self.assertFalse(x['mismatch'])
+        x = x_of('str = bytes\ndef read(x: str):\n    return x\nread("hello")\n')
+        self.assertEqual(x['mismatch_detail'], 'declared bytes, received str')
+        # Aliases chain: Text -> str -> bytes.
+        x = x_of('str = bytes\nText = str\ndef read(x: Text):\n    return x\nread(b"ok")\n')
+        self.assertEqual(x['declared_types'], ['bytes'])
+        # Not provable: conditional, imported, assigned twice or after the def, call result.
+        for source in ('import sys\nif sys.argv:\n    str = bytes\n',
+                       'from os import PathLike as str\n',
+                       'str = bytes\nstr = int\n',
+                       'def mk():\n    return bytes\nstr = mk()\n'):
+            x = x_of(source + 'def read(x: str):\n    return x\nread("hello")\n')
+            self.assertEqual(x['declared_types'], [], source)
+            self.assertFalse(x['mismatch'], source)
+        x = x_of('def read(x: str):\n    return x\nstr = bytes\nread(b"ok")\n')
+        self.assertFalse(x['mismatch'])
         # A rebinding inside another function does not change the module's `str`.
-        flow = value_flow({'app.py': 'def g():\n    str = 1\ndef read(x: str):\n    return x\nread(b"ok")\n'})
-        self.assertTrue(flow['functions']['FUNCTION:app.read']['parameters']['x']['mismatch'])
-
+        x = x_of('def g():\n    str = 1\ndef read(x: str):\n    return x\nread(b"ok")\n')
+        self.assertEqual(x['mismatch_detail'], 'declared str, received bytes')
 
 class VSCodeExportTests(unittest.TestCase):
     def test_export_carries_value_flow_linked_to_edges(self):

@@ -1,0 +1,164 @@
+{
+  "dynamic_value_flow": {
+    "schema_version": 1,
+    "source": "sys.setprofile",
+    "scope": "entry_process",
+    "trace_complete": true,
+    "target_exit_code": 0,
+    "file_verification": {
+      "app.py": "verified"
+    },
+    "functions": {
+      "FUNCTION:app.main": {
+        "parameters": {},
+        "returns": {
+          "declared": null,
+          "declared_types": [],
+          "inferred": [
+            {
+              "kind": "builtin",
+              "type": "NoneType"
+            }
+          ],
+          "unknown": false,
+          "mismatch": false
+        }
+      },
+      "FUNCTION:app.run": {
+        "parameters": {
+          "w": {
+            "declared": "Worker",
+            "declared_types": [
+              "app.Worker"
+            ],
+            "inferred": [
+              {
+                "kind": "instance",
+                "type": "app.Box"
+              },
+              {
+                "kind": "instance",
+                "type": "app.Worker"
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "mismatch_detail": "declared app.Worker, received app.Box"
+          },
+          "label": {
+            "declared": null,
+            "declared_types": [],
+            "inferred": [
+              {
+                "kind": "builtin",
+                "type": "str"
+              }
+            ],
+            "unknown": false,
+            "mismatch": false
+          }
+        },
+        "returns": {
+          "declared": "str",
+          "declared_types": [
+            "str"
+          ],
+          "inferred": [
+            {
+              "kind": "builtin",
+              "type": "str"
+            }
+          ],
+          "unknown": false,
+          "mismatch": false
+        }
+      }
+    },
+    "call_sites": [
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:14:4:0",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.run"
+        ],
+        "line": 14,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "w",
+            "text": "Worker()",
+            "declared": "Worker",
+            "declared_types": [
+              "app.Worker"
+            ],
+            "inferred": [
+              {
+                "kind": "instance",
+                "type": "app.Worker"
+              }
+            ],
+            "unknown": false,
+            "mismatch": false
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:15:4:2",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.run"
+        ],
+        "line": 15,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "w",
+            "text": "Box()",
+            "declared": "Worker",
+            "declared_types": [
+              "app.Worker"
+            ],
+            "inferred": [
+              {
+                "kind": "instance",
+                "type": "app.Box"
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "mismatch_detail": "declared app.Worker, received app.Box"
+          },
+          {
+            "position": 1,
+            "parameter": "label",
+            "text": "'first'",
+            "declared": null,
+            "declared_types": [],
+            "inferred": [
+              {
+                "kind": "builtin",
+                "type": "str"
+              }
+            ],
+            "unknown": false,
+            "mismatch": false
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:19:4:4",
+        "caller": "MODULE:app",
+        "targets": [
+          "FUNCTION:app.main"
+        ],
+        "line": 19,
+        "link_basis": "instruction_span",
+        "arguments": []
+      }
+    ],
+    "unmapped_functions": [],
+    "unlinked_calls": []
+  }
+}

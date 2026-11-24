@@ -46,7 +46,7 @@
     } else node('button','로컬 요청 취소',actions,()=>post({type:'roleLocalCancel',id}));
     if(state.text)node('p',state.text,box).setAttribute('role','status');
     if(state.structure){
-      node('p',`CodeT5 ${state.model} · 함수 ${state.sources.length}개 · CPU 연산 2스레드`,box).className='role-meta';
+      node('p',`CodeT5 ${state.model} · 함수 ${state.sources.length}개`,box).className='role-meta';
       const structure=node('div',undefined,box);node('strong','정적 분석에서 확인한 위치와 연결',structure);
       for(const line of state.structure)node('p',line,structure);
       if (state.runtime) {
@@ -58,13 +58,13 @@
       const details=node('details',undefined,box);node('summary','모델이 읽을 함수 본문 확인',details);
       for(const source of state.sources){node('strong',`${source.name} · ${source.file}:${source.start}–${source.end}`,details);node('pre',source.text,details);}
       node('p','함수당 입력 최대 512토큰·출력 최대 64토큰. 주석과 docstring을 제외한 본문을 요약하며, 입력이 길면 일부만 사용했다고 표시합니다.',box);
-      if(state.sources.length && installation?.codeReady !== false)node('button','CPU로 요약 생성',box,()=>{
-        states.set(id,{...state,state:'loading',text:'CPU에서 모델을 불러오는 중…'});render(box,id,post);post({type:'roleLocalGenerate',id,token:state.token});
+      if(state.sources.length && installation?.codeReady !== false)node('button','함수 요약 생성',box,()=>{
+        states.set(id,{...state,state:'loading',text:'함수 요약을 생성하는 중…'});render(box,id,post);post({type:'roleLocalGenerate',id,token:state.token});
       });
       else if(!state.sources.length) node('p','이 선택에는 요약 가능한 함수가 없습니다. 함수를 직접 선택하세요.',box);
     }
-    if(state.state==='complete') node('small',state.cached ? '이전에 생성한 요약' :
-      `CodeT5 생성 완료${state.result.seconds===null?'':` · 모델 로딩 포함 ${state.result.seconds}초`}`,box);
+    if(state.state==='complete') node('small',state.cached ? `이전에 생성한 요약 · ${state.result.deviceName}` :
+      `${state.result.deviceName} · ${state.result.reused ? '모델 재사용' : '모델 로드'}${state.result.seconds===null?'':` · ${state.result.seconds}초`}`,box);
     if(state.notices){const details=node('details',undefined,box);node('summary','요약 범위와 한계',details);for(const line of state.notices)node('p',line,details);}
 
   }

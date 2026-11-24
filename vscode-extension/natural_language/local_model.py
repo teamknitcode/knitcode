@@ -1,7 +1,7 @@
-"""Optional CPU-only CodeT5 worker. JSON stdin/stdout; never imports target code.
+"""Local CodeT5 worker. JSON lines on stdin/stdout; never imports target code.
 
 --setup creates a dedicated environment and downloads pinned public weights.
-Normal inference is offline, uses no remote custom code, and exits after one request.
+Normal inference is offline, uses no remote custom code, and supports model reuse across requests.
 """
 import argparse
 import ast
@@ -10,6 +10,7 @@ import json
 import io
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -34,9 +35,8 @@ MODELS = {
 }
 
 
-def cpu_environment(offline=True):
-    os.environ.update(CUDA_VISIBLE_DEVICES='', HIP_VISIBLE_DEVICES='',
-                      HF_HUB_DISABLE_TELEMETRY='1', HF_HUB_DISABLE_XET='1',
+def environment(offline=True):
+    os.environ.update(HF_HUB_DISABLE_TELEMETRY='1', HF_HUB_DISABLE_XET='1',
                       TOKENIZERS_PARALLELISM='false', PYTHONUTF8='1',
                       OMP_NUM_THREADS='2', MKL_NUM_THREADS='2')
     if offline:
@@ -46,38 +46,65 @@ def cpu_environment(offline=True):
         os.environ.pop('TRANSFORMERS_OFFLINE', None)
 
 
-def runtime_python(runtime):
-    return runtime / 'venv' / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
+def runtime_python(runtime, backend):
+    folder = 'venv-cu126' if backend == 'cuda' else 'venv'
+    return runtime / folder / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
 
 
-def setup(runtime, model):
+def auto_backend():
+    if sys.platform not in ('win32', 'linux'):
+        return 'cpu'
+    smi = shutil.which('nvidia-smi')
+    if smi:
+        try:
+            result = subprocess.run([smi, '--query-gpu=name', '--format=csv,noheader'],
+                                    capture_output=True, timeout=10)
+            if result.returncode == 0 and result.stdout.strip():
+                return 'cuda'
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    return 'cpu'
+
+
+def setup(runtime, model, backend):
     if not (3, 11) <= sys.version_info[:2] <= (3, 13):
         raise ValueError('Use Python 3.11, 3.12 or 3.13 for local model setup.')
     import venv
-    cpu_environment(False)
+    environment(False)
     runtime.mkdir(parents=True, exist_ok=True)
-    print('Creating dedicated CPU environment...', flush=True)
-    py = runtime_python(runtime)
+    backend = auto_backend() if backend == 'auto' else backend
+    print(f'Preparing CodeT5 ({backend})...', flush=True)
+    py = runtime_python(runtime, backend)
     if not py.exists():
-        venv.EnvBuilder(with_pip=True).create(runtime / 'venv')
+        venv.EnvBuilder(with_pip=True).create(py.parent.parent)
     commands = [
         [str(py), '-m', 'pip', 'install', '--disable-pip-version-check',
-         'torch==2.8.0', '--index-url', 'https://download.pytorch.org/whl/cpu'],
+         'torch==2.8.0+cu126' if backend == 'cuda' else 'torch==2.8.0', '--index-url',
+         'https://download.pytorch.org/whl/' + ('cu126' if backend == 'cuda' else 'cpu')],
         [str(py), '-m', 'pip', 'install', '--disable-pip-version-check',
          'transformers==4.57.6', 'huggingface-hub==0.36.2', 'safetensors==0.7.0',
          'ctranslate2==4.6.2', 'sentencepiece==0.2.1'],
         [str(py), '-I', '-B', str(Path(__file__).resolve()), '--download',
-         '--runtime', str(runtime), '--model', model],
+         '--runtime', str(runtime), '--model', model, '--backend', backend],
         [str(py), '-I', '-B', str(Path(__file__).with_name('translate_ko.py')),
          '--install', '--runtime', str(runtime)],
     ]
     for command in commands:
         subprocess.run(command, check=True)
-    print('Local CodeT5 CPU setup complete.', flush=True)
+    if backend == 'cuda':
+        import tempfile
+        with tempfile.NamedTemporaryFile(dir=py.parent.parent, delete=False) as handle:
+            handle.write(b'cu126')
+            marker = Path(handle.name)
+        marker.replace(py.parent.parent / 'verified-cu126')
+    print(f'CodeT5 ({backend}) and Korean translation are ready.', flush=True)
 
 
-def download(runtime, model):
-    cpu_environment(False)
+def download(runtime, model, backend):
+    environment(False)
+    import torch
+    if backend == 'cuda' and not torch.cuda.is_available():
+        raise RuntimeError('CUDA 12.6 PyTorch cannot access the GPU. Check the NVIDIA driver; the CPU environment is preserved.')
     from huggingface_hub import snapshot_download
     config = MODELS[model]
     destination = runtime / 'models' / model
@@ -88,7 +115,7 @@ def download(runtime, model):
         verified = False
     if verified and all((destination / f).is_file() for f in
                         ('config.json', 'vocab.json', 'merges.txt', config['weights'])):
-        load_model(destination, model)
+        verify_model(destination, model, backend)
         print('Reusing existing CodeT5 model.', flush=True)
         return
     # Invalidate an old success marker before retrying installation.
@@ -100,13 +127,23 @@ def download(runtime, model):
                           'vocab.json', 'merges.txt', 'tokenizer.json',
                           'tokenizer_config.json', 'special_tokens_map.json', 'added_tokens.json'])
     # Verify local loading before marking the installation ready; no target code involved.
-    cpu_environment()
-    tokenizer, loaded = load_model(destination, model)
-    del tokenizer, loaded
+    environment()
+    verify_model(destination, model, backend)
     (destination / 'ready.json').write_text(json.dumps(config), encoding='utf-8')
 
 
-def load_model(destination, model):
+def verify_model(destination, model, backend):
+    import torch
+    tokenizer, loaded = load_model(destination, model, backend)
+    if backend == 'cuda':
+        inputs = tokenizer('def f(): return 1', return_tensors='pt').to(backend)
+        with torch.inference_mode():
+            loaded.generate(**inputs, max_new_tokens=2, do_sample=False)
+        torch.cuda.synchronize()
+        print(f'CUDA inference verified: {torch.cuda.get_device_name(0)}', flush=True)
+
+
+def load_model(destination, model, backend):
     import torch
     from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
     torch.set_num_threads(2)
@@ -116,7 +153,7 @@ def load_model(destination, model):
     loaded = AutoModelForSeq2SeqLM.from_pretrained(
         str(destination), local_files_only=True, trust_remote_code=False,
         use_safetensors=(model == 'small'), dtype=torch.float32)
-    loaded.to('cpu').eval()
+    loaded.to(backend).eval()
     return tokenizer, loaded
 
 
@@ -150,8 +187,8 @@ def model_input(code):
     return ' '.join(spaced.split()).replace('</s>', '<unk>')
 
 
-def infer(runtime, model, request):
-    cpu_environment()
+def infer(runtime, model, request, backend, session):
+    environment()
     sources = request.get('sources')
     if not isinstance(sources, list) or not 1 <= len(sources) <= 3:
         raise ValueError('Select one to three functions.')
@@ -166,11 +203,15 @@ def infer(runtime, model, request):
         raise ValueError('MODEL_NOT_READY: Run local CPU model setup first.')
     import torch
     start = time.monotonic()
-    tokenizer, loaded = load_model(destination, model)
+    device = 'cuda' if backend != 'cpu' and torch.cuda.is_available() else 'cpu'
+    reused = bool(session)
+    if not reused:
+        session.extend(load_model(destination, model, device))
+    tokenizer, loaded = session
     results = []
     for sid, code in prepared:
         all_ids = tokenizer(code, truncation=False)['input_ids']
-        inputs = tokenizer(code, return_tensors='pt', truncation=True, max_length=512)
+        inputs = tokenizer(code, return_tensors='pt', truncation=True, max_length=512).to(device)
         with torch.inference_mode():
             generated = loaded.generate(**inputs, max_new_tokens=64, do_sample=False,
                                         num_beams=1)
@@ -181,7 +222,8 @@ def infer(runtime, model, request):
                         'truncated': len(all_ids) > 512,
                         'output_truncated': len(output_ids) >= 65 and output_ids[-1] != tokenizer.eos_token_id})
     return {'model': MODELS[model]['repo'], 'revision': MODELS[model]['revision'],
-            'device': 'cpu', 'threads': 2, 'seconds': round(time.monotonic() - start, 2),
+            'device': device, 'reused': reused,
+            'device_name': torch.cuda.get_device_name(0) if device == 'cuda' else 'CPU', 'seconds': round(time.monotonic() - start, 2),
             'summaries': results}
 
 
@@ -191,22 +233,36 @@ def main():
         sys.stdin.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser()
     parser.add_argument('--runtime', type=Path, required=True)
+    parser.add_argument('--backend', choices=['auto','cpu','cuda'], default='auto')
     parser.add_argument('--model', choices=MODELS, default='base')
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument('--setup', action='store_true')
+    modes.add_argument('--worker', action='store_true')
     modes.add_argument('--download', action='store_true')
     args = parser.parse_args()
     try:
         if args.setup:
-            setup(args.runtime.resolve(), args.model)
+            setup(args.runtime.resolve(), args.model, args.backend)
         elif args.download:
-            download(args.runtime.resolve(), args.model)
+            download(args.runtime.resolve(), args.model, args.backend if args.backend != 'auto' else 'cpu')
+        elif args.worker:
+            session = []
+            for raw in sys.stdin:
+                try:
+                    if len(raw) > 200001:
+                        raise ValueError('Input exceeds limit.')
+                    with contextlib.redirect_stdout(sys.stderr):
+                        result = infer(args.runtime, args.model, json.loads(raw), args.backend, session)
+                except Exception as exc:
+                    print(json.dumps({'error': str(exc)[:1200]}), flush=True)
+                    return 1
+                print(json.dumps(result), flush=True)
         else:
             raw = sys.stdin.read(200001)
             if len(raw) > 200000:
                 raise ValueError('Input exceeds limit.')
             with contextlib.redirect_stdout(sys.stderr):
-                result = infer(args.runtime.resolve(), args.model, json.loads(raw))
+                result = infer(args.runtime.resolve(), args.model, json.loads(raw), args.backend, [])
             print(json.dumps(result, ensure_ascii=False))
     except Exception as error:
         if args.setup or args.download:

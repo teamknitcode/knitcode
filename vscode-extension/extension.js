@@ -6,6 +6,10 @@ const os = require('os');
 const { execFile } = require('child_process');
 
 function activate(context) {
+  const localProvider = require('./natural_language/local-provider');
+  context.subscriptions.push({dispose:localProvider.closeWorker});
+  context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.setupLocalGpu',
+    () => localProvider.setup(vscode, context, 'cuda')));
   context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.setupLocalModel',
     () => require('./natural_language/local-provider').setup(vscode, context)));
   context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.open', async () => {

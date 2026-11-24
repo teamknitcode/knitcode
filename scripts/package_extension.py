@@ -34,6 +34,8 @@ def package(output=None):
             archive.write(file, 'extension/' + file.relative_to(source).as_posix())
         for file in sorted(ROOT.glob('*.py')):
             archive.write(file, 'extension/vendor/' + file.name)
+        for file in sorted((ROOT / 'runtime_validation').glob('*.py')):
+            archive.write(file, 'extension/vendor/runtime_validation/' + file.name)
         archive.write(ROOT / 'viewer_template.html', 'extension/vendor/viewer_template.html')
         # KnitCode Git Validation UI PATCH v1: ship isolated Git logic with the VSIX.
         extra = ROOT / 'git_validation'

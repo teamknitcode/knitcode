@@ -41,6 +41,30 @@ function observedCallees(trace, data, calleeIds, caller) {
   return [...names].slice(0, 3);
 }
 
+// dynamic_value_flow.py --vscode-data keeps the source hashes from the selected export.
+function valueFlowEvidence(report, target, digest) {
+  const flow = report.dynamic_value_flow;
+  if (flow.schema_version !== 1 || report.source_hashes?.[target.file] !== digest ||
+      flow.file_verification?.[target.file] !== 'verified') {
+    return '동적 값 흐름을 현재 소스와 대조할 수 없습니다. 동일 소스의 --vscode-data 통합 결과를 선택하세요.';
+  }
+  const entry = flow.functions?.[target.id];
+  if (!entry) return '이번 값 흐름 기록에서는 이 함수의 관측값을 찾지 못했습니다.';
+  const lines = [`동적 값 흐름 · ${flow.trace_complete ? '완료 기록' : '부분 기록'}`];
+  function describe(label, slot) {
+    const types = Array.isArray(slot?.inferred) ? slot.inferred
+      .map(item => item?.type).filter(type => typeof type === 'string').slice(0, 6) : [];
+    if (types.length) {
+      const mismatch = slot.mismatch === true ? ' (선언 타입과 불일치)' : '';
+      lines.push(`${label}: ${types.join(', ')}${mismatch}`);
+    }
+  }
+  for (const [name, slot] of Object.entries(entry.parameters || {}).slice(0, 12)) describe(name, slot);
+  describe('반환', entry.returns);
+  describe('yield', entry.yields);
+  return lines.join(' · ');
+}
+
 async function runtimeEvidence(root, traceFile, target, digest, data, calleeIds) {
   let trace;
   try {
@@ -53,6 +77,7 @@ async function runtimeEvidence(root, traceFile, target, digest, data, calleeIds)
     if (error.code === 'ENOENT') return '연결된 실행 기록이 없습니다.';
     return '실행 기록 파일을 열거나 해석할 수 없습니다.';
   }
+  if (trace?.dynamic_value_flow) return valueFlowEvidence(trace,target,digest);
   if (trace?.format !== 'knitcode-profile-1' || !Array.isArray(trace.nodes))
     return 'KnitCode record 형식의 실행 기록이 필요합니다.';
   if (typeof trace.root !== 'string' || !path.isAbsolute(trace.root) || path.relative(root, trace.root) !== '')

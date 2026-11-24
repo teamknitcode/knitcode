@@ -182,11 +182,45 @@ def _declared(flow, node, context):
         classes = [r for r in refs if r['kind'] == 'CLASS']
         if classes:
             return {c['canonical_name'] for c in classes}, True
-        if not refs and isinstance(node, ast.Name) and node.id in _BUILTIN_TYPES:
-            return {node.id}, True
+        if not refs and isinstance(node, ast.Name):
+            alias = _alias(flow, node.id, context)
+            if alias is not None:
+                return _declared(flow, *alias)
+            if node.id in _BUILTIN_TYPES and not _rebound(flow, node.id, context):
+                return {node.id}, True
         return set(), False
     return set(), False
 
+def _alias(flow, name, context):
+    """(node, context) for a name bound exactly once, unconditionally and
+    before the definition, to another plain name (`str = bytes`,
+    `Text = str`): the annotation means that name. None otherwise."""
+    depth = context.get('_alias_depth', 0)
+    if depth >= 4 or name in flow.r.imports_at(context):
+        return None
+    scopes = [*flow.r.lexical_scopes(context.get('scope') or '<module>', context['module']), '<module>']
+    found = [a for scope in scopes for a in flow.r.assignments.get((context['file'], scope), [])
+             if name in (a.get('targets') or [])]
+    if len(found) != 1:
+        return None
+    assignment = found[0]
+    binding = assignment.get('binding') or {}
+    if (assignment.get('type') != 'ASSIGN' or assignment.get('control_depth')
+            or assignment.get('targets') != [name] or binding.get('kind') != 'name'
+            or (assignment.get('line') or 0) >= (context.get('line') or 0)):
+        return None
+    return ast.Name(id=binding['name']), {**context, 'line': assignment['line'], '_alias_depth': depth + 1}
+
+def _rebound(flow, name, context):
+    """A builtin type name rebound by an import or an assignment in the
+    module or an enclosing scope (`str = bytes`, `import x as str`): the
+    annotation may not mean the builtin, so it is not judged."""
+    if name in flow.r.imports_at(context):
+        return True
+    scopes = [*flow.r.lexical_scopes(context.get('scope') or '<module>', context['module']), '<module>']
+    return any(name in (a.get('targets') or [])
+               for scope in scopes
+               for a in flow.r.assignments.get((context['file'], scope), []))
 
 def _origin(flow, node, context):
     text = ast.unparse(node)

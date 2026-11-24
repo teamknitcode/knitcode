@@ -11,6 +11,7 @@ from symbol_builder import build_symbol_result
 from graph_builder import build_graph
 from unresolved_classifier import reclassify_graph
 from call_status import annotate_call_statuses
+from natural_language_evidence import annotate
 from vscode_history import read_history
 from vscode_changes import read_changes
 from project_intro import project_intro
@@ -60,7 +61,8 @@ def export_project(root, days=90, limit=300, *, analysis_profile=None, call_poli
     architecture_hierarchy = build_architecture_hierarchy(
     root, files, nodes, edges
 )
-    return dict(nodes=nodes, edges=edges, history=history,
+    return dict(source_hashes=annotate(nodes, facts, relative),
+                nodes=nodes, edges=edges, history=history,
                 architecture_roles=architecture_roles,
                 architecture_hierarchy=architecture_hierarchy,
                 project=project_intro(root),

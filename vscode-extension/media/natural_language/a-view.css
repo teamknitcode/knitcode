@@ -1,0 +1,10 @@
+#a-explanation { padding: 16px 24px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+#a-explanation button { margin: 4px 8px 4px 0; }
+#a-explanation h3 { margin: 0; }
+#a-explanation p { margin: 6px 0; }
+#a-explanation details { margin: 6px 0; }
+#a-explanation pre { max-height: 16rem; overflow: auto; }
+#a-explanation .function-summary { margin: 8px 0 16px; padding-left: 14px; border-left: 3px solid var(--accent); }
+#a-explanation .function-summary small { display: block; color: var(--muted); }
+#a-explanation .summary-headline { font-size: 1.5rem; font-weight: 650; line-height: 1.4; margin: 4px 0; color: var(--text); }
+#a-explanation .summary-original { font-size: 1.05rem; line-height: 1.45; margin: 4px 0 8px; }

@@ -6,6 +6,8 @@ const os = require('os');
 const { execFile } = require('child_process');
 
 function activate(context) {
+  context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.setupLocalModel',
+    () => require('./natural_language/local-provider').setup(vscode, context)));
   context.subscriptions.push(vscode.commands.registerCommand('knitcodeStatic.open', async () => {
     if (!vscode.workspace.isTrusted) return;
     if ((vscode.workspace.workspaceFolders || []).some(f => f.uri.scheme !== 'file')) {
@@ -22,11 +24,11 @@ function activate(context) {
       { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
     const nonce = crypto.randomBytes(16).toString('hex');
     const resource = name => panel.webview.asWebviewUri(vscode.Uri.joinPath(media, name));
-    panel.webview.html = `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${panel.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${resource('map.css')}"><link rel="stylesheet" href="${resource('bmode.css')}"></head><body>
+    panel.webview.html = `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${panel.webview.cspSource}; script-src 'nonce-${nonce}';"><link rel="stylesheet" href="${resource('map.css')}"><link rel="stylesheet" href="${resource('bmode.css')}"><link rel="stylesheet" href="${resource('natural_language/a-view.css')}"></head><body>
       <header><div><b>knitcode</b></div><div class="header-actions"><button id="mode-a" aria-pressed="false">A · 정밀 분석</button><button id="mode-b" aria-pressed="true">B · 구조 이해</button><button id="toggle-map" aria-pressed="true">함수 화면 보기</button><button id="toggle-history" aria-controls="git-sidebar" aria-expanded="true">Git 패널 접기</button><button id="refresh">재분석</button></div></header>
       <p id="status" role="status">분석 준비 중…</p>
       <main id="layout"><aside class="browser" id="code-browser"><span class="panel-label">코드 탐색</span><input id="search" placeholder="파일·함수 검색" aria-label="파일·함수 검색"><div id="tree"></div></aside>
-      <div id="browser-resize" class="panel-resize" role="separator" tabindex="0" aria-orientation="vertical" aria-label="파일 탐색 너비" aria-controls="code-browser"></div><section class="workspace"><nav id="breadcrumbs" aria-label="현재 탐색 위치"></nav><section id="project-map" aria-label="프로젝트 지도" hidden></section><div id="focus"></div><nav id="flow-controls"><div><button id="back">← 이전 선택</button><button id="less">− 단계</button><span id="depth"></span><button id="more">+ 단계</button></div><small>호출자를 왼쪽으로 · 호출 대상을 오른쪽으로</small></nav><div id="flow" aria-label="함수 중심 호출 흐름"></div><section id="evidence"></section></section>
+      <div id="browser-resize" class="panel-resize" role="separator" tabindex="0" aria-orientation="vertical" aria-label="파일 탐색 너비" aria-controls="code-browser"></div><section class="workspace"><section id="a-explanation" aria-label="선택한 코드 해설"></section><nav id="breadcrumbs" aria-label="현재 탐색 위치"></nav><section id="project-map" aria-label="프로젝트 지도" hidden></section><div id="focus"></div><nav id="flow-controls"><div><button id="back">← 이전 선택</button><button id="less">− 단계</button><span id="depth"></span><button id="more">+ 단계</button></div><small>호출자를 왼쪽으로 · 호출 대상을 오른쪽으로</small></nav><div id="flow" aria-label="함수 중심 호출 흐름"></div><section id="evidence"></section></section>
       <div id="history-resize" class="panel-resize" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Git 패널 너비" aria-controls="git-sidebar"></div>
       <aside class="history" id="git-sidebar"><div class="git-heading"><h2>파일의 변경 맥락</h2><button id="collapse-history" aria-label="Git 패널 접기" aria-controls="git-sidebar">접기 ›</button></div><p id="history-file"></p><div class="git-tabs" role="tablist" aria-label="Git 보기"><button id="cochange-tab" role="tab" aria-controls="history" aria-selected="true">함께 변경</button><button id="history-tab" role="tab" aria-controls="history" aria-selected="false" tabindex="-1">변경 이력</button><button id="insights-tab" role="tab" aria-controls="git-insights" aria-selected="false" tabindex="-1">심층 분석</button></div><div id="history" role="tabpanel" aria-labelledby="cochange-tab"></div><section id="git-insights" class="git-validation-section" role="tabpanel" aria-labelledby="insights-tab" hidden><section id="working-changes"></section><p>작성자별 변경 · 함수 핫스팟 · 공동 변경</p><button id="git-validation-run">Git 상세 분석 다시 실행</button> <button id="git-validation-report">정적분석 + Git 통합 보고서 ↗</button><p id="git-validation-status" role="status">분석 대기 중</p><div id="git-validation-panel"></div></section></aside></main>
       <section id="b-mode" hidden aria-label="KnitCode B 모드 구조 이해">
@@ -38,12 +40,18 @@ function activate(context) {
         <section class="b-answer-panel" aria-label="질문 답변 및 영역 설명"><div class="b-answer-heading"><span>QUESTION &amp; AREA INSIGHT</span><h2 id="b-answer-heading">선택한 영역 요약</h2></div><div id="b-question-answer" class="b-question-answer" role="status">관심 있는 질문이나 지도 속 영역을 선택해보세요.</div></section>
         <section class="b-detail" aria-label="선택한 영역 상세 보기"><div class="b-panel-heading"><div><h2 id="b-selection-title">영역을 선택하세요</h2><p id="b-selection-subtitle">패키지 → 파일 → 함수 순서로 살펴볼 수 있습니다.</p></div><div class="b-detail-actions"><button id="b-open-a" disabled>선택 함수 A 모드에서 보기</button><button id="b-open-code" disabled>소스코드 열기 ↗</button></div></div><div id="b-detail-content" class="b-detail-content"><p class="b-placeholder">지도에서 구성 요소를 선택하면 해당 위치의 파일과 함수가 이곳에 표시됩니다.</p></div></section>
       </section>
+      <script nonce="${nonce}" src="${resource('natural_language/local-view.js')}"></script>
+      <script nonce="${nonce}" src="${resource('natural_language/a-view.js')}"></script>
       <script nonce="${nonce}" src="${resource('map.js')}"></script><script nonce="${nonce}" src="${resource('bmode.js')}"></script></body></html>`;
     let child, gitChild, reportChild, disposed = false, data, busy = false;
     panel.onDidDispose(() => { disposed = true; if (child) child.kill(); if (gitChild) gitChild.kill(); if (reportChild) reportChild.kill(); });
+    const resetLocal = require('./natural_language/host').attachLocalAnalysis({
+      vscode, context, folder, root, panel, getData: () => data, isBusy: () => busy, safeFile
+    });
     async function analyze() {
       if (busy || disposed) return;
       busy = true;
+      resetLocal();
       panel.webview.postMessage({type: 'status', text: 'Python 코드와 Git 이력 분석 중…'});
       const config = vscode.workspace.getConfiguration('knitcodeStatic', folder.uri);
       const bundled = path.join(context.extensionPath, 'vendor');

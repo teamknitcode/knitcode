@@ -22,6 +22,7 @@ function choose(id, remember = true) {
   if (!index.has(id)) return;
   if (remember && selected && selected !== id) trail.push(selected);
   selected = id;
+  window.KnitAExplanation?.select(id);
   const query = $('search').value.toLowerCase();
   const node = index.get(id);
   if (remember && query && !`${node.name} ${node.file}`.toLowerCase().includes(query)) $('search').value = '';
@@ -1307,6 +1308,7 @@ applyLayout(); updateGitTabs();
 let shellMode = 'b';
 function setShellMode(mode) {
   shellMode = mode === 'a' ? 'a' : 'b';
+  window.KnitAExplanation?.setVisible(shellMode === 'a');
   $('layout').hidden = shellMode === 'b';
   $('b-mode').hidden = shellMode !== 'b';
   $('mode-a').setAttribute('aria-pressed', String(shellMode === 'a'));

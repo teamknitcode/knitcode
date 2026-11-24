@@ -2,7 +2,7 @@
   "name": "knitcode-static",
   "displayName": "knitcode",
   "description": "Explore Python callers, callees, static evidence and Git history with the current KnitCode engine.",
-  "version": "0.4.12",
+  "version": "0.4.23",
   "publisher": "knitcode-local",
   "engines": {
     "vscode": "^1.85.0"
@@ -25,6 +25,14 @@
   "contributes": {
     "commands": [
       {
+        "command": "knitcodeStatic.setupLocalGpu",
+        "title": "knitcode: Install NVIDIA GPU Support"
+      },
+      {
+        "command": "knitcodeStatic.setupLocalModel",
+        "title": "knitcode: Set Up Local Code Model"
+      },
+      {
         "command": "knitcodeStatic.open",
         "title": "knitcode: Open Call Flow"
       }
@@ -32,6 +40,35 @@
     "configuration": {
       "title": "knitcode",
       "properties": {
+        "knitcodeStatic.localDevice": {
+          "type": "string",
+          "enum": ["auto", "cpu"],
+          "default": "auto",
+          "scope": "application",
+          "description": "Use verified CUDA support when available, or force CPU."
+        },
+        "knitcodeStatic.localModel": {
+          "type": "string",
+          "enum": [
+            "small",
+            "base"
+          ],
+          "default": "base",
+          "scope": "application",
+          "description": "CodeT5 model used for local summaries."
+        },
+        "knitcodeStatic.localSetupPython": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Python 3.11 to 3.13 executable for model setup."
+        },
+        "knitcodeStatic.localTraceFile": {
+          "type": "string",
+          "default": ".knitcode/trace.json",
+          "scope": "resource",
+          "description": "KnitCode profile JSON or dynamic_value_flow.py --vscode-data export, absolute or relative to the project."
+        },
         "knitcodeStatic.pythonPath": {
           "type": "string",
           "default": "",

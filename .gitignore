@@ -60,6 +60,14 @@ trace-*.json
 trace_*.json
 hybrid_graph.json
 dynamic_comparison.json
+# Local type-flow exports. Keep the reproducible teaching example in Git.
+dynamic_value_flow.json
+!/examples/dynamic_value_flow/dynamic_value_flow.json
+/dynamic_value_flow-*.json
+/dynamic_value_flow_*.json
+/demo-flow.json
+/from[-_]trace.json
+/vscode-with-dynamic-flow*.json
 *.prof
 *.pstats
 .knitcode-runs/

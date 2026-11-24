@@ -1,0 +1,155 @@
+/* KnitCode B mode is isolated from the existing A-mode styling. */
+#mode-a,#mode-b {font-weight:650;border-radius:999px;padding:9px 15px}
+#mode-a[aria-pressed="true"],#mode-b[aria-pressed="true"] {background:var(--selection);border-color:var(--accent)}
+#b-mode {flex:1;min-height:0;overflow:auto;padding:26px 30px 40px;background:var(--canvas);--b-edge:var(--vscode-charts-blue,#66a8e9)}
+#b-mode .b-hero {display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 26px}
+#b-mode .b-eyebrow {color:var(--accent);font-weight:700;letter-spacing:.13em;font-size:10px}
+#b-mode h1 {font-size:24px;margin:5px 0 6px}
+#b-mode h2 {font-size:15px;line-height:1.4;margin:0 0 5px}
+#b-mode p {margin:5px 0 0;line-height:1.6}
+#b-mode .b-hero p,#b-mode .b-panel-heading p {color:var(--muted);font-size:12px}
+#b-mode .b-kpis {display:flex;flex-wrap:wrap;gap:10px}
+#b-mode .b-kpis>div {border:1px solid var(--line);background:var(--surface);border-radius:12px;min-width:85px;padding:10px 14px;text-align:center}
+#b-mode .b-kpis strong {font-size:20px;display:block;font-variant-numeric:tabular-nums}
+#b-mode .b-kpis small {font-size:11px}
+#b-mode .b-top {display:grid;grid-template-columns:minmax(0,2.3fr) minmax(250px,1fr);gap:15px;align-items:stretch}
+#b-mode .b-map-panel,#b-mode .b-guide,#b-mode .b-detail {border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0}
+#b-mode .b-panel-heading {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--line);padding:16px 18px}
+#b-mode .b-toolbar {display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#b-mode .b-toolbar label {font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer}
+#b-mode .b-toolbar input {margin:0}
+#b-mode .b-toolbar button,#b-mode .b-detail-actions button {font-size:11px;padding:7px 10px}
+#b-mode .b-map-scroll {min-height:315px;max-height:550px;overflow:auto;padding:22px}
+#b-mode .b-canvas {position:relative;min-height:240px}
+#b-mode .b-group-grid {position:relative;display:flex;gap:38px;align-items:stretch;z-index:1;min-width:100%}
+#b-mode .b-column {display:flex;flex-direction:column;gap:27px;min-width:190px;flex:1 0 190px}
+#b-mode #b-links {position:absolute;inset:0;overflow:visible;pointer-events:none;z-index:2}
+#b-mode .b-link {fill:none;stroke:var(--b-edge);stroke-width:1.7;stroke-opacity:.7;stroke-linecap:round}
+#b-mode .b-link-dim {stroke-opacity:.14}
+#b-mode .b-group {border:1px solid color-mix(in srgb,var(--b-edge) 32%,var(--line));background:var(--canvas);border-radius:12px;padding:13px;min-height:138px;transition:opacity .15s,border-color .15s,box-shadow .15s}
+#b-mode .b-group.is-selected {border:2px solid var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent);padding:12px}
+#b-mode .b-group.is-dim {opacity:.35}
+#b-mode .b-group-title {display:flex;justify-content:space-between;align-items:center;text-align:left;gap:8px;font-weight:700;font-size:13px;width:100%;padding:2px 0;border:0;background:transparent}
+#b-mode .b-group-title:hover {background:transparent;color:var(--accent)}
+#b-mode .b-group-name {overflow-wrap:anywhere}
+#b-mode .b-group-enter {opacity:.7;flex-shrink:0}
+#b-mode .b-group-meta {font-size:11px;color:var(--muted)}
+#b-mode .b-files {display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}
+#b-mode .b-file-chip {font-size:10px;padding:3px 6px;border-radius:5px;background:color-mix(in srgb,var(--b-edge) 9%,var(--surface));border:1px solid var(--line);white-space:normal;overflow-wrap:anywhere}
+#b-mode .b-file-chip.active {border-color:var(--accent)}
+#b-mode .b-more-chip {font-weight:600;color:var(--accent)}
+#b-mode .b-group-bottom {display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;color:var(--muted);font-size:10px;padding-top:5px}
+#b-mode .b-legend {border-top:1px solid var(--line);padding:9px 18px 14px;color:var(--muted);font-size:11px}
+#b-mode .b-guide {display:flex;flex-direction:column}
+#b-mode .b-questions {padding:15px;display:grid;gap:9px}
+#b-mode .b-questions button {text-align:left;font-size:12px;padding:11px 13px;border-radius:9px;background:var(--canvas)}
+#b-mode .b-questions button:hover,#b-mode .b-questions button.active {border-color:var(--accent);background:var(--selection)}
+#b-mode .b-question-answer {border-top:1px solid var(--line);margin-top:auto;padding:16px;color:var(--text);font-size:12px;line-height:1.7}
+#b-mode .b-answer-links {display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+#b-mode .b-answer-links button {font-size:11px;padding:6px 8px}
+#b-mode .b-disclaimer {padding:0 15px 17px;color:var(--muted);font-size:11px}
+#b-mode .b-detail {margin-top:16px}
+#b-mode .b-detail-content {padding:17px;min-height:130px}
+#b-mode .b-detail-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+#b-mode .b-detail-summary {border-left:3px solid var(--accent);padding:3px 13px;margin-bottom:14px;font-size:12px;color:var(--muted)}
+#b-mode .b-detail-summary strong {color:var(--text)}
+#b-mode .b-item {display:flex;align-items:center;flex-wrap:wrap;gap:8px;border:1px solid var(--line);background:var(--canvas);border-radius:9px;padding:10px}
+#b-mode .b-item-main {flex:1;min-width:145px;text-align:left;border:0;padding:0;overflow-wrap:anywhere;font-weight:600;font-size:12px}
+#b-mode .b-item-main:hover {color:var(--accent);background:transparent}
+#b-mode .b-item small {font-size:10px}
+#b-mode .b-inline-action {font-size:10px;padding:5px 8px}
+#b-mode .b-back-detail {font-size:12px;text-align:left;border:1px solid var(--line);padding:8px 10px}
+#b-mode .b-placeholder {color:var(--muted);font-size:12px}
+@media(max-width:930px) {#b-mode .b-top {grid-template-columns:minmax(0,1fr)} #b-mode .b-map-scroll {max-height:450px}}
+@media(max-width:610px) {#b-mode {padding:15px} #b-mode .b-hero {align-items:stretch;flex-direction:column} #b-mode .b-column {min-width:180px;flex-basis:180px}}
+@media(prefers-reduced-motion:reduce) {#b-mode .b-group{transition:none}}
+
+/* Architecture layer UI adapted from the structure/cluster interaction in Understand Anything. */
+#b-mode .b-toolbar select {background:var(--canvas);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:6px 8px;font:inherit;font-size:11px}
+#b-mode .b-group-description {font-size:10px;color:var(--muted);line-height:1.5;min-height:28px;margin:5px 0 3px}
+#b-mode .b-group[data-role="api"] {border-top:4px solid #589fd6}
+#b-mode .b-group[data-role="service"] {border-top:4px solid #8879c8}
+#b-mode .b-group[data-role="data"] {border-top:4px solid #d5a254}
+#b-mode .b-group[data-role="ui"] {border-top:4px solid #5db6ab}
+#b-mode .b-group[data-role="middleware"] {border-top:4px solid #ca89ad}
+#b-mode .b-group[data-role="external"] {border-top:4px solid #71a4cb}
+#b-mode .b-group[data-role="background"] {border-top:4px solid #cb886c}
+#b-mode .b-group[data-role="utils"] {border-top:4px solid #78ad7f}
+#b-mode .b-group[data-role="tests"] {border-top:4px solid #b5aaa5}
+#b-mode .b-group[data-role="config"] {border-top:4px solid #89a7bb}
+#b-mode .b-group[data-role="core"] {border-top:4px solid #999}
+#b-mode .b-related {border:1px solid var(--line);border-radius:10px;background:var(--canvas);margin:8px 0 14px;padding:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#b-mode .b-related strong {font-size:12px;width:100%;margin-bottom:4px}
+#b-mode .b-related-link {font-size:11px;line-height:1.45;padding:7px 9px}
+#b-mode .b-edge-examples {display:grid;gap:5px;margin-top:9px}
+#b-mode .b-edge-example {border:1px solid var(--line);padding:8px;border-radius:8px;display:grid;gap:3px}
+#b-mode .b-edge-example-title {font-size:11px;text-align:left;word-break:break-word}
+#b-mode .b-edge-example small {font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+
+#b-mode .b-group[data-role="entry"] {border-top:4px solid #508dc3}
+#b-mode .b-source-badge {display:block;font-size:10px;color:var(--muted);margin-top:6px}
+
+#b-mode .b-group[data-role="public_api"] {border-top:4px solid #63a2b5}
+#b-mode .b-group[data-role="processing"] {border-top:4px solid #9474ce}
+#b-mode .b-group[data-role="domain"] {border-top:4px solid #af9b58}
+
+/* B-mode integration v2: central explanation panel, legibility pass. */
+#b-mode .b-answer-panel {margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#b-mode .b-answer-heading {padding:17px 20px 0}
+#b-mode .b-answer-heading span {font-size:10px;letter-spacing:.11em;color:var(--muted);font-weight:700}
+#b-mode .b-answer-heading h2 {font-size:17px;line-height:1.45;margin:5px 0 0}
+#b-mode .b-answer-panel .b-question-answer {border:0;padding:10px 20px 20px;margin:0;font-size:13px;line-height:1.75;min-height:70px}
+#b-mode .b-answer-panel .b-question-answer p {margin:5px 0}
+#b-mode .b-group-name {font-size:14px;line-height:1.4}
+#b-mode .b-group-description {font-size:12px;line-height:1.6}
+#b-mode .b-group-meta {font-size:12px}
+#b-mode .b-questions button {font-size:13px;line-height:1.5}
+#b-mode .b-file-chip {font-size:11px}
+#b-mode .b-detail-summary {font-size:13px;line-height:1.7}
+#b-mode .b-item-main {font-size:13px}
+#b-mode .b-answer-links button {font-size:12px}
+@media (max-width:930px) {#b-mode .b-answer-heading h2 {font-size:16px}}
+
+/* Functional architecture map v3 — consistent readable typography and lanes.
+   Existing A-mode styles are deliberately unchanged. */
+#b-mode {padding:24px clamp(15px,2.4vw,34px) 44px;font-size:14px;line-height:1.55}
+#b-mode .b-top {grid-template-columns:minmax(0,3fr) minmax(270px,1fr);gap:18px}
+#b-mode .b-map-panel,#b-mode .b-guide,#b-mode .b-answer-panel,#b-mode .b-detail {border-radius:15px}
+#b-mode .b-map-scroll {min-height:420px;max-height:650px;padding:26px 22px}
+#b-mode .b-column {min-width:230px;flex:1 0 230px;gap:22px}
+#b-mode .b-group-grid {gap:32px}
+#b-mode .b-group {padding:15px;min-height:160px;border-width:1px;box-shadow:0 2px 8px #00000010}
+#b-mode .b-group.is-selected {padding:14px}
+#b-mode .b-group-name {font-size:15px;line-height:1.42;font-weight:750}
+#b-mode .b-group-description {font-size:12px;min-height:0;line-height:1.55}
+#b-mode .b-source-badge {font-size:11px;line-height:1.5}
+#b-mode .b-group-meta {font-size:12px;font-weight:650}
+#b-mode .b-files {gap:7px}
+#b-mode .b-file-chip {font-size:11px;padding:6px 8px;line-height:1.35}
+#b-mode .b-group-bottom {font-size:11px}
+#b-mode .b-link {stroke-width:2.15;stroke-opacity:.75}
+#b-mode .b-guide .b-questions {padding:14px;gap:8px}
+#b-mode .b-guide .b-questions button {font-size:13px;padding:11px 13px;line-height:1.5}
+#b-mode .b-panel-heading {padding:15px 18px}
+#b-mode .b-panel-heading h2 {font-size:17px}
+#b-mode .b-answer-panel .b-question-answer {font-size:14px;line-height:1.8}
+#b-mode .b-answer-heading h2 {font-size:17px}
+#b-mode .b-detail-content {padding:20px}
+#b-mode .b-item-main {font-size:13px}
+#b-mode .b-detail-summary {font-size:13px}
+#b-mode .b-group[data-layer="interface"] {border-top:4px solid #4d96df}
+#b-mode .b-group[data-layer="core"] {border-top:4px solid #9273d8}
+#b-mode .b-group[data-layer="integration"] {border-top:4px solid #65b5a7}
+#b-mode .b-group[data-layer="state"] {border-top:4px solid #d8a248}
+#b-mode .b-group[data-layer="output"] {border-top:4px solid #cf8bba}
+#b-mode .b-group[data-layer="support"] {border-top:4px solid #86a1b5}
+#b-mode .b-group[data-layer="unknown"] {border-top:4px dashed #a0a0a0;opacity:.75}
+@media(max-width:1100px) {
+  #b-mode .b-top {grid-template-columns:minmax(0,1fr)}
+  #b-mode .b-map-scroll {min-height:350px;max-height:540px}
+  #b-mode .b-questions {grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}
+}
+
+#b-mode .b-lane-title{font-weight:750;font-size:13px;letter-spacing:.02em;color:var(--text);padding:8px 11px;background:color-mix(in srgb,var(--b-edge) 7%,var(--surface));border-radius:9px;border:1px solid var(--line)}
+#b-mode .b-group.is-dim{opacity:.73}
+#b-mode .b-link-dim{stroke-opacity:.24}

@@ -24,12 +24,18 @@ def package(output=None):
     with ZipFile(output, 'w', ZIP_DEFLATED) as archive:
         archive.writestr('extension.vsixmanifest', vsix_manifest)
         archive.writestr('[Content_Types].xml', content_types)
-        for relative in ['package.json', 'extension.js', 'README.md', 'USER_GUIDE_KO.md', 'VISUALIZATION_KO.md', 'media/map.js', 'media/map.css']:
+        for relative in ['package.json', 'extension.js', 'README.md', 'USER_GUIDE_KO.md', 'VISUALIZATION_KO.md', 'media/map.js', 'media/map.css','media/bmode.js', 'media/bmode.css']:
             archive.write(source / relative, 'extension/' + relative)
+        for directory in ('natural_language', 'media/natural_language'):
+            for file in sorted((source / directory).iterdir()):
+                if file.is_file() and file.suffix in {'.js', '.py', '.css'}:
+                    archive.write(file, 'extension/' + file.relative_to(source).as_posix())
         for file in sorted((source / 'docs' / 'images').glob('*.png')):
             archive.write(file, 'extension/' + file.relative_to(source).as_posix())
         for file in sorted(ROOT.glob('*.py')):
             archive.write(file, 'extension/vendor/' + file.name)
+        for file in sorted((ROOT / 'runtime_validation').glob('*.py')):
+            archive.write(file, 'extension/vendor/runtime_validation/' + file.name)
         archive.write(ROOT / 'viewer_template.html', 'extension/vendor/viewer_template.html')
         # KnitCode Git Validation UI PATCH v1: ship isolated Git logic with the VSIX.
         extra = ROOT / 'git_validation'

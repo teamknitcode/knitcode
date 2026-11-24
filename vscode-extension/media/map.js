@@ -22,6 +22,7 @@ function choose(id, remember = true) {
   if (!index.has(id)) return;
   if (remember && selected && selected !== id) trail.push(selected);
   selected = id;
+  window.KnitAExplanation?.select(id);
   const query = $('search').value.toLowerCase();
   const node = index.get(id);
   if (remember && query && !`${node.name} ${node.file}`.toLowerCase().includes(query)) $('search').value = '';
@@ -1303,6 +1304,26 @@ for (const side of ['browser', 'history']) {
   });
 }
 applyLayout(); updateGitTabs();
+// B mode runs in its own Webview section; the established A view stays intact.
+let shellMode = 'b';
+function setShellMode(mode) {
+  shellMode = mode === 'a' ? 'a' : 'b';
+  window.KnitAExplanation?.setVisible(shellMode === 'a');
+  $('layout').hidden = shellMode === 'b';
+  $('b-mode').hidden = shellMode !== 'b';
+  $('mode-a').setAttribute('aria-pressed', String(shellMode === 'a'));
+  $('mode-b').setAttribute('aria-pressed', String(shellMode === 'b'));
+  for (const id of ['toggle-map', 'toggle-history']) $(id).hidden = shellMode === 'b';
+  if (shellMode === 'b') window.KnitB?.render();
+  else if (data) { if (mapMode) renderMap(); else render(); }
+}
+$('mode-a').addEventListener('click', () => setShellMode('a'));
+$('mode-b').addEventListener('click', () => setShellMode('b'));
+window.KnitBBridge = {
+  openA(id) { setShellMode('a'); if (index.has(id)) choose(id); },
+  openCode(id) { const node = index.get(id); if (node) open(node); }
+};
+setShellMode('b');
 window.addEventListener('message', ({data:message}) => {
   if (message.type === 'gitValidationStatus') $('git-validation-status').textContent = message.text;
   if (message.type === 'gitValidation') { gitValidation = message.data; changeCounts = undefined;
@@ -1321,6 +1342,7 @@ window.addEventListener('message', ({data:message}) => {
       primaryOutgoing.get(edge.source).add(edge.target);
     }
   }
+  window.KnitB?.setData(data);
   activeRoute = routeStart ? representativePath(routeStart) : [];
   if (highlightedId && !index.has(highlightedId)) highlightedId = undefined;
   const s = data.summary;
@@ -1340,6 +1362,7 @@ window.addEventListener('message', ({data:message}) => {
 });
 api.postMessage({type:'ready'});
 
+window.addEventListener('resize', () => window.KnitB?.onResize());
 window.addEventListener('resize', () => requestAnimationFrame(() => {
   if (mapMode && data) { mapZoom.view = null; renderMap(); }
   else if (index.get(selected)?.type === 'file') { fileZoom.view = null; flow(); }

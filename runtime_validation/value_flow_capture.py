@@ -10,6 +10,7 @@ import threading
 import types
 
 from dynamic_analysis import _execute
+from runtime_validation.list_observations import merge_samples, sample_list
 from runtime_validation.profile_collector import ProfileCollector, write_json_atomic
 from runtime_validation.python_execution import type_name
 from runtime_validation.runtime_bridge import _relative
@@ -21,6 +22,12 @@ class SiteCollector(ProfileCollector):
         super().__init__(root, coverage=False, variables=False, **kwargs)
         self.offsets = {}
         self.sites = {}
+        self.annotated_parameters = {}
+        for symbol in symbols['symbols']:
+            annotations = symbol.get('parameter_annotations')
+            if annotations:
+                key = (_relative(symbol['file'], symbols.get('repository')), symbol['name'])
+                self.annotated_parameters.setdefault(key, set()).update(annotations)
         self.bare_names = {(_relative(c['file'], symbols.get('repository')), c['line'], c['column'],
                             c['end_line'], c['end_column']): c['callee_text']
                            for c in symbols['calls'] if c['syntax_type'] == 'NAME'}
@@ -45,8 +52,17 @@ class SiteCollector(ProfileCollector):
 
     def _arguments(self, frame, node):
         receiver = super()._arguments(frame, node)
+        if node['kind'] != 'FUNCTION':
+            return receiver
+        local = frame.f_locals
+        names = self.argument_names(frame.f_code)
+        candidates = self.annotated_parameters.get((node['file'], node['name']), ())
+        samples = {name: sample_list(local[name]) for name in candidates
+                   if name in names and name in local and type(local[name]) is list}
+        if samples:
+            merge_samples(node.setdefault('list_samples', {}), samples)
         caller = frame.f_back
-        if node['kind'] != 'FUNCTION' or caller is None:
+        if caller is None:
             return receiver
         source = self._node(caller)
         if source is None:
@@ -63,8 +79,9 @@ class SiteCollector(ProfileCollector):
             if site.setdefault('positional_offset', offset) != offset:
                 site['positional_offset'] = None
         arguments = site['argument_types']
-        local = frame.f_locals
-        for name in self.argument_names(frame.f_code):
+        if samples:
+            merge_samples(site.setdefault('list_samples', {}), samples)
+        for name in names:
             if name in local:
                 arguments.setdefault(name, set()).add(type_name(local[name]))
         return receiver
@@ -92,6 +109,8 @@ class SiteCollector(ProfileCollector):
             if key in self.sites:
                 site = self.sites[key]
                 edge['call_span'] = site['span']
+                if 'list_samples' in site:
+                    edge['list_samples'] = site['list_samples']
                 if 'positional_offset' in site:
                     edge['positional_offset'] = site['positional_offset']
                 edge['site_argument_types'] = {

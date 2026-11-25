@@ -9,6 +9,124 @@
       "app.py": "verified"
     },
     "functions": {
+      "FUNCTION:app.batch": {
+        "parameters": {
+          "xs": {
+            "declared": "list[int]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "int"
+                  },
+                  {
+                    "kind": "builtin",
+                    "type": "str"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_element",
+            "element_check": {
+              "checked": 4,
+              "total": 4,
+              "declared_types": [
+                "int"
+              ],
+              "index": 1,
+              "observed_type": "str",
+              "status": "mismatch",
+              "reason": "incompatible_element"
+            },
+            "mismatch_detail": "element [1]: declared int, received str"
+          }
+        },
+        "returns": {
+          "declared": "int",
+          "declared_types": [
+            "int"
+          ],
+          "inferred": [
+            {
+              "kind": "builtin",
+              "type": "int"
+            }
+          ],
+          "unknown": false,
+          "mismatch": false,
+          "check_status": "match",
+          "check_reason": "compatible_type"
+        }
+      },
+      "FUNCTION:app.count_labels": {
+        "parameters": {
+          "labels": {
+            "declared": "list[str]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "int"
+                  },
+                  {
+                    "kind": "builtin",
+                    "type": "str"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_element",
+            "element_check": {
+              "checked": 4,
+              "total": 4,
+              "declared_types": [
+                "str"
+              ],
+              "index": 1,
+              "observed_type": "int",
+              "status": "mismatch",
+              "reason": "incompatible_element"
+            },
+            "mismatch_detail": "element [1]: declared str, received int"
+          }
+        },
+        "returns": {
+          "declared": "int",
+          "declared_types": [
+            "int"
+          ],
+          "inferred": [
+            {
+              "kind": "builtin",
+              "type": "int"
+            }
+          ],
+          "unknown": false,
+          "mismatch": false,
+          "check_status": "match",
+          "check_reason": "compatible_type"
+        }
+      },
       "FUNCTION:app.main": {
         "parameters": {},
         "returns": {
@@ -21,7 +139,9 @@
             }
           ],
           "unknown": false,
-          "mismatch": false
+          "mismatch": false,
+          "check_status": "unchecked",
+          "check_reason": "no_annotation"
         }
       },
       "FUNCTION:app.run": {
@@ -43,6 +163,8 @@
             ],
             "unknown": false,
             "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_type",
             "mismatch_detail": "declared app.Worker, received app.Box"
           },
           "label": {
@@ -55,7 +177,9 @@
               }
             ],
             "unknown": false,
-            "mismatch": false
+            "mismatch": false,
+            "check_status": "unchecked",
+            "check_reason": "no_annotation"
           }
         },
         "returns": {
@@ -70,7 +194,9 @@
             }
           ],
           "unknown": false,
-          "mismatch": false
+          "mismatch": false,
+          "check_status": "match",
+          "check_reason": "compatible_type"
         }
       }
     },
@@ -99,7 +225,9 @@
               }
             ],
             "unknown": false,
-            "mismatch": false
+            "mismatch": false,
+            "check_status": "match",
+            "check_reason": "compatible_type"
           }
         ]
       },
@@ -128,6 +256,8 @@
             ],
             "unknown": false,
             "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_type",
             "mismatch_detail": "declared app.Worker, received app.Box"
           },
           {
@@ -143,17 +273,217 @@
               }
             ],
             "unknown": false,
-            "mismatch": false
+            "mismatch": false,
+            "check_status": "unchecked",
+            "check_reason": "no_annotation"
           }
         ]
       },
       {
-        "call_id": "CALL:dynamic_value_flow/app.py:19:4:4",
+        "call_id": "CALL:dynamic_value_flow/app.py:16:4:4",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.batch"
+        ],
+        "line": 16,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "xs",
+            "text": "[1, 2]",
+            "declared": "list[int]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "int"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": false,
+            "check_status": "match",
+            "check_reason": "compatible_elements",
+            "element_check": {
+              "checked": 2,
+              "total": 2,
+              "declared_types": [
+                "int"
+              ],
+              "status": "match",
+              "reason": "compatible_elements"
+            }
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:17:4:5",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.batch"
+        ],
+        "line": 17,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "xs",
+            "text": "[1, 'wrong']",
+            "declared": "list[int]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "int"
+                  },
+                  {
+                    "kind": "builtin",
+                    "type": "str"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_element",
+            "element_check": {
+              "checked": 2,
+              "total": 2,
+              "declared_types": [
+                "int"
+              ],
+              "index": 1,
+              "observed_type": "str",
+              "status": "mismatch",
+              "reason": "incompatible_element"
+            },
+            "mismatch_detail": "element [1]: declared int, received str"
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:18:4:6",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.count_labels"
+        ],
+        "line": 18,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "labels",
+            "text": "['red', 'blue']",
+            "declared": "list[str]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "str"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": false,
+            "check_status": "match",
+            "check_reason": "compatible_elements",
+            "element_check": {
+              "checked": 2,
+              "total": 2,
+              "declared_types": [
+                "str"
+              ],
+              "status": "match",
+              "reason": "compatible_elements"
+            }
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:19:4:7",
+        "caller": "FUNCTION:app.main",
+        "targets": [
+          "FUNCTION:app.count_labels"
+        ],
+        "line": 19,
+        "link_basis": "instruction_span",
+        "arguments": [
+          {
+            "position": 0,
+            "parameter": "labels",
+            "text": "['red', 7]",
+            "declared": "list[str]",
+            "declared_types": [
+              "list"
+            ],
+            "inferred": [
+              {
+                "kind": "container",
+                "type": "list",
+                "elements": [
+                  {
+                    "kind": "builtin",
+                    "type": "int"
+                  },
+                  {
+                    "kind": "builtin",
+                    "type": "str"
+                  }
+                ],
+                "elements_unknown": false
+              }
+            ],
+            "unknown": false,
+            "mismatch": true,
+            "check_status": "mismatch",
+            "check_reason": "incompatible_element",
+            "element_check": {
+              "checked": 2,
+              "total": 2,
+              "declared_types": [
+                "str"
+              ],
+              "index": 1,
+              "observed_type": "int",
+              "status": "mismatch",
+              "reason": "incompatible_element"
+            },
+            "mismatch_detail": "element [1]: declared str, received int"
+          }
+        ]
+      },
+      {
+        "call_id": "CALL:dynamic_value_flow/app.py:31:4:10",
         "caller": "MODULE:app",
         "targets": [
           "FUNCTION:app.main"
         ],
-        "line": 19,
+        "line": 31,
         "link_basis": "instruction_span",
         "arguments": []
       }

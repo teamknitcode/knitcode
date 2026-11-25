@@ -9,9 +9,10 @@ from pathlib import Path
 
 from graph_builder import Resolver
 from object_flow import ObjectFlow
+from runtime_validation.list_observations import merge_samples
 from runtime_validation.runtime_bridge import _relative, compare
 from symbol_builder import load_json, module_name_from_file
-from value_flow import declared_types, mismatch, to_json
+from value_flow import declared_types, fits, list_element_options, to_json
 
 
 def _main_module(trace, symbols):
@@ -36,6 +37,25 @@ _ABCS = {'Sequence': abc.Sequence, 'MutableSequence': abc.MutableSequence, 'Iter
          'AbstractSet': abc.Set}
 
 
+def _type_node(node):
+    while isinstance(node, ast.Constant) and isinstance(node.value, str):
+        node = ast.parse(node.value, mode='eval').body
+    return node
+
+
+def _outer_only(node):
+    """A nominal match alone cannot confirm nested type arguments."""
+    node = _type_node(node)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        return _outer_only(node.left) or _outer_only(node.right)
+    if isinstance(node, ast.Subscript):
+        if ast.unparse(node.value).rsplit('.', 1)[-1] in ('Union', 'Optional'):
+            args = node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+            return any(_outer_only(arg) for arg in args)
+        return True
+    return False
+
+
 class TypeEntries:
     def __init__(self, flow, verified, main_module):
         self.flow = flow
@@ -44,7 +64,19 @@ class TypeEntries:
         self.declaration = lru_cache(maxsize=None)(self._declaration)
 
     def _declaration(self, symbol_id, annotation):
-        return declared_types(self.flow, annotation, self.flow.r.by_id[symbol_id])
+        context = self.flow.r.by_id[symbol_id]
+        names, resolved = declared_types(self.flow, annotation, context)
+        if not resolved:
+            return names, False, False, None
+        node = _type_node(ast.parse(annotation, mode='eval').body)
+        element = None
+        if (isinstance(node, ast.Subscript) and names == {'list'}
+                and ast.unparse(node.value).rsplit('.', 1)[-1] not in ('Union', 'Annotated')):
+            base, ok = declared_types(self.flow, ast.unparse(node.value), context)
+            if not ok or base != {'list'}:
+                return set(), False, True, None
+            element = list_element_options(self.flow, node.slice, context)
+        return names, True, _outer_only(node), element
 
     def verified_class(self, name):
         symbol = self.flow.r.classes.get(name)
@@ -79,8 +111,63 @@ class TypeEntries:
                 return False
         return descriptor[0] in ('builtin', 'container', 'instance')
 
-    def entry(self, symbol_id, annotation, types, *, judge=True):
-        names, resolved = self.declaration(symbol_id, annotation)
+    def assess(self, descriptors, names):
+        if names & {'Any', 'object'}:
+            return 'unchecked', 'unrestricted_annotation', None
+        checked = 0
+        for descriptor in descriptors:
+            if (not self.can_judge(descriptor, names) or
+                    descriptor in (('builtin', 'function'), ('builtin', 'method'), ('builtin', 'type'))):
+                continue
+            verdict = fits(self.flow, descriptor, names)
+            if verdict is False:
+                return 'mismatch', 'incompatible_type', descriptor[1]
+            if verdict is True:
+                checked += 1
+        if checked < len(descriptors):
+            return 'partial' if checked else 'unchecked', 'unverified_type', None
+        return 'match', 'compatible_type', None
+
+    def element_verdict(self, descriptor, options):
+        if options.keys() & {'Any', 'object'}:
+            return 'partial', 'unrestricted_annotation'
+        reason = None
+        concrete = vars(builtins).get(descriptor[1]) if descriptor[0] in ('builtin', 'container') else None
+        for name, fully_checkable in options.items():
+            base = _ABCS.get(name) or vars(builtins).get(name)
+            if isinstance(concrete, type) and isinstance(base, type) and issubclass(concrete, base):
+                verdict = 'match'
+            else:
+                verdict, _, _ = self.assess([descriptor], {name})
+            if verdict == 'match':
+                if fully_checkable:
+                    return 'match', 'compatible_elements'
+                reason = 'element_details_unchecked'
+            elif verdict != 'mismatch' and reason is None:
+                reason = 'unverified_type'
+        return ('partial', reason) if reason else ('mismatch', 'incompatible_element')
+
+    def check_elements(self, options, sample):
+        if sample is None:
+            return {'status': 'unchecked', 'reason': 'elements_not_recorded'}
+        checked, total = sample['checked'], sample['total']
+        status, reason = 'match', 'compatible_elements' if total else 'empty_list'
+        result = {'checked': checked, 'total': total, 'declared_types': sorted(options)}
+        for raw, index in sorted(sample['first_index'].items(), key=lambda item: (item[1], item[0])):
+            descriptor = self.describe(raw)
+            verdict, why = self.element_verdict(descriptor, options)
+            if verdict == 'mismatch':
+                result.update(index=index, observed_type=descriptor[1])
+                status, reason = verdict, why
+                break
+            if verdict != 'match':
+                status, reason = 'partial', why
+        if checked < total and status != 'mismatch':
+            status, reason = 'partial', 'sample_limit'
+        return dict(result, status=status, reason=reason)
+
+    def entry(self, symbol_id, annotation, types, *, judge=True, sample=None):
+        names, resolved, detailed, element = self.declaration(symbol_id, annotation)
         descriptors = sorted({self.describe(raw) for raw in types})
         unknown = not descriptors or any('?' in d[1] for d in descriptors)
         observed = [to_json(d) for d in descriptors]
@@ -90,14 +177,46 @@ class TypeEntries:
             # Existing traces store the runtime type, not the referent identity.
             if item['kind'] == 'builtin' and item['type'] in ('function', 'method', 'type'):
                 item['kind'] = {'type': 'class'}.get(item['type'], item['type'])
-        bad, detail = False, None
-        if judge and resolved and not unknown:
-            checkable = [d for d in descriptors if self.can_judge(d, names)
-                         and d not in (('builtin', 'function'), ('builtin', 'method'), ('builtin', 'type'))]
-            bad, detail = mismatch(self.flow, checkable, unknown, names, resolved)
+        status, reason, detail = 'unchecked', None, None
+        if unknown:
+            reason = 'unknown_observation'
+        elif not annotation:
+            reason = 'no_annotation'
+        elif not judge:
+            reason = 'binding_not_comparable'
+        elif not resolved:
+            reason = 'unresolved_annotation'
+        else:
+            status, reason, wrong = self.assess(descriptors, names)
+            if wrong:
+                detail = f"declared {' | '.join(sorted(names))}, received {wrong}"
+            elif detailed and status == 'match':
+                status, reason = 'partial', 'annotation_details_unchecked'
+        element_check = None
+        if judge and element and ('container', 'list', ()) in descriptors:
+            element_check = self.check_elements(element, sample)
+            if sample is not None:
+                for item in observed:
+                    if item['type'] == 'list':
+                        item['elements_unknown'] = sample['checked'] < sample['total']
+                        observed_elements = {self.describe(t) for t in sample['first_index']}
+                        item['elements'] = [to_json(d) for d in sorted(observed_elements)]
+                        for child in item['elements']:
+                            if child['kind'] == 'container':
+                                child['elements_unknown'] = True
+            if element_check['status'] == 'mismatch' and not unknown and not detail:
+                status, reason = 'mismatch', 'incompatible_element'
+                detail = (f"element [{element_check['index']}]: declared {' | '.join(sorted(element))}, "
+                          f"received {element_check['observed_type']}")
+            elif reason == 'annotation_details_unchecked':
+                status, reason = element_check['status'], element_check['reason']
+                if status == 'unchecked':
+                    status = 'partial'  # the list itself was checked
         result = {'declared': annotation, 'declared_types': sorted(names), 'inferred': observed,
-                  'unknown': unknown, 'mismatch': bad}
-        if bad:
+                  'unknown': unknown, 'mismatch': status == 'mismatch', 'check_status': status, 'check_reason': reason}
+        if element_check is not None:
+            result['element_check'] = element_check
+        if detail:
             result['mismatch_detail'] = detail
         return result
 
@@ -127,7 +246,8 @@ def _site_arguments(node, symbol, signature, static_args, group, entries):
     def add(location, expr, name):
         if not direct:
             name = None
-        entry = entries.entry(symbol['id'], annotations.get(name), group['types'].get(name, ()))
+        entry = entries.entry(symbol['id'], annotations.get(name), group['types'].get(name, ()),
+                              sample=group['samples'].get(name))
         text = ast.unparse(expr)
         if location == {'keyword': None}:
             text = '**' + text
@@ -177,8 +297,10 @@ def _functions(hybrid, flow, entries):
     for target, nodes in sorted(grouped.items()):
         symbol = flow.r.by_id[target]
         params = defaultdict(set)
+        samples = {}
         returns, yields = set(), set()
         for node in nodes:
+            merge_samples(samples, node.get('list_samples', {}))
             for name, raw in node['argument_types'].items():
                 params[name].update(raw)
             returns.update(node['return_types'])
@@ -194,7 +316,8 @@ def _functions(hybrid, flow, entries):
         resumable = any(n.get('resumable') for n in nodes)
         generator = resumable and _contains_yield(definition)
         functions[target] = {
-            'parameters': {name: entries.entry(target, annotations.get(name), params[name], judge=name not in variadic)
+            'parameters': {name: entries.entry(target, annotations.get(name), params[name],
+                                              judge=name not in variadic, sample=samples.get(name))
                            for name in names},
             'returns': entries.entry(target, symbol.get('return_annotation'), returns, judge=not generator)}
         for name, kind in variadic.items():
@@ -261,7 +384,8 @@ def _sites(hybrid, flow, verified, entries, capture):
         if syntax is None:
             continue
         group = linked.setdefault((call_id, target), {'syntax': syntax, 'caller': caller,
-                                                      'types': defaultdict(set), 'offsets': set()})
+                                                      'types': defaultdict(set), 'offsets': set(), 'samples': {}})
+        merge_samples(group['samples'], edge.get('list_samples', {}))
         if 'positional_offset' in edge:
             group['offsets'].add(edge['positional_offset'])
         for name, types in edge.get('site_argument_types', {}).items():

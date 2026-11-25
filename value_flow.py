@@ -11,6 +11,7 @@ Inferred values are possibilities ("may receive"), not runtime guarantees.
 from __future__ import annotations
 
 import ast
+import builtins
 from collections import defaultdict
 
 SCHEMA_VERSION = 1
@@ -215,8 +216,10 @@ def _rebound(flow, name, context):
     """A builtin type name rebound by an import or an assignment in the
     module or an enclosing scope (`str = bytes`, `import x as str`): the
     annotation may not mean the builtin, so it is not judged."""
-    if name in flow.r.imports_at(context):
-        return True
+    return name in flow.r.imports_at(context) or _assigned_in_scope(flow, name, context)
+
+
+def _assigned_in_scope(flow, name, context):
     scopes = [*flow.r.lexical_scopes(context.get('scope') or '<module>', context['module']), '<module>']
     return any(name in (a.get('targets') or [])
                for scope in scopes
@@ -229,6 +232,63 @@ def _origin(flow, node, context):
     return imports.get(head, head) + ('.' + tail if dot else '')
 
 
+def list_element_options(flow, node, context):
+    """Map each possible runtime type to whether its outer type suffices.
+
+    For str | dict[str, int], a str is fully checked, a dict is only partly
+    checked, and an unrelated type can be rejected. An unresolved alternative
+    leaves the declaration uncheckable. No project annotation is executed.
+    """
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        try:
+            node = ast.parse(node.value, mode='eval').body
+        except SyntaxError:
+            return None
+        return list_element_options(flow, node, context)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        alternatives = (node.left, node.right)
+    elif isinstance(node, ast.Subscript):
+        origin = _origin(flow, node.value, context)
+        args = node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+        if origin in ('typing.Annotated', 'typing_extensions.Annotated') and len(args) >= 2:
+            return list_element_options(flow, args[0], context)
+        if origin == 'typing.Optional' and len(args) == 1:
+            alternatives = (*args, ast.Constant(value=None))
+        elif origin == 'typing.Union':
+            alternatives = args
+        else:
+            # Only a nominal outer type was sampled, e.g. dict in dict[str, int].
+            names, ok = _declared(flow, node.value, context)
+            return {name: False for name in names} if ok else None
+    else:
+        names, ok = _declared(flow, node, context)
+        if ok:
+            return dict.fromkeys(names, True)
+        if not isinstance(node, (ast.Name, ast.Attribute)):
+            return None
+        origin = _origin(flow, node, context)
+        name = origin.removeprefix('builtins.')
+        if not isinstance(vars(builtins).get(name), type):
+            return None
+        head = ast.unparse(node).partition('.')[0]
+        if _assigned_in_scope(flow, head, context) or flow.refs(ast.unparse(node), context, node):
+            return None
+        if origin.startswith('builtins.') and head in flow.r.imports_at(context):
+            return {name: True}
+        if isinstance(node, ast.Name) and node.id == name and head not in flow.r.imports_at(context):
+            return {name: True}
+        return None
+
+    options = {}
+    for alternative in alternatives:
+        branch = list_element_options(flow, alternative, context)
+        if not branch:
+            return None
+        for name, fully_checkable in branch.items():
+            options[name] = fully_checkable or options.get(name, False)
+    return options
+
+
 # ---------------------------------------------------------------- compatibility
 def mismatch(flow, inferred, unknown, declared, resolvable):
     """(mismatch, detail): only when every value is known and one definitely
@@ -236,14 +296,14 @@ def mismatch(flow, inferred, unknown, declared, resolvable):
     if not resolvable or not declared or unknown or not inferred or 'Any' in declared or 'object' in declared:
         return False, None
     for descriptor in sorted(inferred, key=repr):
-        verdict = _fits(flow, descriptor, declared)
+        verdict = fits(flow, descriptor, declared)
         if verdict is False:
             shown = descriptor[1] if len(descriptor) > 1 else descriptor[0]
             return True, f"declared {' | '.join(sorted(declared))}, received {shown}"
     return False, None
 
 
-def _fits(flow, descriptor, declared):
+def fits(flow, descriptor, declared):
     """True / False / None (cannot decide)."""
     kind = descriptor[0]
     if kind in ('builtin', 'container'):

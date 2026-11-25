@@ -217,6 +217,103 @@ class DynamicValueFlowTests(unittest.TestCase):
         self.assertEqual(params['unknown']['check_status'], 'partial')
         self.assertFalse(params['unknown']['mismatch'])
 
+    def test_imported_element_alias_at_declaration(self):
+        self.prepare("""
+            from typing import List as Element
+            def before(xs: list[Element]): pass
+            Element = set
+            def after(xs: list[Element]): pass
+            before([[1]])
+            after([{1}]); after([[1]])
+            if __name__ == '__main__': Element = tuple
+            def uncertain(xs: list[Element]): pass
+            uncertain([(1,)])
+            from typing import Dict as Element
+            def imported_again(xs: list[Element]): pass
+            imported_again([{}])
+        """)
+        flow = self.capture()
+        def checks(name):
+            return [site['arguments'][0] for site in flow['call_sites']
+                    if site['targets'] == ['FUNCTION:app.' + name]]
+        self.assertEqual(checks('before')[0]['check_status'], 'match')
+        after = {a['text']: a for a in checks('after')}
+        self.assertEqual(after['[{1}]']['element_check']['declared_types'], ['set'])
+        self.assertEqual(after['[{1}]']['check_status'], 'match')
+        self.assertEqual(after['[[1]]']['element_check']['observed_type'], 'list')
+        self.assertTrue(after['[[1]]']['mismatch'])
+        self.assertEqual(checks('uncertain')[0]['check_status'], 'partial')
+        self.assertEqual(checks('imported_again')[0]['check_status'], 'match')
+
+    def test_forward_element_class_and_wildcard_rebinding(self):
+        (self.project / 'aliases.py').write_text('int = str\n', encoding='utf-8')
+        self.prepare("""
+            def forward(items: list["Later"]): pass
+            class Later: pass
+            forward([Later()]); forward([1])
+        """)
+        flow = self.capture()
+        calls = {s['arguments'][0]['text']: s['arguments'][0] for s in flow['call_sites']
+                 if s['targets'] == ['FUNCTION:app.forward']}
+        self.assertEqual(calls['[Later()]']['check_status'], 'match')
+        self.assertEqual(calls['[1]']['element_check']['declared_types'], ['app.Later'])
+        self.assertTrue(calls['[1]']['mismatch'])
+
+        self.prepare("""
+            from aliases import *
+            from builtins import list
+            def accept(items: list[int]): pass
+            accept(["ok"])
+            from builtins import int
+            def restored(items: list[int]): pass
+            restored(["wrong"])
+        """)
+        functions = self.capture(name='wildcard.json')['functions']
+        self.assertEqual(functions['FUNCTION:app.accept']['parameters']['items']['check_status'], 'partial')
+        self.assertTrue(functions['FUNCTION:app.restored']['parameters']['items']['mismatch'])
+
+    def test_nullable_list_selects_branch_for_observed_type(self):
+        self.prepare("""
+            from typing import Annotated, Optional as Maybe, Union as Either
+            def modern(xs: list[str] | None): pass
+            def optional(xs: Maybe[list[str]]): pass
+            def wrapped(xs: Annotated[Either[None, list[str]], "values"]): pass
+            modern(None); modern(["ok"]); modern(["ok", 7]); modern(3)
+            optional(None); optional(["ok", 7])
+            wrapped(["ok", 7])
+            def two_lists(xs: list[str] | list[int]): pass
+            two_lists([1, "two"])
+        """)
+        flow = self.capture()
+        calls = {(s['targets'][0].split('.')[-1], s['arguments'][0]['text']): s['arguments'][0]
+                 for s in flow['call_sites'] if s['arguments']}
+        for name in ('modern', 'optional', 'wrapped'):
+            arg = calls[name, "['ok', 7]"]
+            self.assertTrue(arg['mismatch'])
+            self.assertEqual((arg['element_check']['index'], arg['element_check']['observed_type']), (1, 'int'))
+            self.assertTrue(flow['functions']['FUNCTION:app.' + name]['parameters']['xs']['mismatch'])
+        for name in ('modern', 'optional'):
+            self.assertEqual(calls[name, 'None']['check_status'], 'match')
+            self.assertNotIn('element_check', calls[name, 'None'])
+        self.assertEqual(calls['modern', "['ok']"]['check_status'], 'match')
+        self.assertTrue(calls['modern', '3']['mismatch'])
+        self.assertEqual(calls['two_lists', "[1, 'two']"]['check_status'], 'partial')
+
+    def test_custom_subscription_cannot_establish_element_type(self):
+        self.prepare("""
+            class AsInt:
+                def __class_getitem__(cls, key): return int
+            class Derived(AsInt): pass
+            def accept(xs: list[AsInt[str]], ys: list[Derived[bytes]]): pass
+            accept([1], [1])
+        """)
+        flow = self.capture()
+        site = next(s for s in flow['call_sites'] if s['targets'] == ['FUNCTION:app.accept'])
+        for arg in site['arguments']:
+            self.assertEqual(arg['check_status'], 'partial')
+            self.assertFalse(arg['mismatch'])
+            self.assertFalse(flow['functions']['FUNCTION:app.accept']['parameters'][arg['parameter']]['mismatch'])
+
     def test_legacy_trace_and_ambiguous_call_ids(self):
         self.prepare("""
             def run(x: int): return x

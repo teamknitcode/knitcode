@@ -10,6 +10,7 @@ from pathlib import Path
 from graph_builder import Resolver
 from import_resolution import canonical_import
 from object_flow import ObjectFlow
+from runtime_validation.container_checks import merge_checks
 from runtime_validation.list_observations import merge_samples
 from runtime_validation.runtime_bridge import _relative, compare
 from symbol_builder import load_json, module_name_from_file
@@ -162,6 +163,83 @@ def _list_element_options(flow, node, context):
     return options
 
 
+def _runtime_rule(flow, node, context):
+    branches = []
+    for branch in _type_branches(flow, node, context):
+        if isinstance(branch, ast.Constant) and branch.value is None:
+            branches.append(('nominal', 'NoneType'))
+            continue
+        generic = isinstance(branch, ast.Subscript)
+        origin = _binding_origin(flow, ast.unparse(branch.value if generic else branch), context)
+        module, _, name = (origin or '').rpartition('.')
+        if origin == 'typing.Any':
+            cls = object
+        elif module == 'typing':
+            cls = vars(builtins).get(_GENERIC_ALIASES.get(name))
+        elif module == 'builtins':
+            cls = vars(builtins).get(name)
+        else:
+            return None
+        if not isinstance(cls, type):
+            return None
+        if not generic:
+            branches.append(('nominal', cls.__name__))
+            continue
+        if cls.__name__ not in _CONTAINERS:
+            return None
+        args = branch.slice.elts if isinstance(branch.slice, ast.Tuple) else [branch.slice]
+        kind = cls.__name__
+        if cls is tuple:
+            if len(args) == 2 and isinstance(args[1], ast.Constant) and args[1].value is Ellipsis:
+                kind, args = 'variadic_tuple', args[:1]
+        elif len(args) != (2 if cls is dict else 1):
+            return None
+        children = [_runtime_rule(flow, arg, context) for arg in args]
+        if any(child is None for child in children):
+            return None
+        branches.append((kind, cls.__name__, *children))
+    if len(branches) == 1:
+        return branches[0]
+    return ('union', *branches) if branches else None
+
+
+def container_rule(flow, annotation, symbol):
+    if not annotation or '[' not in annotation:
+        return None
+    try:
+        rule = _runtime_rule(flow, ast.parse(annotation, mode='eval').body, symbol)
+    except (SyntaxError, ValueError):
+        return None
+    if not rule or rule[0] == 'nominal':
+        return None
+    if rule[0] == 'union' and all(branch[0] == 'nominal' for branch in rule[1:]):
+        return None
+    # Flat list evidence already retains every runtime element type and its index.
+    if rule[0] == 'list' and rule[2][0] == 'nominal' and rule[2][1] != 'object':
+        return None
+    return rule
+
+
+def capture_fields(symbols):
+    """Resolve rules in the analyzer process before starting the target interpreter."""
+    flow = ObjectFlow(Resolver(symbols))
+    rows = []
+    for symbol in symbols['symbols']:
+        annotations = dict(symbol.get('parameter_annotations') or {})
+        if symbol.get('return_annotation'):
+            annotations['return'] = symbol['return_annotation']
+        if not annotations or symbol['kind'] not in ('FUNCTION', 'METHOD'):
+            continue
+        syntax = flow.functions.get(symbol['id'])
+        lines = {symbol['line']}
+        if syntax and syntax.decorator_list:
+            lines.add(syntax.decorator_list[0].lineno)
+        fields = {name: container_rule(flow, annotation, symbol) for name, annotation in annotations.items()}
+        file = _relative(symbol['file'], symbols.get('repository'))
+        rows.extend((file, line, symbol['name'], fields) for line in sorted(lines))
+    return rows
+
+
 class TypeEntries:
     def __init__(self, flow, verified, main_module):
         self.flow = flow
@@ -177,6 +255,9 @@ class TypeEntries:
         try:
             node = _type_node(ast.parse(annotation, mode='eval').body)
             branches = list(_type_branches(self.flow, node, context))
+            if all(not isinstance(b, ast.Subscript) for b in branches):
+                options = _list_element_options(self.flow, node, context)
+                return set(options or ()), bool(options), False, None
             non_null = [b for b in branches if not (isinstance(b, ast.Constant) and b.value is None)]
             # A single list branch has unambiguous element rules, including when None is allowed.
             # list[A] | list[B] must not be treated as list[A | B] across calls.
@@ -233,7 +314,11 @@ class TypeEntries:
             if (not self.can_judge(descriptor, names) or
                     descriptor in (('builtin', 'function'), ('builtin', 'method'), ('builtin', 'type'))):
                 continue
-            verdict = _fits(self.flow, descriptor, names)
+            cls = vars(builtins).get(descriptor[1]) if descriptor[0] in ('builtin', 'container') else None
+            if isinstance(cls, type) and any(base.__name__ in names for base in cls.__mro__):
+                verdict = True
+            else:
+                verdict = _fits(self.flow, descriptor, names)
             if verdict is False:
                 return 'mismatch', 'incompatible_type', descriptor[1]
             if verdict is True:
@@ -280,7 +365,7 @@ class TypeEntries:
             status, reason = 'partial', 'sample_limit'
         return dict(result, status=status, reason=reason)
 
-    def entry(self, symbol_id, annotation, types, *, judge=True, sample=None):
+    def entry(self, symbol_id, annotation, types, *, judge=True, sample=None, contents=None):
         names, resolved, detailed, element = self.declaration(symbol_id, annotation)
         descriptors = sorted({self.describe(raw) for raw in types})
         unknown = not descriptors or any('?' in d[1] for d in descriptors)
@@ -327,10 +412,27 @@ class TypeEntries:
                 status, reason = element_check['status'], element_check['reason']
                 if status == 'unchecked':
                     status = 'partial'  # the list itself was checked
+        if contents and judge and not unknown:
+            status, reason = contents['status'], contents['reason']
+            if status == 'mismatch':
+                where = contents.get('path') or 'value'
+                observed_type = contents.get('observed_type')
+                detail = (f"{where}: declared {annotation}, received {observed_type}" if observed_type else
+                          f"{where}: expected length {contents['expected_length']}, received {contents['observed_length']}")
+            else:
+                detail = None
+            if element_check and (contents.get('path') or status == 'match'):
+                element_check.update(status=status, reason=reason)
+                if contents.get('path'):
+                    element_check['path'] = contents['path']
+                    if contents.get('observed_type'):
+                        element_check['observed_type'] = contents['observed_type'].removeprefix('builtins.')
         result = {'declared': annotation, 'declared_types': sorted(names), 'inferred': observed,
                   'unknown': unknown, 'mismatch': status == 'mismatch', 'check_status': status, 'check_reason': reason}
         if element_check is not None:
             result['element_check'] = element_check
+        if contents and judge and not unknown:
+            result['container_check'] = contents
         if detail:
             result['mismatch_detail'] = detail
         return result
@@ -362,7 +464,7 @@ def _site_arguments(node, symbol, signature, static_args, group, entries):
         if not direct:
             name = None
         entry = entries.entry(symbol['id'], annotations.get(name), group['types'].get(name, ()),
-                              sample=group['samples'].get(name))
+                              sample=group['samples'].get(name), contents=group['checks'].get(name))
         text = ast.unparse(expr)
         if location == {'keyword': None}:
             text = '**' + text
@@ -405,17 +507,25 @@ def _functions(hybrid, flow, entries):
         if node['kind'] != 'FUNCTION':
             continue
         if node['static_id'] is None:
-            unmapped.append({'runtime_id': node['id'], 'file': node['file'],
-                            'reason': hybrid['node_mapping'][node['id']]['reason']})
+            reason = hybrid['node_mapping'][node['id']]['reason']
+            record = {'runtime_id': node['id'], 'file': node['file'], 'reason': reason}
+            if reason == 'definition_unrepresented' and node['name'].isidentifier():
+                # Conditional definitions and property accessors may share one static ID.
+                # Preserve the actual frame without assigning it to a different definition.
+                record.update(qualified_name=node.get('qualified_name'), first_line=node['first_line'],
+                              argument_types=node['argument_types'], return_types=node['return_types'])
+            unmapped.append(record)
         else:
             grouped[node['static_id']].append(node)
     for target, nodes in sorted(grouped.items()):
         symbol = flow.r.by_id[target]
         params = defaultdict(set)
         samples = {}
+        checks = {}
         returns, yields = set(), set()
         for node in nodes:
             merge_samples(samples, node.get('list_samples', {}))
+            merge_checks(checks, node.get('container_checks', {}))
             for name, raw in node['argument_types'].items():
                 params[name].update(raw)
             returns.update(node['return_types'])
@@ -432,9 +542,10 @@ def _functions(hybrid, flow, entries):
         generator = resumable and _contains_yield(definition)
         functions[target] = {
             'parameters': {name: entries.entry(target, annotations.get(name), params[name],
-                                              judge=name not in variadic, sample=samples.get(name))
+                                              judge=name not in variadic, sample=samples.get(name), contents=checks.get(name))
                            for name in names},
-            'returns': entries.entry(target, symbol.get('return_annotation'), returns, judge=not generator)}
+            'returns': entries.entry(target, symbol.get('return_annotation'), returns, judge=not generator,
+                                     sample=samples.get('return'), contents=checks.get('return'))}
         for name, kind in variadic.items():
             if name in functions[target]['parameters']:
                 functions[target]['parameters'][name]['binding_kind'] = kind
@@ -499,8 +610,9 @@ def _sites(hybrid, flow, verified, entries, capture):
         if syntax is None:
             continue
         group = linked.setdefault((call_id, target), {'syntax': syntax, 'caller': caller,
-                                                      'types': defaultdict(set), 'offsets': set(), 'samples': {}})
+                                                      'types': defaultdict(set), 'offsets': set(), 'samples': {}, 'checks': {}})
         merge_samples(group['samples'], edge.get('list_samples', {}))
+        merge_checks(group['checks'], edge.get('container_checks', {}))
         if 'positional_offset' in edge:
             group['offsets'].add(edge['positional_offset'])
         for name, types in edge.get('site_argument_types', {}).items():

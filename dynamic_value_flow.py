@@ -49,6 +49,7 @@ def _extension_copy(path, static_dir, result):
 
 def _capture(args, target_args, directory):
     from ast_parser import SKIP_DIRS, detect_source_roots
+    from runtime_validation.dynamic_value_flow import capture_fields
 
     root = Path(args.project).resolve()
     cwd = (root / args.cwd).resolve()
@@ -68,6 +69,7 @@ def _capture(args, target_args, directory):
               'symbols': str((args.static_dir / 'symbol_result.json').resolve()),
               'skip_dirs': sorted(SKIP_DIRS | {'.knitcode-runs'})}
     config_path = directory / 'config.json'
+    config['fields'] = capture_fields(load_json(config['symbols']))
     write_json_atomic(config_path, config)
     python = str(Path(args.python).absolute()) if Path(args.python).is_file() else args.python
     result = subprocess.run([python, str(Path(__file__).resolve()), '_capture', str(config_path)], cwd=cwd)

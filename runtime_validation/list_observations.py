@@ -1,18 +1,14 @@
-"""Bounded observations of exact built-in lists at Python function entry."""
+"""Runtime element types of exact built-in lists, with one index per type."""
 from runtime_validation.python_execution import type_name
 
 
-SAMPLE_LIMIT = 32
-
-
 def sample_list(value):
-    # Callers pass exact lists. Slicing avoids user iteration and takes a bounded copy.
-    total = len(value)
-    sample = value[:SAMPLE_LIMIT]
+    # Snapshot before inspecting types, including when other threads share this list.
+    sample = list.copy(value)
     first_index = {}
     for index, element in enumerate(sample):
         first_index.setdefault(type_name(element), index)
-    return {'total': total, 'checked': len(sample), 'first_index': first_index}
+    return {'total': len(sample), 'checked': len(sample), 'first_index': first_index}
 
 
 def merge_samples(destination, samples):

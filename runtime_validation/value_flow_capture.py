@@ -10,6 +10,8 @@ import threading
 import types
 
 from dynamic_analysis import _execute
+from runtime_validation.container_checks import check_container, merge_checks
+from runtime_validation.list_observations import merge_samples, sample_list
 from runtime_validation.profile_collector import ProfileCollector, write_json_atomic
 from runtime_validation.python_execution import type_name
 from runtime_validation.runtime_bridge import _relative
@@ -17,10 +19,11 @@ from symbol_builder import load_json
 
 
 class SiteCollector(ProfileCollector):
-    def __init__(self, root, *, symbols, **kwargs):
+    def __init__(self, root, *, symbols, fields, **kwargs):
         super().__init__(root, coverage=False, variables=False, **kwargs)
         self.offsets = {}
         self.sites = {}
+        self.fields = {(file, line, name): rules for file, line, name, rules in fields}
         self.bare_names = {(_relative(c['file'], symbols.get('repository')), c['line'], c['column'],
                             c['end_line'], c['end_column']): c['callee_text']
                            for c in symbols['calls'] if c['syntax_type'] == 'NAME'}
@@ -45,8 +48,21 @@ class SiteCollector(ProfileCollector):
 
     def _arguments(self, frame, node):
         receiver = super()._arguments(frame, node)
+        if node['kind'] != 'FUNCTION':
+            return receiver
+        local = frame.f_locals
+        names = self.argument_names(frame.f_code)
+        candidates = self.fields.get((node['file'], node['first_line'], node['name']), {})
+        samples = {name: sample_list(local[name]) for name in candidates
+                   if name in names and name in local and type(local[name]) is list}
+        checks = {name: check_container(local[name], rule) for name, rule in candidates.items()
+                  if rule and name in names and name in local}
+        if checks:
+            merge_checks(node.setdefault('container_checks', {}), checks)
+        if samples:
+            merge_samples(node.setdefault('list_samples', {}), samples)
         caller = frame.f_back
-        if node['kind'] != 'FUNCTION' or caller is None:
+        if caller is None:
             return receiver
         source = self._node(caller)
         if source is None:
@@ -63,11 +79,24 @@ class SiteCollector(ProfileCollector):
             if site.setdefault('positional_offset', offset) != offset:
                 site['positional_offset'] = None
         arguments = site['argument_types']
-        local = frame.f_locals
-        for name in self.argument_names(frame.f_code):
+        if samples:
+            merge_samples(site.setdefault('list_samples', {}), samples)
+        if checks:
+            merge_checks(site.setdefault('container_checks', {}), checks)
+        for name in names:
             if name in local:
                 arguments.setdefault(name, set()).add(type_name(local[name]))
         return receiver
+
+    def _returned(self, node, value):
+        super()._returned(node, value)
+        fields = self.fields.get((node['file'], node['first_line'], node['name']), {})
+        if 'return' not in fields:
+            return
+        if type(value) is list:
+            merge_samples(node.setdefault('list_samples', {}), {'return': sample_list(value)})
+        if fields['return']:
+            merge_checks(node.setdefault('container_checks', {}), {'return': check_container(value, fields['return'])})
 
     def _bound_offset(self, caller, name, frame):
         missing = object()
@@ -92,6 +121,10 @@ class SiteCollector(ProfileCollector):
             if key in self.sites:
                 site = self.sites[key]
                 edge['call_span'] = site['span']
+                if 'list_samples' in site:
+                    edge['list_samples'] = site['list_samples']
+                if 'container_checks' in site:
+                    edge['container_checks'] = site['container_checks']
                 if 'positional_offset' in site:
                     edge['positional_offset'] = site['positional_offset']
                 edge['site_argument_types'] = {
@@ -108,7 +141,7 @@ def run_worker(config):
     entry = str(Path(config['script']).parent) if config['script'] else config['cwd']
     sys.path[:0] = list(dict.fromkeys([entry, *(str(root / p) for p in config['source_roots']), str(root)]))
     sys.argv = [config['script'] or config['module'], *config['args']]
-    collector = SiteCollector(root, symbols=load_json(config['symbols']), skip_dirs=config['skip_dirs'],
+    collector = SiteCollector(root, symbols=load_json(config['symbols']), fields=config['fields'], skip_dirs=config['skip_dirs'],
                               excluded_files=[tool_dir / 'dynamic_value_flow.py',
                                               tool_dir / 'dynamic_analysis.py',
                                               *Path(__file__).parent.glob('*.py')])

@@ -145,6 +145,9 @@ class ProfileCollector:
             node['receiver_types'].add(receiver)
         return receiver
 
+    def _returned(self, node, value):
+        node['return_types'].add(type_name(value))
+
     def _external(self, frame, target, kind):
         source = self._node(frame)
         if source is None:
@@ -178,7 +181,7 @@ class ProfileCollector:
                         kind = self.execution.return_kinds.pop(id(frame), None)
                         kind = kind or self.execution.return_kind(frame, info)
                         if kind == 'return':
-                            node['return_types'].add(type_name(arg))
+                            self._returned(node, arg)
                         elif kind == 'yield':
                             node['yield_types'].add(type_name(arg))
                     return

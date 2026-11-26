@@ -8,10 +8,13 @@ from functools import lru_cache
 from pathlib import Path
 
 from graph_builder import Resolver
+from import_resolution import canonical_import
 from object_flow import ObjectFlow
+from runtime_validation.container_checks import merge_checks
+from runtime_validation.list_observations import merge_samples
 from runtime_validation.runtime_bridge import _relative, compare
 from symbol_builder import load_json, module_name_from_file
-from value_flow import declared_types, mismatch, to_json
+from value_flow import _fits, _GENERIC_ALIASES, declared_types, to_json
 
 
 def _main_module(trace, symbols):
@@ -36,6 +39,207 @@ _ABCS = {'Sequence': abc.Sequence, 'MutableSequence': abc.MutableSequence, 'Iter
          'AbstractSet': abc.Set}
 
 
+def _type_node(node):
+    while isinstance(node, ast.Constant) and isinstance(node.value, str):
+        node = ast.parse(node.value, mode='eval').body
+    return node
+
+
+def _outer_only(node):
+    """A nominal match alone cannot confirm nested type arguments."""
+    node = _type_node(node)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        return _outer_only(node.left) or _outer_only(node.right)
+    if isinstance(node, ast.Subscript):
+        if ast.unparse(node.value).rsplit('.', 1)[-1] in ('Union', 'Optional'):
+            args = node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+            return any(_outer_only(arg) for arg in args)
+        return True
+    return False
+
+
+def _binding_origin(flow, text, context, depth=0):
+    """Resolve a type name at the definition, or at the RHS of a simple alias."""
+    if depth >= 16 or not all(part.isidentifier() for part in text.split('.')):
+        return None
+    head, dot, tail = text.partition('.')
+    file = context['file']
+    scopes = [*flow.r.lexical_scopes(context['scope'], context['module']), '<module>']
+    facts = flow.call_origins
+    if any(h['type'] in ('GLOBAL', 'NONLOCAL') or h.get('scope') in scopes
+           for h in facts.hazards.get((file, head), ())):
+        return None
+    position = (context['line'], context.get('column') or 0)
+    for scope in scopes:
+        key = file, scope, head
+        records = [*facts.imports.get(key, ()), *facts.assignments.get(key, ()),
+                   *facts.declarations.get(key, ()), *facts.imports.get((file, scope, '*'), ())]
+        prior = [r for r in records if (r['line'], r.get('column') or 0) < position]
+        # An enclosing namespace can change before a nested definition actually runs.
+        if scope != context['scope'] and prior and len(prior) != len(records):
+            return None
+        if prior:
+            choices = flow.r.origins._live_choices(prior)
+            if len(choices) != 1 or choices[0].get('control_depth'):
+                return None
+            record = choices[0]
+            if record.get('local_name') == '*':
+                return None
+            if 'imported_canonical' in record:
+                origin = canonical_import(record)
+            elif record.get('kind') == 'CLASS':
+                origin = record['canonical_name']
+            else:
+                binding = record.get('binding') or {}
+                if (record.get('type') != 'ASSIGN' or record.get('targets') != [head]
+                        or binding.get('kind') not in ('name', 'attribute')):
+                    return None
+                origin = _binding_origin(flow, binding['name'], record, depth + 1)
+            return origin + dot + tail if origin else None
+        if head in facts.params.get((file, scope), ()):
+            return None
+        # A forward reference can name a unique class defined later in the module.
+        if scope == '<module>' and len(records) == 1 and head not in vars(builtins):
+            record = records[0]
+            if record.get('kind') == 'CLASS' and not record.get('control_depth'):
+                return record['canonical_name'] + dot + tail
+        if records and scope != context['scope']:
+            return None
+    if head in vars(builtins):
+        return 'builtins.' + text
+    return None
+
+
+def _type_branches(flow, node, context):
+    """Flatten trusted union/optional wrappers and ignore Annotated metadata."""
+    node = _type_node(node)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+        branches = (node.left, node.right)
+    elif isinstance(node, ast.Subscript):
+        origin = _binding_origin(flow, ast.unparse(node.value), context)
+        args = node.slice.elts if isinstance(node.slice, ast.Tuple) else [node.slice]
+        if origin == 'typing.Optional' and len(args) == 1:
+            branches = (*args, ast.Constant(value=None))
+        elif origin == 'typing.Union':
+            branches = args
+        elif origin in ('typing.Annotated', 'typing_extensions.Annotated') and len(args) >= 2:
+            branches = args[:1]
+        else:
+            yield node
+            return
+    else:
+        yield node
+        return
+    for branch in branches:
+        yield from _type_branches(flow, branch, context)
+
+
+def _list_element_options(flow, node, context):
+    """Map allowed element types to whether the observed type alone suffices."""
+    options = {}
+    for branch in _type_branches(flow, node, context):
+        generic = isinstance(branch, ast.Subscript)
+        if isinstance(branch, ast.Constant) and branch.value is None:
+            options['NoneType'] = True
+            continue
+        origin = _binding_origin(flow, ast.unparse(branch.value if generic else branch), context)
+        if not origin:
+            return None
+        module, _, name = origin.rpartition('.')
+        builtin_type = module == 'builtins' and isinstance(vars(builtins).get(name), type)
+        abstract_type = module in ('typing', 'collections.abc') and name in _ABCS
+        if module == 'typing' and name in _GENERIC_ALIASES:
+            name = _GENERIC_ALIASES[name]
+        elif not (builtin_type or abstract_type or origin == 'typing.Any'):
+            # A project-defined subscription can return an unrelated type.
+            # Without observing its result, its written base cannot justify a mismatch.
+            if generic:
+                return None
+            symbols = flow.r.origins.project_symbols(origin)
+            if len(symbols) != 1 or symbols[0]['kind'] != 'CLASS':
+                return None
+            name = symbols[0]['canonical_name']
+        options[name] = options.get(name, False) or not generic
+    return options
+
+
+def _runtime_rule(flow, node, context):
+    branches = []
+    for branch in _type_branches(flow, node, context):
+        if isinstance(branch, ast.Constant) and branch.value is None:
+            branches.append(('nominal', 'NoneType'))
+            continue
+        generic = isinstance(branch, ast.Subscript)
+        origin = _binding_origin(flow, ast.unparse(branch.value if generic else branch), context)
+        module, _, name = (origin or '').rpartition('.')
+        if origin == 'typing.Any':
+            cls = object
+        elif module == 'typing':
+            cls = vars(builtins).get(_GENERIC_ALIASES.get(name))
+        elif module == 'builtins':
+            cls = vars(builtins).get(name)
+        else:
+            return None
+        if not isinstance(cls, type):
+            return None
+        if not generic:
+            branches.append(('nominal', cls.__name__))
+            continue
+        if cls.__name__ not in _CONTAINERS:
+            return None
+        args = branch.slice.elts if isinstance(branch.slice, ast.Tuple) else [branch.slice]
+        kind = cls.__name__
+        if cls is tuple:
+            if len(args) == 2 and isinstance(args[1], ast.Constant) and args[1].value is Ellipsis:
+                kind, args = 'variadic_tuple', args[:1]
+        elif len(args) != (2 if cls is dict else 1):
+            return None
+        children = [_runtime_rule(flow, arg, context) for arg in args]
+        if any(child is None for child in children):
+            return None
+        branches.append((kind, cls.__name__, *children))
+    if len(branches) == 1:
+        return branches[0]
+    return ('union', *branches) if branches else None
+
+
+def container_rule(flow, annotation, symbol):
+    if not annotation or '[' not in annotation:
+        return None
+    try:
+        rule = _runtime_rule(flow, ast.parse(annotation, mode='eval').body, symbol)
+    except (SyntaxError, ValueError):
+        return None
+    if not rule or rule[0] == 'nominal':
+        return None
+    if rule[0] == 'union' and all(branch[0] == 'nominal' for branch in rule[1:]):
+        return None
+    # Flat list evidence already retains every runtime element type and its index.
+    if rule[0] == 'list' and rule[2][0] == 'nominal' and rule[2][1] != 'object':
+        return None
+    return rule
+
+
+def capture_fields(symbols):
+    """Resolve rules in the analyzer process before starting the target interpreter."""
+    flow = ObjectFlow(Resolver(symbols))
+    rows = []
+    for symbol in symbols['symbols']:
+        annotations = dict(symbol.get('parameter_annotations') or {})
+        if symbol.get('return_annotation'):
+            annotations['return'] = symbol['return_annotation']
+        if not annotations or symbol['kind'] not in ('FUNCTION', 'METHOD'):
+            continue
+        syntax = flow.functions.get(symbol['id'])
+        lines = {symbol['line']}
+        if syntax and syntax.decorator_list:
+            lines.add(syntax.decorator_list[0].lineno)
+        fields = {name: container_rule(flow, annotation, symbol) for name, annotation in annotations.items()}
+        file = _relative(symbol['file'], symbols.get('repository'))
+        rows.extend((file, line, symbol['name'], fields) for line in sorted(lines))
+    return rows
+
+
 class TypeEntries:
     def __init__(self, flow, verified, main_module):
         self.flow = flow
@@ -44,7 +248,30 @@ class TypeEntries:
         self.declaration = lru_cache(maxsize=None)(self._declaration)
 
     def _declaration(self, symbol_id, annotation):
-        return declared_types(self.flow, annotation, self.flow.r.by_id[symbol_id])
+        context = self.flow.r.by_id[symbol_id]
+        names, resolved = declared_types(self.flow, annotation, context)
+        if not annotation:
+            return names, False, False, None
+        try:
+            node = _type_node(ast.parse(annotation, mode='eval').body)
+            branches = list(_type_branches(self.flow, node, context))
+            if all(not isinstance(b, ast.Subscript) for b in branches):
+                options = _list_element_options(self.flow, node, context)
+                return set(options or ()), bool(options), False, None
+            non_null = [b for b in branches if not (isinstance(b, ast.Constant) and b.value is None)]
+            # A single list branch has unambiguous element rules, including when None is allowed.
+            # list[A] | list[B] must not be treated as list[A | B] across calls.
+            if len(non_null) == 1 and isinstance(non_null[0], ast.Subscript):
+                sub = non_null[0]
+                base = _binding_origin(self.flow, ast.unparse(sub.value), context)
+                if base in ('builtins.list', 'typing.List'):
+                    outer = {'list'} if len(branches) == 1 else {'list', 'NoneType'}
+                    return outer, True, True, _list_element_options(self.flow, sub.slice, context)
+                if 'list' in names:
+                    return set(), False, True, None
+            return names, resolved, resolved and _outer_only(node), None
+        except (SyntaxError, ValueError):
+            return set(), False, True, None
 
     def verified_class(self, name):
         symbol = self.flow.r.classes.get(name)
@@ -79,8 +306,67 @@ class TypeEntries:
                 return False
         return descriptor[0] in ('builtin', 'container', 'instance')
 
-    def entry(self, symbol_id, annotation, types, *, judge=True):
-        names, resolved = self.declaration(symbol_id, annotation)
+    def assess(self, descriptors, names):
+        if names & {'Any', 'object'}:
+            return 'unchecked', 'unrestricted_annotation', None
+        checked = 0
+        for descriptor in descriptors:
+            if (not self.can_judge(descriptor, names) or
+                    descriptor in (('builtin', 'function'), ('builtin', 'method'), ('builtin', 'type'))):
+                continue
+            cls = vars(builtins).get(descriptor[1]) if descriptor[0] in ('builtin', 'container') else None
+            if isinstance(cls, type) and any(base.__name__ in names for base in cls.__mro__):
+                verdict = True
+            else:
+                verdict = _fits(self.flow, descriptor, names)
+            if verdict is False:
+                return 'mismatch', 'incompatible_type', descriptor[1]
+            if verdict is True:
+                checked += 1
+        if checked < len(descriptors):
+            return 'partial' if checked else 'unchecked', 'unverified_type', None
+        return 'match', 'compatible_type', None
+
+    def element_verdict(self, descriptor, options):
+        if options.keys() & {'Any', 'object'}:
+            return 'partial', 'unrestricted_annotation'
+        reason = None
+        concrete = vars(builtins).get(descriptor[1]) if descriptor[0] in ('builtin', 'container') else None
+        for name, fully_checkable in options.items():
+            base = _ABCS.get(name) or vars(builtins).get(name)
+            if isinstance(concrete, type) and isinstance(base, type) and issubclass(concrete, base):
+                verdict = 'match'
+            else:
+                verdict, _, _ = self.assess([descriptor], {name})
+            if verdict == 'match':
+                if fully_checkable:
+                    return 'match', 'compatible_elements'
+                reason = 'element_details_unchecked'
+            elif verdict != 'mismatch' and reason is None:
+                reason = 'unverified_type'
+        return ('partial', reason) if reason else ('mismatch', 'incompatible_element')
+
+    def check_elements(self, options, sample):
+        if sample is None:
+            return {'status': 'unchecked', 'reason': 'elements_not_recorded'}
+        checked, total = sample['checked'], sample['total']
+        status, reason = 'match', 'compatible_elements' if total else 'empty_list'
+        result = {'checked': checked, 'total': total, 'declared_types': sorted(options)}
+        for raw, index in sorted(sample['first_index'].items(), key=lambda item: (item[1], item[0])):
+            descriptor = self.describe(raw)
+            verdict, why = self.element_verdict(descriptor, options)
+            if verdict == 'mismatch':
+                result.update(index=index, observed_type=descriptor[1])
+                status, reason = verdict, why
+                break
+            if verdict != 'match':
+                status, reason = 'partial', why
+        if checked < total and status != 'mismatch':
+            status, reason = 'partial', 'sample_limit'
+        return dict(result, status=status, reason=reason)
+
+    def entry(self, symbol_id, annotation, types, *, judge=True, sample=None, contents=None):
+        names, resolved, detailed, element = self.declaration(symbol_id, annotation)
         descriptors = sorted({self.describe(raw) for raw in types})
         unknown = not descriptors or any('?' in d[1] for d in descriptors)
         observed = [to_json(d) for d in descriptors]
@@ -90,14 +376,64 @@ class TypeEntries:
             # Existing traces store the runtime type, not the referent identity.
             if item['kind'] == 'builtin' and item['type'] in ('function', 'method', 'type'):
                 item['kind'] = {'type': 'class'}.get(item['type'], item['type'])
-        bad, detail = False, None
-        if judge and resolved and not unknown:
-            checkable = [d for d in descriptors if self.can_judge(d, names)
-                         and d not in (('builtin', 'function'), ('builtin', 'method'), ('builtin', 'type'))]
-            bad, detail = mismatch(self.flow, checkable, unknown, names, resolved)
+        status, reason, detail = 'unchecked', None, None
+        if unknown:
+            reason = 'unknown_observation'
+        elif not annotation:
+            reason = 'no_annotation'
+        elif not judge:
+            reason = 'binding_not_comparable'
+        elif not resolved:
+            reason = 'unresolved_annotation'
+        else:
+            status, reason, wrong = self.assess(descriptors, names)
+            if wrong:
+                detail = f"declared {' | '.join(sorted(names))}, received {wrong}"
+            elif detailed and status == 'match' and not (
+                    'NoneType' in names and descriptors == [('builtin', 'NoneType')]):
+                status, reason = 'partial', 'annotation_details_unchecked'
+        element_check = None
+        if judge and element and ('container', 'list', ()) in descriptors:
+            element_check = self.check_elements(element, sample)
+            if sample is not None:
+                for item in observed:
+                    if item['type'] == 'list':
+                        item['elements_unknown'] = sample['checked'] < sample['total']
+                        observed_elements = {self.describe(t) for t in sample['first_index']}
+                        item['elements'] = [to_json(d) for d in sorted(observed_elements)]
+                        for child in item['elements']:
+                            if child['kind'] == 'container':
+                                child['elements_unknown'] = True
+            if element_check['status'] == 'mismatch' and not unknown and not detail:
+                status, reason = 'mismatch', 'incompatible_element'
+                detail = (f"element [{element_check['index']}]: declared {' | '.join(sorted(element))}, "
+                          f"received {element_check['observed_type']}")
+            elif reason == 'annotation_details_unchecked':
+                status, reason = element_check['status'], element_check['reason']
+                if status == 'unchecked':
+                    status = 'partial'  # the list itself was checked
+        if contents and judge and not unknown:
+            status, reason = contents['status'], contents['reason']
+            if status == 'mismatch':
+                where = contents.get('path') or 'value'
+                observed_type = contents.get('observed_type')
+                detail = (f"{where}: declared {annotation}, received {observed_type}" if observed_type else
+                          f"{where}: expected length {contents['expected_length']}, received {contents['observed_length']}")
+            else:
+                detail = None
+            if element_check and (contents.get('path') or status == 'match'):
+                element_check.update(status=status, reason=reason)
+                if contents.get('path'):
+                    element_check['path'] = contents['path']
+                    if contents.get('observed_type'):
+                        element_check['observed_type'] = contents['observed_type'].removeprefix('builtins.')
         result = {'declared': annotation, 'declared_types': sorted(names), 'inferred': observed,
-                  'unknown': unknown, 'mismatch': bad}
-        if bad:
+                  'unknown': unknown, 'mismatch': status == 'mismatch', 'check_status': status, 'check_reason': reason}
+        if element_check is not None:
+            result['element_check'] = element_check
+        if contents and judge and not unknown:
+            result['container_check'] = contents
+        if detail:
             result['mismatch_detail'] = detail
         return result
 
@@ -127,7 +463,8 @@ def _site_arguments(node, symbol, signature, static_args, group, entries):
     def add(location, expr, name):
         if not direct:
             name = None
-        entry = entries.entry(symbol['id'], annotations.get(name), group['types'].get(name, ()))
+        entry = entries.entry(symbol['id'], annotations.get(name), group['types'].get(name, ()),
+                              sample=group['samples'].get(name), contents=group['checks'].get(name))
         text = ast.unparse(expr)
         if location == {'keyword': None}:
             text = '**' + text
@@ -170,15 +507,25 @@ def _functions(hybrid, flow, entries):
         if node['kind'] != 'FUNCTION':
             continue
         if node['static_id'] is None:
-            unmapped.append({'runtime_id': node['id'], 'file': node['file'],
-                            'reason': hybrid['node_mapping'][node['id']]['reason']})
+            reason = hybrid['node_mapping'][node['id']]['reason']
+            record = {'runtime_id': node['id'], 'file': node['file'], 'reason': reason}
+            if reason == 'definition_unrepresented' and node['name'].isidentifier():
+                # Conditional definitions and property accessors may share one static ID.
+                # Preserve the actual frame without assigning it to a different definition.
+                record.update(qualified_name=node.get('qualified_name'), first_line=node['first_line'],
+                              argument_types=node['argument_types'], return_types=node['return_types'])
+            unmapped.append(record)
         else:
             grouped[node['static_id']].append(node)
     for target, nodes in sorted(grouped.items()):
         symbol = flow.r.by_id[target]
         params = defaultdict(set)
+        samples = {}
+        checks = {}
         returns, yields = set(), set()
         for node in nodes:
+            merge_samples(samples, node.get('list_samples', {}))
+            merge_checks(checks, node.get('container_checks', {}))
             for name, raw in node['argument_types'].items():
                 params[name].update(raw)
             returns.update(node['return_types'])
@@ -194,9 +541,11 @@ def _functions(hybrid, flow, entries):
         resumable = any(n.get('resumable') for n in nodes)
         generator = resumable and _contains_yield(definition)
         functions[target] = {
-            'parameters': {name: entries.entry(target, annotations.get(name), params[name], judge=name not in variadic)
+            'parameters': {name: entries.entry(target, annotations.get(name), params[name],
+                                              judge=name not in variadic, sample=samples.get(name), contents=checks.get(name))
                            for name in names},
-            'returns': entries.entry(target, symbol.get('return_annotation'), returns, judge=not generator)}
+            'returns': entries.entry(target, symbol.get('return_annotation'), returns, judge=not generator,
+                                     sample=samples.get('return'), contents=checks.get('return'))}
         for name, kind in variadic.items():
             if name in functions[target]['parameters']:
                 functions[target]['parameters'][name]['binding_kind'] = kind
@@ -261,7 +610,9 @@ def _sites(hybrid, flow, verified, entries, capture):
         if syntax is None:
             continue
         group = linked.setdefault((call_id, target), {'syntax': syntax, 'caller': caller,
-                                                      'types': defaultdict(set), 'offsets': set()})
+                                                      'types': defaultdict(set), 'offsets': set(), 'samples': {}, 'checks': {}})
+        merge_samples(group['samples'], edge.get('list_samples', {}))
+        merge_checks(group['checks'], edge.get('container_checks', {}))
         if 'positional_offset' in edge:
             group['offsets'].add(edge['positional_offset'])
         for name, types in edge.get('site_argument_types', {}).items():
